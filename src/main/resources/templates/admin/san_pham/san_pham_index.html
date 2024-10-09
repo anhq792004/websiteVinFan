@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/admin/fragments/head :: head" xmlns:th="http://www.thymeleaf.org">
+</head>
+<!-- Site wrapper -->
+<div class="wrapper">
+    <!-- Sidebar -->
+    <div>
+        <aside th:replace="/admin/fragments/sidebar :: sidebar"></aside>
+    </div>
+
+    <!-- Main-->
+    <div id="main">
+        <header th:replace="/admin/fragments/header :: header"></header>
+
+        <div class="page-heading">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                        <h3>Sản phẩm</h3>
+                        <p class="text-subtitle text-muted">danh sách sản phẩm quạt</p>
+                    </div>
+                    <div class="col-12 col-md-6 order-md-2 order-first">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/admin/index">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page"><a href="/admin/san-pham">Sản
+                                    phẩm</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!--        dữ liệu thực hiện trong secsion-->
+            <section class="row">
+                <div class="card">
+                    <div class="card-header">
+                        <a class="btn btn-outline-success" href="/admin/san-pham/viewAdd">Thêm mới</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
+                            <div class="dataTable-top">
+                                <form method="get" action="/admin/san-pham">
+                                    <div class="row">
+                                        <div class="col-11 col-lg-4">
+                                            <input type="text" id="searchInput" class="form-control" name="query"
+                                                   placeholder="Tìm kiếm sản phẩm...." th:value="${param.query}">
+                                        </div>
+                                        <div class="col-11 col-lg-2">
+                                            <input type="number" id="searchInputMinPrice" class="form-control"
+                                                   name="minPrice" placeholder="Giá nhỏ nhất"
+                                                   th:value="${param.minPrice}">
+                                        </div>
+                                        <div class="col-11 col-lg-2">
+                                            <input type="number" id="searchInputMaxPrice" class="form-control"
+                                                   name="maxPrice" placeholder="Giá lớn nhất"
+                                                   th:value="${param.maxPrice}">
+                                        </div>
+                                        <div class="col-11 col-lg-2">
+                                            <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                                        </div>
+                                        <div class="col-11 col-lg-1">
+                                            <a class="btn btn-warning" href="/admin/san-pham">Reset</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="dataTable-container">
+                                <table class="table table-striped dataTable-table" id="table1">
+                                    <thead>
+                                    <tr>
+                                        <th data-sortable="" style="width: 5%;">
+                                            <a href="#" class="dataTable-sorter">STT</a>
+                                        </th>
+                                        <th data-sortable="" style="width: 10%;">
+                                            <a href="#" class="dataTable-sorter">Mã sản phẩm</a>
+                                        </th>
+                                        <th data-sortable="" style="width: 20%;">
+                                            <a href="#" class="dataTable-sorter">Tên sản phẩm</a>
+                                        </th>
+                                        <th data-sortable="" style="width: 20%;">
+                                            <a href="#" class="dataTable-sorter">Mô tả</a>
+                                        </th>
+                                        <th data-sortable="" style="width: 10%;">
+                                            <a href="#" class="dataTable-sorter">Giá bán</a>
+                                        </th>
+                                        <th data-sortable="" style="width: 10%;">
+                                            <a href="#" class="dataTable-sorter">Số lượng</a>
+                                        </th>
+                                        <th data-sortable="" style="width: 10%;">
+                                            <a href="#" class="dataTable-sorter">Trạng thái</a>
+                                        </th>
+                                        <th data-sortable="" style="width: 15%;">
+                                            <a href="#" class="dataTable-sorter">Hành động</a>
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="sp, iter : ${listSP.content}" th:data-id="${sp.id}">
+                                        <td th:text="${(listSP.number * listSP.size) + iter.index + 1}"></td>
+                                        <td th:text="${sp.sanPham.ma}"></td>
+                                        <td th:text="${sp.sanPham.ten}"></td>
+                                        <td th:text="${sp.sanPham.mo_ta}"></td>
+                                        <td th:text="${sp.gia}"></td>
+                                        <td style="text-align: center" th:text="${sp.so_luong}"></td>
+                                        <td style="text-align: center">
+                                                <span th:if="${sp.sanPham.trang_thai}"
+                                                      class="badge bg-light-success">On</span>
+                                            <span th:unless="${sp.sanPham.trang_thai}"
+                                                  class="badge bg-light-danger">Off</span>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-info"
+                                               th:href="@{/admin/san-pham/viewUpdate/{id}(id=${sp.id})}">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <button class="btn btn-warning edit-price-btn"><i
+                                                    class="bi bi-pencil-square"></i></button>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="dataTable-bottom">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination justify-content-center">
+                                        <!-- Previous Page Link -->
+                                        <li class="page-item" th:classappend="${listSP.first ? 'disabled' : ''}">
+                                            <a class="page-link"
+                                               th:href="@{'/admin/san-pham?page=' + ${listSP.number - 1} + '&query=' + ${query} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}}"
+                                               aria-label="Previous" th:if="${!listSP.first}">
+                                                <span aria-hidden="true">&laquo;</span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                        </li>
+
+                                        <!-- Page Number Links -->
+                                        <li class="page-item"
+                                            th:each="i : ${#numbers.sequence(0, listSP.totalPages - 1)}"
+                                            th:classappend="${i == listSP.number ? 'active' : ''}">
+                                            <a class="page-link"
+                                               th:href="@{'/admin/san-pham?page=' + ${i} + '&query=' + ${query} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}}"
+                                               th:text="${i + 1}"></a>
+                                        </li>
+
+                                        <!-- Next Page Link -->
+                                        <li class="page-item" th:classappend="${listSP.last ? 'disabled' : ''}">
+                                            <a class="page-link"
+                                               th:href="@{'/admin/san-pham?page=' + ${listSP.number + 1} + '&query=' + ${query} + '&minPrice=' + ${minPrice} + '&maxPrice=' + ${maxPrice}}"
+                                               aria-label="Next" th:if="${!listSP.last}">
+                                                <span aria-hidden="true">&raquo;</span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <!-- Footer-->
+    <div>
+        <footer th:replace="/admin/fragments/footer :: footer"></footer>
+    </div>
+</div>
+<div>
+    <script th:replace="/admin/fragments/script :: script"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/admin/fragments/head :: head" xmlns:th="http://www.thymeleaf.org">
+</head>
+<!-- Site wrapper -->
+<div class="wrapper">
+    <!-- Sidebar -->
+    <div>
+        <aside th:replace="/admin/fragments/sidebar :: sidebar"></aside>
+    </div>
+
+    <!-- Main-->
+    <div id="main">
+        <header th:replace="/admin/fragments/header :: header"></header>
+        <!--        </header>-->
+
+        <div class="page-heading">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                        <h3>Khung, thay tiêu đề ở đây</h3>
+                        <p class="text-subtitle text-muted">chữ nhỏ, k dùng thì xóa</p>
+                    </div>
+                    <div class="col-12 col-md-6 order-md-2 order-first">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/admin/index">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page"><a href="#">Quản lý ...</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <!--        dữ liệu thực hiện trong secsion-->
+            <section class="row">
+                <section class="col-12">
+                    <div class="card p-4">
+                        <form th:action="@{/admin/san-pham/add-bien-the}" method="post" enctype="multipart/form-data">
+
+                            <!-- Thông tin sản phẩm -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <!-- Phần mã sản phẩm -->
+                                    <div class="mb-3">
+                                        <label for="sanPhamMa" class="form-label">Mã sản phẩm <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="sanPhamMa" name="sanPham.ma"
+                                               placeholder="Mã sản phẩm tự động tạo" readonly>
+                                    </div>
+
+                                    <!-- Phần kiểu quạt -->
+                                    <div class="mb-3">
+                                        <label for="sanPhamKieuQuat" class="form-label">Kiểu quạt <span
+                                                class="text-danger">*</span></label>
+                                        <div class="d-flex align-items-center">
+                                            <select class="form-select me-2" id="sanPhamKieuQuat"
+                                                    name="sanPham.kieuQuat.id" required>
+                                                <option value="" selected>Chọn kiểu quạt</option>
+                                                <option th:each="kieuQuat : ${listKieuQuat}" th:value="${kieuQuat.id}"
+                                                        th:text="${kieuQuat.ten}"></option>
+                                                <button class="btn btn-primary">+</button>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Phần tên sản phẩm -->
+                                    <div class="mb-3">
+                                        <label for="sanPhamName" class="form-label">Tên sản phẩm <span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="sanPhamName" name="sanPham.ten"
+                                               placeholder="Nhập tên sản phẩm" required>
+                                    </div>
+
+                                    <!-- Phần nút bấm -->
+                                    <div class="mb-3">
+                                        <label for="sanPhamNutBam" class="form-label">Nút bấm</label>
+                                        <div class="d-flex align-items-center">
+                                            <select class="form-select me-2" id="sanPhamNutBam" name="nutBam.id">
+                                                <option th:each="nutBam : ${listNutBam}" th:value="${nutBam.id}"
+                                                        th:text="${nutBam.ten}"></option>
+                                            </select>
+                                            <button class="btn btn-primary">+</button>
+                                        </div>
+                                    </div>
+                                    <!-- Phần hãng -->
+                                    <div class="mb-3">
+                                        <label for="sanPhamHang" class="form-label">Hãng</label>
+                                        <div class="d-flex align-items-center">
+                                            <select class="form-select me-2" id="sanPhamHang" name="hang.id">
+                                                <option th:each="hang : ${listHang}" th:value="${hang.id}"
+                                                        th:text="${hang.ten}"></option>
+                                            </select>
+                                            <button class="btn btn-primary">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <!-- Phần chất liệu cánh -->
+                                    <div class="mb-3">
+                                        <label for="sanPhamChatLieuCanh" class="form-label">Chất liệu cánh</label>
+                                        <div class="d-flex align-items-center">
+                                            <select class="form-select me-2" id="sanPhamChatLieuCanh"
+                                                    name="chatLieuCanh.id">
+                                                <option th:each="chatLieuCanh : ${listChatLieuCanh}"
+                                                        th:value="${chatLieuCanh.id}"
+                                                        th:text="${chatLieuCanh.ten}"></option>
+                                            </select>
+                                            <button class="btn btn-primary">+</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Phần đường kính cánh -->
+                                    <div class="mb-3">
+                                        <label for="sanPhamDuongKinhCanh" class="form-label">Đường kính cánh</label>
+                                        <div class="d-flex align-items-center">
+                                            <select class="form-select me-2" id="sanPhamDuongKinhCanh"
+                                                    name="duongKinhCanh.id">
+                                                <option th:each="duongKinhCanh : ${listDuongKinhCanh}"
+                                                        th:value="${duongKinhCanh.id}"
+                                                        th:text="${duongKinhCanh.ten}"></option>
+                                            </select>
+                                            <button class="btn btn-primary">+</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Phần chất liệu khung -->
+                                    <div class="mb-3">
+                                        <label for="sanPhamChatLieuKhung" class="form-label">Chất liệu khung</label>
+                                        <div class="d-flex align-items-center">
+                                            <select class="form-select me-2" id="sanPhamChatLieuKhung"
+                                                    name="chatLieuKhung.id">
+                                                <option th:each="chatLieuKhung : ${listChatLieuKhung}"
+                                                        th:value="${chatLieuKhung.id}"
+                                                        th:text="${chatLieuKhung.ten}"></option>
+                                            </select>
+                                            <button class="btn btn-primary">+</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Phần đế quạt -->
+                                    <div class="mb-3">
+                                        <label for="sanPhamDeQuat" class="form-label">Đế quạt</label>
+                                        <div class="d-flex align-items-center">
+                                            <select class="form-select me-2" id="sanPhamDeQuat" name="deQuat.id">
+                                                <option th:each="deQuat : ${listDeQuat}" th:value="${deQuat.id}"
+                                                        th:text="${deQuat.ten}"></option>
+                                            </select>
+                                            <button class="btn btn-primary">+</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Phần chiều cao -->
+                                    <div class="mb-3">
+                                        <label for="sanPhamChieuCao" class="form-label">Chiều cao</label>
+                                        <div class="d-flex align-items-center">
+                                            <select class="form-select me-2" id="sanPhamChieuCao" name="chieuCao.id">
+                                                <option th:each="chieuCao : ${listChieuCao}" th:value="${chieuCao.id}"
+                                                        th:text="${chieuCao.ten}"></option>
+                                            </select>
+                                            <button class="btn btn-primary">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="text-center" style="color: darkorange">Thuộc tính</div>
+                            <div class="row">
+                                <!-- Phần màu sắc -->
+                                <div class="mb-3">
+                                    <div class="mb-3">
+                                        <label for="sanPhamMauSac" class="form-label">Màu sắc</label>
+                                        <button class="btn btn-outline-warning" type="button">+</button>
+                                        <div class="form-group">
+                                            <!-- Update the name attribute to allow multiple values -->
+                                            <select id="sanPhamMauSac" name="mauSac.id"
+                                                    class="form-select me-2 multiple-remove" multiple>
+                                                <!-- Dynamically generate the options from the listMau -->
+                                                <option th:each="mauSac : ${listMau}" th:value="${mauSac.id}"
+                                                        th:text="${mauSac.ten}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <!-- Phần chế độ gió -->
+                                    <div class="mb-3">
+                                        <label for="sanPhamCheDoGio" class="form-label">Chế độ gió</label>
+                                        <button class="btn btn-outline-warning" type="button">+</button>
+                                        <div class="form-group">
+                                            <select id="sanPhamCheDoGio" name="cheDoGio.id"
+                                                    class="form-select me-2 multiple-remove" multiple>
+                                                <option th:each="cheDoGio : ${listCheDoGio}" th:value="${cheDoGio.id}"
+                                                        th:text="${cheDoGio.ten}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <!-- Phần công suất -->
+                                    <div class="mb-3">
+                                        <label for="sanPhamCongSuat" class="form-label">Công suất</label>
+                                        <button class="btn btn-outline-warning" type="button">+</button>
+                                        <div class="form-group">
+                                            <select id="sanPhamCongSuat" name="congSuat.id"
+                                                    class="form-select me-2 multiple-remove" multiple>
+                                                <option th:each="congSuat : ${listCongSuat}" th:value="${congSuat.id}"
+                                                        th:text="${congSuat.ten}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Nút submit -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary">Tạo biến thể</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="card p-4">
+                        <form th:action="@{/admin/san-pham/confirm}" method="post">
+                            <table class="col-12">
+                                <thead>
+                                <tr>
+                                    <th>Tên</th>
+                                    <th>Màu Sắc</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Hành động</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr th:each="spTam, stat : ${listSPCTTam}">
+                                    <!-- Hiển thị thông tin sản phẩm -->
+                                    <td th:text="${spTam.sanPhamTam.ten + ' (' + spTam.mauSac.ten + ')'}"></td>
+                                    <td th:text="${spTam.sanPhamTam.kieuQuat.ten}"></td>
+                                    <td th:text="${spTam.gia}"></td>
+                                    <td th:text="${spTam.so_luong}"></td>
+                                    <td>
+                                        <button class="btn btn-warning" type="button"><i class="bi bi-trash"></i> Xóa</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <button class="btn btn-outline-success" type="submit">Xác Nhận</button>
+                        </form>
+                    </div>
+
+                </section>
+            </section>
+        </div>
+    </div>
+    <!-- Footer-->
+    <div>
+        <footer th:replace="/admin/fragments/footer :: footer"></footer>
+    </div>
+</div>
+<div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const colorSelect = new Choices('#sanPhamMauSac', {
+                removeItemButton: true,
+                placeholder: true,
+                searchEnabled: true
+            });
+
+            const cheDoGioSelect = new Choices('#sanPhamCheDoGio', {
+                removeItemButton: true,
+                placeholder: true,
+                searchEnabled: true
+            });
+
+            const congSuatSelect = new Choices('#sanPhamCongSuat', {
+                removeItemButton: true,
+                placeholder: true,
+                searchEnabled: true
+            });
+        });
+
+    </script>
+    <script th:replace="/admin/fragments/script :: script"></script>
+</div>
+</body>
+</html>
