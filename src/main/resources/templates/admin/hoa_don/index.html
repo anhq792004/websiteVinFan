@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{/admin/fragments/head :: head}">
+</head>
+<body>
+<!-- Site wrapper -->
+<div class="wrapper">
+    <!-- Sidebar -->
+    <div>
+        <aside th:replace="/admin/fragments/sidebar :: sidebar"></aside>
+    </div>
+
+    <!-- Main-->
+    <div id="main">
+        <header th:replace="/admin/fragments/header :: header"></header>
+
+        <div class="page-content">
+            <!--        dữ liệu thực hiện trong secsion-->
+            <section class="row">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="dataTable-top">
+                            <form method="get" action="/hoa-don/index">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <input type="text" id="searchInput" class="form-control" name="query"
+                                               placeholder="Tìm kiếm hóa đơn...." th:value="${query}">
+                                    </div>
+                                    <div class="col-2">
+                                        <input type="text" class="form-control flatpickr" id="startDate"
+                                               name="startDate" placeholder="Từ ngày" th:value="${startDate}"
+                                               th:attr="value=${startDate}">
+                                    </div>
+                                    <div class="col-2">
+                                        <input type="text" class="form-control flatpickr" id="endDate"
+                                               name="endDate" placeholder="Đến ngày" th:value="${endDate}"
+                                               th:attr="value=${endDate}">
+                                    </div>
+
+                                    <div class="col-2">
+                                        <select class="form-select" id="loaiHoaDon" name="loaiHoaDon">
+                                            <option value="" th:selected="${loaiHoaDon == null}">Tất cả loại
+                                            </option>
+                                            <option value="true" th:selected="${loaiHoaDon == true}">Tại quầy
+                                            </option>
+                                            <option value="false" th:selected="${loaiHoaDon == false}">Online
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-2 d-flex">
+                                        <div>
+                                            <button class="btn btn-outline-primary" type="submit"
+                                                    style="width: 70px; margin-right: 10px">
+                                                <input type="hidden" name="trangThai" th:value="${trangThai}">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <a class="btn btn-outline-warning" href="/hoa-don/index"
+                                               style="width: 70px">
+                                                <i class="bi bi-arrow-counterclockwise"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="trangThai" th:value="${trangThai}">
+                            </form>
+                            <div class="dataTable-container mt-2 mb-2 border-bottom border-top">
+                                <ul class="nav nav-tabs">
+                                    <li class="nav-item2 text-center" style="width: 14%">
+                                        <a class="nav-link"
+                                           th:href="@{/hoa-don/index}">
+                                            Tất cả
+                                        </a>
+                                    </li>
+                                    <li class="nav-item2 text-center" style="width: 14%">
+                                        <a class="nav-link">
+                                            Đang treo
+                                        </a>
+                                    </li>
+                                    <li class="nav-item2 text-center" style="width: 14%">
+                                        <a class="nav-link">
+                                            Chờ xác nhận
+                                        </a>
+                                    </li>
+                                    <li class="nav-item2 text-center" style="width: 14%">
+                                        <a class="nav-link">
+                                            Đã xác nhận
+                                        </a>
+                                    </li>
+                                    <li class="nav-item2 text-center" style="width: 14%">
+                                        <a class="nav-link">
+                                            Đang giao</a>
+                                    </li>
+                                    <li class="nav-item2 text-center" style="width: 15%">
+                                        <a class="nav-link">
+                                            Hoàn thành</a>
+                                    </li>
+                                    <li class="nav-item2 text-center" style="width: 15%">
+                                        <a class="nav-link">
+                                            Hủy
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <table class="table table-striped dataTable-table">
+                            <thead>
+                            <tr>
+                                <th data-sortable="" style="width: 5%; white-space: nowrap;">
+                                    <a href="#" class="dataTable-sorter">STT</a>
+                                </th>
+                                <th data-sortable="" style="width: 10%; white-space: nowrap;">
+                                    <a href="#" class="dataTable-sorter">Mã hóa đơn</a>
+                                </th>
+                                <th data-sortable="" style="width: 15%; white-space: nowrap;">
+                                    <a href="#" class="dataTable-sorter">Tên KH</a>
+                                </th>
+                                <th data-sortable="" style="width: 10%; white-space: nowrap;">
+                                    <a href="#" class="dataTable-sorter">SĐT KH</a>
+                                </th>
+                                <th data-sortable="" style="width: 10%; white-space: nowrap;">
+                                    <a href="#" class="dataTable-sorter">Loại hóa đơn</a>
+                                </th>
+                                <th data-sortable="" style="width: 10%; white-space: nowrap;">
+                                    <a href="#" class="dataTable-sorter">Ngày tạo</a>
+                                </th>
+                                <th data-sortable="" style="width: 15%; white-space: nowrap;">
+                                    <a href="#" class="dataTable-sorter">Tổng tiền</a>
+                                </th>
+                                <th data-sortable="" style="width: 15%; white-space: nowrap;">
+                                    <a href="#" class="dataTable-sorter">Phí ship</a>
+                                </th>
+                                <th data-sortable="" style="width: 10%; white-space: nowrap;">
+                                    <a href="#" class="dataTable-sorter">Trạng thái</a>
+                                </th>
+                                <th data-sortable="" style="width: 5%; white-space: nowrap;">
+                                    <a href="#" class="dataTable-sorter">Hành động</a>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item, iterStat : ${list}">
+                                <td th:text="${iterStat.count}"></td>
+                                <td th:text="${item.ma}"></td>
+                                <td th:text="${item.tenNguoiNhan}"></td>
+                                <td th:text="${item.sdtNguoiNhan}"></td>
+                                <td th:class="${item.loaiHoaDon ? 'text-danger' : 'text-primary'}"
+                                    th:text="${item.loaiHoaDon ? 'Tại quầy' : 'Online'}">
+                                </td>
+                                <td th:text="${item.ngayTao}"></td>
+                                <td class="giaVND" th:text="${item.tongTienSauGiamGia}"></td>
+                                <td class="giaVND" th:text="${item.phiVanChuyen}"></td>
+                                <td th:switch="${item.trangThai}">
+                                    <span th:case="0" class="text-success-emphasis">Đang treo</span>
+                                    <span th:case="1" class="text-secondary-emphasis">Đang chờ xác nhận</span>
+                                    <span th:case="2" class="text-success">Đã xác nhận</span>
+                                    <span th:case="3" class="text-warning">Đang giao hàng</span>
+                                    <span th:case="4" class="text-primary">Hoàn thành</span>
+                                    <span th:case="5" class="text-danger">Hủy</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/hoa-don/detail(id=${item.id})}" type="button"
+                                       class="btn btn-outline-warning" style="width: 60px">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Phân trang -->
+                        <nav>
+                            <ul class="pagination">
+                                <li th:class="${currentPage == 0} ? 'disabled page-item' : 'page-item'">
+                                    <a class="page-link" th:href="@{/hoa-don/index(page=${currentPage - 1}, size=5)}">Trước</a>
+                                </li>
+                                <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                                    th:class="${currentPage == i} ? 'active page-item' : 'page-item'">
+                                    <a class="page-link" th:href="@{/hoa-don/index(page=${i}, size=5)}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li th:class="${currentPage + 1 >= totalPages} ? 'disabled page-item' : 'page-item'">
+                                    <a class="page-link" th:href="@{/hoa-don/index(page=${currentPage + 1}, size=5)}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </div>
+    <!-- Footer-->
+    <div>
+        <footer th:replace="/admin/fragments/footer :: footer"></footer>
+    </div>
+</div>
+<div>
+    <script th:replace="/admin/fragments/script :: script"></script>
+</div>
+</body>
+</html>

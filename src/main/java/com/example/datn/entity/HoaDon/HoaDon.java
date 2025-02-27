@@ -75,12 +75,6 @@ public class HoaDon {
     @Column(name = "ngay_sua")
     LocalDate ngaySua;
 
-    @Column(name = "nguoi_tao")
-    String nguoiTao;
-
-    @Column(name = "nguoi_sua")
-    String nguoiSua;
-
     @Column(name = "trang_thai")
     Integer trangThai;
 }
