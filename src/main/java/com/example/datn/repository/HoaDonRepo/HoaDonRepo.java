@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface HoaDonRepo extends JpaRepository<HoaDon,Long> {
     @Query("SELECT hd from HoaDon hd order by hd.ngayTao desc ")
     Page<HoaDon> findHoaDonAndSortDay(Pageable pageable);
+
+
 }
