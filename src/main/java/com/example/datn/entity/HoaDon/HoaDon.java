@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "hoa_don")
@@ -70,10 +71,10 @@ public class HoaDon {
     boolean loaiHoaDon;
 
     @Column(name = "ngay_tao")
-    LocalDate ngayTao;
+    LocalDateTime ngayTao;
 
     @Column(name = "ngay_sua")
-    LocalDate ngaySua;
+    LocalDateTime ngaySua;
 
     @Column(name = "trang_thai")
     Integer trangThai;

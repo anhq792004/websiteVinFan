@@ -4,8 +4,10 @@ import com.example.datn.entity.NhanVien;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "lich_su_hoa_don")
@@ -31,10 +33,7 @@ public class LichSuHoaDon {
     Integer trangThai;
 
     @Column(name = "ngay_tao")
-    LocalDate ngayTao;
-
-    @Column(name = "ngay_sua")
-    LocalDate ngaySua;
+    LocalDateTime ngayTao;
 
     @Column(name = "mo_ta")
     String moTa;

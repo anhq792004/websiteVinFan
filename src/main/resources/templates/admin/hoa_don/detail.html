@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:insert="~{/admin/fragments/head :: head}"></head>
+<head th:insert="~{/admin/fragments/head :: head}">
+</head>
+<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/hoaDon.css}">
 <body>
 <!-- Site wrapper -->
 <div class="wrapper">
@@ -17,12 +18,193 @@
             <!--        dữ liệu thực hiện trong secsion-->
             <section class="row">
                 <div class="card">
-                    <div class="card-header">
-                        <h1 th:text="${message}">Hello, World!</h1>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2>Theo dõi đơn hàng</h2>
+                        <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal"
+                                data-bs-target="#myModal1">
+                            Lịch sử
+                        </button>
                     </div>
-                    <div class="card-body">
+                    <div class="modal fade" id="myModal1" tabindex="-1" aria-labelledby="exampleModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-xl" style="height: 500px">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel1">Lịch sử thao tác</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <ul class="timeline-1" th:each="history : ${lichSuHoaDonList}">
+                                    <!-- Item 1 -->
+                                    <li>
+                                        <div class="direction-r">
+                                            <div class="flag-wrapper">
+                                                <span class="hexa"></span>
+                                                <span class="flag"
+                                                      th:switch="${history.trangThai}">
+                                                        <span th:case="1" class="text-warning">Chờ xác nhận</span>
+                                                        <span th:case="2" class="text-primary">Đã xác nhận</span>
+                                                        <span th:case="3" class="text-success">Đang giao hàng</span>
+                                                        <span th:case="4" class="text-danger-emphasis">Hoàn thành</span>
+                                                        <span th:case="5" class="text-secondary">Hủy</span>
+                                                </span>
+                                                <span class="time-wrapper"><span class="time-1"
+                                                                                 th:text="${history.ngayTao}"></span></span>
+                                            </div>
+                                            <div class="desc">Lorem ipsum Nisi labore aute do aute culpa magna nulla
+                                                voluptate exercitation deserunt proident.
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
+                    <div class="Timeline">
+                        <svg height="5" width="200">
+                            <line x1="0" y1="0" x2="200" y2="0" style="stroke:#004165;stroke-width:5"/>
+                        </svg>
+                        <div class="event1" th:each="history : ${lichSuHoaDonList}">
+                            <div class="event1Bubble" th:switch="${history.trangThai}">
+                                <div>
+                                    <div th:case="0" class="eventTime">
+                                        <div class="DayDigit">
+                                            <i class="fas fa-hourglass-half"></i>
+                                        </div>
+                                        <div class="Day">
+                                            <span>Hóa đơn chờ</span>
+                                            <div class="MonthYear">february 2016</div>
+                                        </div>
+                                    </div>
+                                    <div th:case="1" class="eventTime">
+                                        <div class="DayDigit">
+                                            <i class="far fa-clock"></i> <!-- Đồng hồ viền mỏng -->
+                                        </div>
+                                        <div class="Day">
+                                            <span>Chờ xác nhận</span>
+                                            <div class="MonthYear">february 2016</div>
+                                        </div>
+                                    </div>
+                                    <div th:case="2" class="eventTime">
+                                        <div class="DayDigit">
+                                            <i class="fas fa-check-circle text-success"></i>
+                                        </div>
+                                        <div class="Day">
+                                            <span class="text-success">Đã xác nhận</span>
+                                            <div class="MonthYear text-success">february 2016</div>
+                                        </div>
+                                    </div>
+                                    <div th:case="3" class="eventTime">
+                                        <div class="DayDigit">
+                                            <i class="fas fa-shipping-fast text-primary-emphasis"></i>
+                                            <!-- Xe giao hàng nhanh -->
+                                        </div>
+                                        <div class="Day">
+                                            <span class="text-primary-emphasis">Đang giao hàng</span>
+                                            <div class="MonthYear text-primary-emphasis">february 2016</div>
+                                        </div>
+                                    </div>
+                                    <div th:case="4" class="eventTime">
+                                        <div class="DayDigit">
+                                            <i class="far fa-check-circle text-danger-emphasis"></i>
+                                            <!-- Dấu tích trong vòng tròn -->
+                                        </div>
+                                        <div class="Day">
+                                            <span class="text-danger-emphasis">Hoàn thành</span>
+                                            <div class="MonthYear text-danger-emphasis">february 2016</div>
+                                        </div>
+                                    </div>
+                                    <div th:case="5" class="eventTime">
+                                        <div class="DayDigit">02</div>
+                                        <div class="Day">
+                                            <span>Hủy</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="eventTitle">Profile Created</div>
+                            </div>
+                            <div class="eventAuthor">by Youri Nelson</div>
+                            <svg height="20" width="20">
+                                <circle cx="10" cy="11" r="5" fill="#004165"/>
+                            </svg>
+                            <svg height="5" width="200">
+                                <line x1="0" y1="0" x2="200" y2="0" style="stroke:#004165;stroke-width:5"/>
+                            </svg>
+                            <div class="time">9 : 27 AM</div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="d-flex"
+                             th:if="${hoaDon.trangThai != 4 && hoaDon.trangThai != 5 }">
+
+                            <form method="post" th:action="@{/hoa-don/xac-nhan}"
+                                  th:if="${hoaDon.trangThai != 2 && hoaDon.trangThai != 3 && hoaDon.trangThai != 0}"
+                                  class="me-2" id="xacNhan">
+                                <input type="hidden" name="id" th:value="${hoaDon.id}" /> <!-- Đảm bảo ID được gửi -->
+                                <button type="submit" class="btn btn-outline-success">Xác nhận</button>
+                            </form>
+
+
+
+                            <form method="post" action="/hoa-don/giao-hang"
+                                  th:if="${hoaDon.trangThai != 3 && hoaDon.trangThai != 1 && hoaDon.trangThai != 0}"
+                                  class="me-2" id="giaoHang">
+                                <button type="submit" class="btn btn-outline-warning">
+                                    Đang giao hàng
+                                </button>
+                            </form>
+
+                            <form method="post" action="/hoa-don/hoan-thanh"
+                                  th:if="${hoaDon.trangThai == 3}" class="me-2" id="hoanThanh">
+                                <button type="submit" class="btn btn-outline-primary">
+                                    Hoàn Thành
+                                </button>
+                            </form>
+
+                            <form method="post" action="/hoa-don/huy"
+                                  th:if="${hoaDon.trangThai != 3 && hoaDon.trangThai != 2}" class="me-2"
+                                  id="cancelForm">
+                                <button type="button" class="btn btn-outline-danger" id="cancelButton">
+                                    Hủy
+                                </button>
+                            </form>
+                        </div>
+                        <!-- Modal Popup Xác Nhận Hủy -->
+                        <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="cancelModalLabel">Xác Nhận Hủy</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Bạn có chắc chắn muốn hủy đơn hàng này không?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary"
+                                                id="confirmCancelButton">Có
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">
+                                            Không
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card">
+                    <h2 class="pt-3">Theo dõi đơn hàng</h2>
+                    <hr>
                 </div>
             </section>
         </div>
@@ -32,8 +214,7 @@
         <footer th:replace="/admin/fragments/footer :: footer"></footer>
     </div>
 </div>
-<div>
-    <script th:replace="/admin/fragments/script :: script"></script>
-</div>
+<script th:replace="/admin/fragments/script :: script"></script>
+
 </body>
 </html>
