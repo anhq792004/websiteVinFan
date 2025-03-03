@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "tai_khoan")
 @NoArgsConstructor
@@ -29,7 +31,7 @@ public class TaiKhoan {
     String resetToken;
 
     @Column(name = "ngay_tao")
-    String ngayTao;
+    LocalDateTime ngayTao;
 
     @Column(name = "trang_thai")
     Boolean trangThai;

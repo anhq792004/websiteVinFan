@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -31,11 +32,11 @@ public class SanPham {
 
     @Column(name = "ngay_tao")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date ngayTao;
+    LocalDateTime ngayTao;
 
     @Column(name = "ngay_sua")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date ngaySua;
+    LocalDateTime ngaySua;
 
     @Column(name = "trang_thai")
     Boolean trangThai;

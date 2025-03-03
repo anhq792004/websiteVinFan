@@ -9,10 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -52,31 +49,34 @@ public class HoaDonController {
     }
 
     @PostMapping("/xac-nhan")
-    public ResponseEntity<?> xacNhan(@RequestParam("id") Long id) {
+    @ResponseBody
+    public ResponseEntity<String> xacNhanHoaDon(@RequestParam("id") Long id) {
         try {
             hoaDonSerivce.xacNhan(id);
-            return ResponseEntity.ok("Xác nhận hóa đơn thành công");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Số lượng sản phẩm không đủ, Vui lòng thử lại");
+            return ResponseEntity.ok("Đơn hàng đã được xác nhận !");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Số lượng sản phẩm không đủ");
         }
     }
 
     @PostMapping("/giao-hang")
-    public ResponseEntity<?> giaoHang(@RequestParam Long id) {
+    @ResponseBody
+    public ResponseEntity<String> giaoHang(@RequestParam("id") Long id) {
         hoaDonSerivce.giaoHang(id);
-        return ResponseEntity.ok("Thành công");
+        return ResponseEntity.ok("Đơn hàng đã được giao thành công !");
     }
 
     @PostMapping("/hoan-thanh")
-    public ResponseEntity<?> hoanThanh(@RequestParam Long id) {
+    @ResponseBody
+    public ResponseEntity<String> hoanThanh(@RequestParam("id") Long id) {
         hoaDonSerivce.hoanThanh(id);
-        return ResponseEntity.ok("Thành công");
+        return ResponseEntity.ok("Đơn hàng đã hoàn thành !");
     }
 
     @PostMapping("/huy")
-    public ResponseEntity<?> huy(@RequestParam Long id) {
+    @ResponseBody
+    public ResponseEntity<String> huy(@RequestParam("id") Long id) {
         hoaDonSerivce.huy(id);
-        return ResponseEntity.ok("Thành công");
-
+        return ResponseEntity.ok("Hóa đơn đã được hủy !");
     }
 }

@@ -83,6 +83,7 @@ public class HoaDonServiceImpl implements HoaDonSerivce {
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getDaXacNhan());
             lichSuHoaDon.setNgayTao(LocalDateTime.now());
+            lichSuHoaDon.setMoTa("Admin đã xác nhận đơn hàng");
 
             lichSuHoaDonRepo.save(lichSuHoaDon);
         }
@@ -91,18 +92,17 @@ public class HoaDonServiceImpl implements HoaDonSerivce {
     @Override
     public void giaoHang(Long id) {
         Optional<HoaDon> hoaDonOptional = hoaDonRepo.findById(id);
-
         if (hoaDonOptional.isPresent()) {
             HoaDon hoaDon = hoaDonOptional.get();
             // Cập nhật trạng thái của HoaDon giao hàng
             hoaDon.setTrangThai(getTrangThaiHoaDon().getDangGiaoHang());
             hoaDonRepo.save(hoaDon);
-
             // Tạo một bản ghi lịch sử cho HoaDon đã được giao hàng
             LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getDangGiaoHang());
             lichSuHoaDon.setNgayTao(LocalDateTime.now());
+            lichSuHoaDon.setMoTa("Đơn hàng đã được gửi lúc 8h");
             lichSuHoaDonRepo.save(lichSuHoaDon);
         }
     }
@@ -115,12 +115,12 @@ public class HoaDonServiceImpl implements HoaDonSerivce {
             // Cập nhật trạng thái của HoaDon hoàn thành
             hoaDon.setTrangThai(getTrangThaiHoaDon().getHoanThanh());
             hoaDonRepo.save(hoaDon);
-
             // Tạo một bản ghi lịch sử cho HoaDon hoàn thành
             LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getHoanThanh());
             lichSuHoaDon.setNgayTao(LocalDateTime.now());
+            lichSuHoaDon.setMoTa("Đơn hàng đã được giao thành công lúc "+ LocalDateTime.now());
             lichSuHoaDonRepo.save(lichSuHoaDon);
         }
     }
@@ -128,17 +128,16 @@ public class HoaDonServiceImpl implements HoaDonSerivce {
     @Override
     public void huy(Long id) {
         Optional<HoaDon> hoaDonOptional = hoaDonRepo.findById(id);
-
         if (hoaDonOptional.isPresent()) {
             HoaDon hoaDon = hoaDonOptional.get();
             hoaDon.setTrangThai(getTrangThaiHoaDon().getHuy());
             hoaDonRepo.save(hoaDon);
-
             // Tạo một bản ghi lịch sử cho HoaDon hủy
             LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getHuy());
             lichSuHoaDon.setNgayTao(LocalDateTime.now());
+            lichSuHoaDon.setMoTa("Đơn hàng đã được hủy lúc "+ LocalDateTime.now());
             lichSuHoaDonRepo.save(lichSuHoaDon);
         }
     }
