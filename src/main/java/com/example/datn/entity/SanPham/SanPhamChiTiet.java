@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -70,14 +71,14 @@ public class SanPhamChiTiet {
 
     @Column(name = "ngay_tao")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date ngayTao;
+    LocalDateTime ngayTao;
 
     @Column(name = "nguoi_tao")
     String nguoiTao;
 
     @Column(name = "ngay_sua")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date ngaySua;
+    LocalDateTime ngaySua;
 
     @Column(name = "nguoi_sua")
     String nguoiSua;
