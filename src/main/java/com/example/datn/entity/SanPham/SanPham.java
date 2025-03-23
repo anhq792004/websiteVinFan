@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "san_pham")
@@ -41,4 +42,8 @@ public class SanPham {
     @ManyToOne
     @JoinColumn(name = "id_kieu_quat")
     KieuQuat kieuQuat;
+
+    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<SanPhamChiTiet> sanPhamChiTiet;
+
 }

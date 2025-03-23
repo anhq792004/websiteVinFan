@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{/admin/fragments/head :: head}"></head>
+<body>
+<!-- Site wrapper -->
+<div class="wrapper">
+    <!-- Sidebar -->
+    <div>
+        <aside th:replace="/admin/fragments/sidebar :: sidebar"></aside>
+    </div>
+
+    <!-- Main-->
+    <div id="main">
+        <header th:replace="/admin/fragments/header :: header"></header>
+        <div class="page-content">
+            <!--        dữ liệu thực hiện trong secsion-->
+            <section class="row">
+                <div class="card">
+
+                    <!-- Fragment for Add Product Modal -->
+                    <div th:fragment="addProductModal">
+                        <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addProductModalLabel">Thêm sản phẩm mới</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="addProductForm">
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="productCode" class="form-label">Mã sản phẩm</label>
+                                                    <input type="text" class="form-control" id="productCode" name="ma" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="productName" class="form-label">Tên sản phẩm</label>
+                                                    <input type="text" class="form-control" id="productName" name="ten" required>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label for="fanType" class="form-label">Kiểu quạt</label>
+                                                    <select class="form-select" id="fanType" name="kieuQuat.id" required>
+                                                        <option value="">-- Chọn kiểu quạt --</option>
+                                                        <!-- Options will be loaded dynamically -->
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="productStatus" class="form-label">Trạng thái</label>
+                                                    <select class="form-select" id="productStatus" name="trangThai">
+                                                        <option value="true" selected>Đang kinh doanh</option>
+                                                        <option value="false">Ngừng kinh doanh</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="productDescription" class="form-label">Mô tả sản phẩm</label>
+                                                <textarea class="form-control" id="productDescription" name="moTa" rows="3"></textarea>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                        <button type="button" class="btn btn-primary" id="saveProductBtn">Lưu sản phẩm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </div>
+    <!-- Footer-->
+    <div>
+        <footer th:replace="/admin/fragments/footer :: footer"></footer>
+    </div>
+</div>
+<div>
+    <script th:replace="/admin/fragments/script :: script"></script>
+</div>
+</body>
+</html>
+
+
