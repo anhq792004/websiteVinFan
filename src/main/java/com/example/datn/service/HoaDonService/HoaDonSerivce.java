@@ -2,7 +2,9 @@ package com.example.datn.service.HoaDonService;
 
 import com.example.datn.dto.request.TrangThaiHoaDonRequest;
 import com.example.datn.dto.response.LichSuHoaDonResponse;
+import com.example.datn.dto.response.LichSuThanhToanResponse;
 import com.example.datn.entity.HoaDon.HoaDon;
+import com.example.datn.entity.HoaDon.HoaDonChiTiet;
 import com.example.datn.entity.HoaDon.LichSuHoaDon;
 import org.springframework.data.domain.Page;
 
@@ -21,6 +23,10 @@ public interface HoaDonSerivce {
 
 
     //hoaDonChiTiet
+
+    List<HoaDonChiTiet> listHoaDonChiTiets(Long id);
+
+    LichSuThanhToanResponse getLSTTByHoaDonId(Long id);
 
     void xacNhan(Long id);
 

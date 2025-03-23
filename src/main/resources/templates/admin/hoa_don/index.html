@@ -3,6 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{/admin/fragments/head :: head}">
 </head>
+<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/hoaDon.css}">
 <body>
 <!-- Site wrapper -->
 <div class="wrapper">
@@ -19,7 +20,7 @@
             <!--        dữ liệu thực hiện trong secsion-->
             <section class="row">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card py-4">
                         <div class="dataTable-top">
                             <form method="get" action="/hoa-don/index">
                                 <div class="row">
@@ -150,7 +151,7 @@
                                 <td th:class="${item.loaiHoaDon ? 'text-danger' : 'text-primary'}"
                                     th:text="${item.loaiHoaDon ? 'Tại quầy' : 'Online'}">
                                 </td>
-                                <td th:text="${item.ngayTao}"></td>
+                                <td th:text="${#temporals.format(item.ngayTao, 'dd-MM-yyyy')}"></td>
                                 <td class="giaVND" th:text="${item.tongTienSauGiamGia}"></td>
                                 <td class="giaVND" th:text="${item.phiVanChuyen}"></td>
                                 <td th:switch="${item.trangThai}">
@@ -170,12 +171,13 @@
                             </tr>
                             </tbody>
                         </table>
-
                         <!-- Phân trang -->
-                        <nav>
+                        <nav class="mt-3">
                             <ul class="pagination">
                                 <li th:class="${currentPage == 0} ? 'disabled page-item' : 'page-item'">
-                                    <a class="page-link" th:href="@{/hoa-don/index(page=${currentPage - 1}, size=5)}">Trước</a>
+                                    <a class="page-link" th:href="@{/hoa-don/index(page=${currentPage - 1}, size=5)}">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
                                 </li>
                                 <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                                     th:class="${currentPage == i} ? 'active page-item' : 'page-item'">
@@ -183,11 +185,15 @@
                                        th:text="${i + 1}"></a>
                                 </li>
                                 <li th:class="${currentPage + 1 >= totalPages} ? 'disabled page-item' : 'page-item'">
-                                    <a class="page-link" th:href="@{/hoa-don/index(page=${currentPage + 1}, size=5)}">Sau</a>
+                                    <a class="page-link" th:href="@{/hoa-don/index(page=${currentPage + 1}, size=5)}">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
                                 </li>
                             </ul>
                         </nav>
                     </div>
+                </div>
+                <div class="card mb-4">
 
                 </div>
             </section>

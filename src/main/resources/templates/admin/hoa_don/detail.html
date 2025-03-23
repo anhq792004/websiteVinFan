@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{/admin/fragments/head :: head}">
 </head>
-<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/hoaDon.css}">
+<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/hoaDonChiTiet.css}">
 <body>
 <!-- Site wrapper -->
 <div class="wrapper">
@@ -49,7 +49,8 @@
                                                         <span th:case="5" class="text-secondary">Hủy</span>
                                                 </span>
                                                 <span class="time-wrapper">
-                                                    <span class="time-1" th:text="${history.ngayTao}">
+                                                    <span class="time-1"
+                                                          th:text="${#temporals.format(history.ngayTao, 'dd-MM-yyyy')}">
 
                                                     </span>
                                                 </span>
@@ -68,9 +69,9 @@
                         </div>
                     </div>
 
-                    <div class="Timeline">
-                        <svg height="5" width="245">
-                            <line x1="0" y1="0" x2="245" y2="0" style="stroke:#004165;stroke-width:5"/>
+                    <div class="Timeline px-4">
+                        <svg height="5" width="180">
+                            <line x1="0" y1="0" x2="180" y2="0" style="stroke:#004165;stroke-width:5"/>
                         </svg>
                         <div class="event1" th:each="history : ${lichSuHoaDonList}">
                             <div class="event1Bubble" th:switch="${history.trangThai}">
@@ -82,7 +83,7 @@
                                         <div class="Day">
                                             <span>Hóa đơn chờ</span>
                                             <div class="MonthYear"
-                                                 th:text="${#temporals.format(hoaDon.ngayTao, 'dd-MM-yyyy')}">
+                                                 th:text="${#temporals.format(history.ngayTao, 'dd-MM-yyyy')}">
                                             </div>
                                         </div>
                                     </div>
@@ -93,18 +94,18 @@
                                         <div class="Day">
                                             <span>Chờ xác nhận</span>
                                             <div class="MonthYear"
-                                                 th:text="${#temporals.format(hoaDon.ngayTao, 'dd-MM-yyyy')}">
+                                                 th:text="${#temporals.format(history.ngayTao, 'dd-MM-yyyy')}">
                                             </div>
                                         </div>
                                     </div>
                                     <div th:case="2" class="eventTime">
-                                        <div class="DayDigit">
-                                            <i class="fas fa-check-circle text-success"></i>
+                                        <div class="DayDigit text-success">
+                                            <i class="bi bi-box-seam-fill"></i>
                                         </div>
                                         <div class="Day">
                                             <span class="text-success">Đã xác nhận</span>
                                             <div class="MonthYear text-success"
-                                                 th:text="${#temporals.format(hoaDon.ngayTao, 'dd-MM-yyyy')}">
+                                                 th:text="${#temporals.format(history.ngayTao, 'dd-MM-yyyy')}">
                                             </div>
                                         </div>
                                     </div>
@@ -114,9 +115,9 @@
                                             <!-- Xe giao hàng nhanh -->
                                         </div>
                                         <div class="Day">
-                                            <span class="text-primary-emphasis">Đang giao hàng</span>
+                                            <span class="text-primary-emphasis">Giao hàng</span>
                                             <div class="MonthYear text-primary-emphasis"
-                                                 th:text="${#temporals.format(hoaDon.ngayTao, 'dd-MM-yyyy HH:mm')}">
+                                                 th:text="${#temporals.format(history.ngayTao, 'dd-MM-yyyy')}">
                                             </div>
                                         </div>
                                     </div>
@@ -127,33 +128,40 @@
                                         </div>
                                         <div class="Day">
                                             <span class="text-danger-emphasis">Hoàn thành</span>
-                                            <div class="MonthYear text-danger-emphasis">february 2016</div>
+                                            <div class="MonthYear text-danger-emphasis"
+                                                 th:text="${#temporals.format(history.ngayTao, 'dd-MM-yyyy')}">
+
+                                            </div>
                                         </div>
                                     </div>
                                     <div th:case="5" class="eventTime">
-                                        <div class="DayDigit">02</div>
-                                        <div class="Day">
+                                        <div class="DayDigit text-danger">
+                                            <i class="bi bi-x-circle"></i>
+                                        </div>
+                                        <div class="Day text-danger">
                                             <span>Hủy</span>
-                                            <div class="MonthYear text-danger-emphasis">february 2016</div>
+                                            <div class="MonthYear text-danger"
+                                                 th:text="${#temporals.format(history.ngayTao, 'dd-MM-yyyy')}">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="eventTitle">Profile Created</div>
+                                <div class="eventTitle">Fan Tech</div>
                             </div>
-                            <div class="eventAuthor">by Youri Nelson</div>
+                            <div class="eventAuthor">by Admin</div>
                             <svg height="20" width="20">
                                 <circle cx="10" cy="11" r="5" fill="#004165"/>
                             </svg>
-                            <svg height="5" width="245" >
-                                <line x1="0" y1="0" x2="245" y2="0" style="stroke:#004165;stroke-width:5"/>
+                            <svg height="5" width="200">
+                                <line x1="0" y1="0" x2="200" y2="0" style="stroke:#004165;stroke-width:5"/>
                             </svg>
-                            <div class="time" th:text="${#temporals.format(hoaDon.ngayTao, 'HH:mm')}"></div>
+                            <div class="time" th:text="${#temporals.format(history.ngayTao, 'HH:mm')}"></div>
                         </div>
                     </div>
 
                     <div class="card mb-4">
                         <div class="d-flex" th:if="${hoaDon.trangThai != 4 && hoaDon.trangThai != 5 }">
-                            <form th:if="${hoaDon.trangThai != 2 && hoaDon.trangThai != 3 && hoaDon.trangThai != 0}"
+                            <form th:if="${hoaDon.trangThai != 3 && hoaDon.trangThai != 2 && hoaDon.trangThai != 0}"
                                   class="me-2" th:data-id="${hoaDon.id}">
                                 <button type="button" class="btn btn-outline-success btn-xac-nhan">Xác nhận</button>
                             </form>
@@ -176,9 +184,184 @@
                         </div>
                     </div>
                 </div>
-                <div class="card">
-                    <h2 class="pt-3">Lịch sử hóa đơn</h2>
-                    <hr>
+                <!--                Lịch sử thanh toán-->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2>Lịch sử thanh toán</h2>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped dataTable-table"
+                               th:if="${hoaDon.trangThai != 3 && hoaDon.trangThai != 2 &&
+                           hoaDon.trangThai != 0 && hoaDon.trangThai != 1}">
+                            <thead>
+                            <tr>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái</th>
+                                <th>Thời gian</th>
+                                <th>Phương thức thanh toán</th>
+                                <th>Loại hóa đơn</th>
+                                <th>Người tạo</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item: ${listLSTT}">
+                                <td class="giaVND"
+                                    th:text="${item.tongTienSauGiamGia != null ? item.tongTienSauGiamGia : 'N/A'}"></td>
+                                <td th:switch="${item.trangThai}">
+                                    <span th:case="0" class="text-secondary-emphasis">Đang treo</span>
+                                    <span th:case="1" class="text-secondary-emphasis">Đang chờ xác nhận</span>
+                                    <span th:case="2" class="text-success">Đã xác nhận</span>
+                                    <span th:case="3" class="text-warning">Đang giao hàng</span>
+                                    <span th:case="4" class="text-primary">Hoàn thành</span>
+                                    <span th:case="5" class="text-danger">Hủy</span>
+                                </td>
+                                <td th:text="${#temporals.format(hoaDon.ngayTao, 'dd-MM-yyyy HH:mm')}"></td>
+                                <td th:text="${item.hinhThucThanhToan}"></td>
+                                <td th:class="${item.loaiHoaDon ? 'text-danger' : 'text-primary'}"
+                                    th:text="${item.loaiHoaDon ? 'Tại quầy' : 'Online'}">
+                                </td>
+                                <!--                                <td th:text="${item.nguoiTao}"></td>-->
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--                Thông tin khách hàng-->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2>Thông tin khách hàng</h2>
+                        <button type="submit" class="btn btn-outline-warning">
+                            <i class="bi bi-gear-wide-connected"></i>
+                        </button>
+                    </div>
+                    <form class="px-4">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bolder">Tên người nhận</label>
+                                <input type="text" class="form-control" placeholder="Tên">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bolder">Số điện thoại</label>
+                                <input type="text" class="form-control" placeholder="Số điện thoại">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bolder" for="city">Thành phố</label>
+                                <select class="form-control" id="city" name="tinhThanhPho">
+                                    <option value="" selected>Chọn tỉnh thành</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bolder" for="district">Quận huyện</label>
+                                <select class="form-control" id="district" name="quanHuyen">
+                                    <option value="" selected>Chọn quận huyện</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bolder" for="district">Phường xã</label>
+                                <select class="form-control" id="ward" name="xaPhuong">
+                                    <option value="" selected>Chọn phường xã</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bolder">Số nhà / Ngõ đường</label>
+                                <input type="text" class="form-control"
+                                       placeholder="1300 Rockdick Rd., Unit A Markham, ON L3R8C3">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!--                Thông tin sản phẩm-->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2>Thông tin sản phẩm</h2>
+                        <button class="btn btn-outline-success" type="button" data-bs-toggle="modal"
+                                data-bs-target="#addSanPham">
+                            <i class="bi bi-patch-plus-fill"></i>
+                        </button>
+                    </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="addSanPham" tabindex="-1" aria-labelledby="exampleModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Thêm sản phẩm</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table table-striped dataTable-table">
+                                        <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Giá</th>
+                                            <th>Công xuất</th>
+                                            <th>Màu</th>
+                                            <th>Số lượng</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="item: ${listLSTT}">
+                                            <td>h1</td>
+                                            <td>h1</td>
+                                            <td>h1</td>
+                                            <td>h1</td>
+                                            <td>h1</td>
+                                            <td>h1</td>
+                                            <td>h1</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="product-list">
+                        <div class="product-item border-bottom border-top p-2" th:each="item: ${listHDCT}">
+                            <img src="https://i.pinimg.com/736x/4c/83/36/4c83365869bfd6d9c19c554e8e7a0ad1.jpg"
+                                 class="product-img" alt="Sản phẩm">
+                            <div class="product-details">
+                                <h5 class="mb-2" th:text="${item.sanPhamChiTiet.sanPham.ten}"></h5>
+                                <p class="mb-2">Giá: <span class="product-price" th:text="${item.giaSauGiam}"></span>
+                                    VND</p>
+                                <p class="mb-2">Hãng: <span class="product-category"
+                                                            th:text="${item.sanPhamChiTiet.hang.ten}"></span></p>
+                            </div>
+                            <div class="text-center me-5">
+                                <div class="quantity-container">
+                                    <button class="quantity-btn">−</button>
+                                    <input type="text" id="quantity" class="quantity-input" value="1">
+                                    <button class="quantity-btn">+</button>
+                                </div>
+                            </div>
+                            <div class="product-total me-5" th:text="${item.thanhTien} + ' VND'"></div>
+                            <button type="button" class="btn btn-outline-danger me-3">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Nơi hiển thị nút phân trang -->
+                    <div class="pagination-container">
+                        <div id="pagination"></div>
+                    </div>
+
+
+                    <div class="summary mt-5 mx-4">
+                        <p>Tổng số lượng <span class="float-end">6</span></p>
+                        <p>Shipping fee <span class="float-end">$20.00</span></p>
+                        <p>Tổng tiền <span class="order-total float-end">$7220.00</span></p>
+                        <p>Discount Voucher <span class="discount float-end">$25</span></p>
+                        <p>Estimated delivery time <span class="float-end">5 days</span></p>
+                    </div>
                 </div>
             </section>
         </div>

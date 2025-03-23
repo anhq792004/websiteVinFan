@@ -1,6 +1,5 @@
 package com.example.datn.entity.HoaDon;
 
-import com.example.datn.entity.NhanVien;
 import com.example.datn.entity.SanPham.SanPhamChiTiet;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,13 +30,13 @@ public class HoaDonChiTiet {
     Integer soLuong;
 
     @Column(name = "gia_ban")
-    BigDecimal giaBan;
+    BigDecimal gia;
 
     @Column(name = "gia_sau_giam")
     BigDecimal giaSauGiam;
 
     @Column(name = "thanh_tien")
-    BigDecimal thanh_tien;
+    BigDecimal thanhTien;
 
     @Column(name = "trang_thai")
     Integer trangThai;
