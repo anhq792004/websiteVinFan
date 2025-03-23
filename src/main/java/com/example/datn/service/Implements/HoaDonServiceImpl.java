@@ -2,6 +2,7 @@ package com.example.datn.service.Implements;
 
 import com.example.datn.dto.request.TrangThaiHoaDonRequest;
 import com.example.datn.dto.response.LichSuHoaDonResponse;
+import com.example.datn.dto.response.LichSuThanhToanResponse;
 import com.example.datn.entity.HoaDon.HoaDon;
 import com.example.datn.entity.HoaDon.HoaDonChiTiet;
 import com.example.datn.entity.HoaDon.LichSuHoaDon;
@@ -56,6 +57,16 @@ public class HoaDonServiceImpl implements HoaDonSerivce {
     }
 
     @Override
+    public List<HoaDonChiTiet> listHoaDonChiTiets(Long id) {
+        return hoaDonChiTietRepo.findByHoaDon_Id(id);
+    }
+
+    @Override
+    public LichSuThanhToanResponse getLSTTByHoaDonId(Long idHoaDon) {
+        return hoaDonRepo.findThanhToanHoaDonId(idHoaDon);
+    }
+
+    @Override
     public void xacNhan(Long id) {
         // Tìm kiếm HoaDon dựa trên ID
         Optional<HoaDon> hoaDonOptional = hoaDonRepo.findById(id);
@@ -102,7 +113,7 @@ public class HoaDonServiceImpl implements HoaDonSerivce {
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getDangGiaoHang());
             lichSuHoaDon.setNgayTao(LocalDateTime.now());
-            lichSuHoaDon.setMoTa("Đơn hàng đã được gửi lúc 8h");
+            lichSuHoaDon.setMoTa("Đơn hàng đã được gửi lúc " + LocalDate.now());
             lichSuHoaDonRepo.save(lichSuHoaDon);
         }
     }
@@ -114,13 +125,14 @@ public class HoaDonServiceImpl implements HoaDonSerivce {
             HoaDon hoaDon = hoaDonOptional.get();
             // Cập nhật trạng thái của HoaDon hoàn thành
             hoaDon.setTrangThai(getTrangThaiHoaDon().getHoanThanh());
+            hoaDon.setNgaySua(LocalDateTime.now());
             hoaDonRepo.save(hoaDon);
             // Tạo một bản ghi lịch sử cho HoaDon hoàn thành
             LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getHoanThanh());
             lichSuHoaDon.setNgayTao(LocalDateTime.now());
-            lichSuHoaDon.setMoTa("Đơn hàng đã được giao thành công lúc "+ LocalDateTime.now());
+            lichSuHoaDon.setMoTa("Đơn hàng đã được giao thành công lúc "+ LocalDate.now());
             lichSuHoaDonRepo.save(lichSuHoaDon);
         }
     }

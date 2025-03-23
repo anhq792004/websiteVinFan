@@ -1,6 +1,8 @@
 package com.example.datn.controller.HoaDonController;
 
+import com.example.datn.dto.response.LichSuThanhToanResponse;
 import com.example.datn.entity.HoaDon.HoaDon;
+import com.example.datn.entity.HoaDon.HoaDonChiTiet;
 import com.example.datn.entity.HoaDon.LichSuHoaDon;
 import com.example.datn.service.HoaDonService.HoaDonSerivce;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,12 @@ public class HoaDonController {
 
         List<LichSuHoaDon> lichSuHoaDonList = hoaDonSerivce.lichSuHoaDonList(id);
         model.addAttribute("lichSuHoaDonList", lichSuHoaDonList);
+
+        LichSuThanhToanResponse lichSuThanhToanResponse = hoaDonSerivce.getLSTTByHoaDonId(id);
+        model.addAttribute("listLSTT", lichSuThanhToanResponse);
+
+        List<HoaDonChiTiet> listHDCT = hoaDonSerivce.listHoaDonChiTiets(id);
+        model.addAttribute("listHDCT", listHDCT);
 
         return "admin/hoa_don/detail";
     }
