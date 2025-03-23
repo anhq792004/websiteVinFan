@@ -33,7 +33,7 @@ public class BanHangServiceImpl implements BanHangService {
             throw new IllegalStateException("Số lượng hóa đơn chờ tối qua là 10");
         }
         hoaDon.setMa(hoaDonSerivce.generateOrderCode());
-        hoaDon.setTrangThai(hoaDonSerivce.getTrangThaiHoaDon().getChoXacNhan());
+        hoaDon.setTrangThai(hoaDonSerivce.getTrangThaiHoaDon().getHoaDonCho());
         hoaDon.setNgayTao(LocalDateTime.now());
         hoaDon.setLoaiHoaDon(true);
 

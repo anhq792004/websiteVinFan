@@ -34,9 +34,6 @@ public class SanPham {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDateTime ngayTao;
 
-    @Column(name = "ngay_sua")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDateTime ngaySua;
 
     @Column(name = "trang_thai")
     Boolean trangThai;
