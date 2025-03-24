@@ -9,4 +9,5 @@ public interface HoaDonChiTietRepo extends JpaRepository<HoaDonChiTiet,Long> {
     List<HoaDonChiTiet> findByHoaDon_Id(Long idHD);
 
 
+
 }

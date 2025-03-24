@@ -43,6 +43,14 @@ public class HoaDonServiceImpl implements HoaDonSerivce {
         return hoaDonRepo.findHoaDonAndSortDay(pageable);
     }
 
+//    @Override
+//    public Page<HoaDon> searchHoaDon(String query, Boolean loaiHoaDon, LocalDateTime tuNgay, LocalDateTime denNgay, Integer trangThai, Pageable pageable) {
+//        if (trangThai == null) {
+//            return hoaDonRepo.searchHoaDonKhongtrangThai(query, loaiHoaDon, tuNgay, denNgay, pageable);
+//        }
+//        return hoaDonRepo.searchHoaDon(query, loaiHoaDon, tuNgay, denNgay, trangThai, pageable);
+//    }
+
     @Override
     public Optional<HoaDon> findHoaDonById(Long id) {
         return hoaDonRepo.findById(id);
