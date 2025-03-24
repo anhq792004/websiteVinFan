@@ -1,9 +1,11 @@
-package com.example.datn.service.Implements;
+package com.example.datn.service.Implements.ThuocTinhImpl;
 
 import com.example.datn.entity.ThuocTinh.KieuQuat;
 import com.example.datn.repository.ThuocTinhRepo.KieuQuatRepo;
-import com.example.datn.service.KieuQuatService.KieuQuatService;
+import com.example.datn.service.ThuocTinhService.KieuQuatService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,12 +22,20 @@ public class KieuQuatServiceImpl implements KieuQuatService {
     }
 
     @Override
-    public KieuQuat findById(Long id) {
+    public KieuQuat findById(Integer id) {
         return kieuQuatRepo.findById(id).orElse(null);
     }
 
     @Override
     public void save(KieuQuat kieuQuat) {
         kieuQuatRepo.save(kieuQuat);
+    }
+
+    @Override
+    public Page<KieuQuat> search(String query, Boolean trangThai, Pageable pageable) {
+        if (trangThai == null) {
+            return kieuQuatRepo.searchOnlyTen(query, pageable);
+        }
+        return kieuQuatRepo.search(query, trangThai, pageable);
     }
 }

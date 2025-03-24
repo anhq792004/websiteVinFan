@@ -10,5 +10,15 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface KieuQuatRepo extends JpaRepository<KieuQuat, Long> {
+public interface KieuQuatRepo extends JpaRepository<KieuQuat, Integer> {
+
+    @Query("SELECT kq FROM KieuQuat kq " +
+            "WHERE (LOWER(kq.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "AND (:trangThai IS NULL OR kq.trangThai = :trangThai))")
+    Page<KieuQuat> search(String query, Boolean trangThai, Pageable pageable);
+
+    @Query("SELECT kq FROM KieuQuat kq " +
+            "WHERE LOWER(kq.ten) LIKE LOWER(CONCAT('%', :query, '%'))")
+    Page<KieuQuat> searchOnlyTen(String query, Pageable pageable);
 }
+

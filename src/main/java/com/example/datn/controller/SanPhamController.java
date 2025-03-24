@@ -2,8 +2,7 @@ package com.example.datn.controller;
 
 import com.example.datn.entity.SanPham.SanPham;
 import com.example.datn.entity.ThuocTinh.KieuQuat;
-import com.example.datn.repository.ThuocTinhRepo.KieuQuatRepo;
-import com.example.datn.service.KieuQuatService.KieuQuatService;
+import com.example.datn.service.ThuocTinhService.KieuQuatService;
 import com.example.datn.service.SanPhamSerivce.SanPhamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
