@@ -1,6 +1,9 @@
 package com.example.datn.controller;
 
 import com.example.datn.entity.SanPham.SanPham;
+import com.example.datn.entity.ThuocTinh.KieuQuat;
+import com.example.datn.repository.ThuocTinhRepo.KieuQuatRepo;
+import com.example.datn.service.KieuQuatService.KieuQuatService;
 import com.example.datn.service.SanPhamSerivce.SanPhamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -18,6 +23,8 @@ import java.util.Optional;
 @RequestMapping("/admin/san-pham")
 public class SanPhamController {
     private final SanPhamService sanPhamService;
+    private final KieuQuatService kieuQuatService;
+
 
     @GetMapping("/list")
     public String getAllSanPham(
@@ -56,6 +63,8 @@ public class SanPhamController {
     @PostMapping("/them")
     @ResponseBody
     public ResponseEntity<String> addSanPham(@RequestBody SanPham sanPham) {
+        // Set ngày tạo cho sản phẩm -> Lấy ngày hiện tại
+        sanPham.setNgayTao(LocalDateTime.now());
         sanPhamService.saveSanPham(sanPham);
         return ResponseEntity.ok("Thêm sản phẩm thành công");
     }
@@ -87,7 +96,8 @@ public class SanPhamController {
 
     @GetMapping("/api/kieu-quat")
     @ResponseBody
-    public ResponseEntity<?> getKieuQuat() {
-        return ResponseEntity.ok("Kieu quat");
+    public ResponseEntity<List<KieuQuat>> getKieuQuat() {
+        List<KieuQuat> kieuQuatList = kieuQuatService.findAllKieuQuat();
+        return ResponseEntity.ok(kieuQuatList);
     }
 }

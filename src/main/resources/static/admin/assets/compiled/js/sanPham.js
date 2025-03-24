@@ -2,7 +2,7 @@ $(document).ready(function() {
     // Load kiểu quạt for dropdowns
     function loadFanTypes() {
         $.ajax({
-            url: "/admin/api/kieu-quat",
+            url: "/admin/san-pham/api/kieu-quat",
             type: "GET",
             success: function(data) {
                 let options = '<option value="">-- Chọn kiểu quạt --</option>';
@@ -10,6 +10,11 @@ $(document).ready(function() {
                     options += `<option value="${item.id}">${item.ten}</option>`;
                 });
                 $("#fanType, #editFanType, #kieuQuat").html(options);
+
+                // Nếu đang chỉnh sửa, chọn kiểu quạt hiện tại
+                if ($("#editFanType").data("selected")) {
+                    $("#editFanType").val($("#editFanType").data("selected"));
+                }
             },
             error: function(error) {
                 console.error("Error loading fan types:", error);
@@ -20,6 +25,7 @@ $(document).ready(function() {
 
     loadFanTypes();
 
+    
     // Save new product
     $("#saveProductBtn").click(function() {
         const formData = getFormData($("#addProductForm"));
@@ -58,7 +64,15 @@ $(document).ready(function() {
                 $("#editProductCode").val(data.ma);
                 $("#editProductName").val(data.ten);
                 $("#editProductDescription").val(data.moTa);
-                $("#editFanType").val(data.kieuQuat ? data.kieuQuat.id : '');
+
+                // Lưu kiểu quạt ID để chọn sau khi load danh sách
+                if (data.kieuQuat) {
+                    $("#editFanType").data("selected", data.kieuQuat.id);
+                    $("#editFanType").val(data.kieuQuat.id);
+                } else {
+                    $("#editFanType").val('');
+                }
+
                 $("#editProductStatus").val(data.trangThai.toString());
 
                 $("#editProductModal").modal("show");
@@ -74,6 +88,11 @@ $(document).ready(function() {
     $("#updateProductBtn").click(function() {
         const formData = getFormData($("#editProductForm"));
 
+        // Validate form
+        if (!validateProductForm(formData)) {
+            return;
+        }
+
         $.ajax({
             url: "/admin/san-pham/sua",
             type: "POST",
@@ -88,10 +107,30 @@ $(document).ready(function() {
             },
             error: function(error) {
                 console.error("Error updating product:", error);
-                showToast('error', 'Lỗi khi cập nhật sản phẩm');
+                showToast('error', 'Lỗi khi cập nhật sản phẩm: ' + (error.responseText || 'Vui lòng thử lại'));
             }
         });
     });
+
+    // Validate product form
+    function validateProductForm(formData) {
+        if (!formData.ma || formData.ma.trim() === '') {
+            showToast('error', 'Vui lòng nhập mã sản phẩm');
+            return false;
+        }
+
+        if (!formData.ten || formData.ten.trim() === '') {
+            showToast('error', 'Vui lòng nhập tên sản phẩm');
+            return false;
+        }
+
+        if (!formData.kieuQuat || !formData.kieuQuat.id) {
+            showToast('error', 'Vui lòng chọn kiểu quạt');
+            return false;
+        }
+
+        return true;
+    }
 
     // Toggle product status (active/inactive)
     $(".toggle-status-btn").click(function() {
@@ -185,3 +224,4 @@ $(document).ready(function() {
         });
     }
 });
+

@@ -87,10 +87,10 @@
                                     <td th:text="${item.ma}"></td>
                                     <td>
                                         <img th:if="${item.sanPhamChiTiet != null && item.sanPhamChiTiet.size() > 0}"
-                                             th:src="${item.sanPhamChiTiet[0].hinhAnh != null ? item.sanPhamChiTiet[0].hinhAnh.duongDan : '/admin/assets/img/no-image.png'}"
+                                             th:src="${item.sanPhamChiTiet[0].hinhAnh != null ? item.sanPhamChiTiet[0].hinhAnh.duongDan : '/admin/assets/images/no-image.png'}"
                                              class="product-image-preview" alt="Product Image">
                                         <img th:unless="${item.sanPhamChiTiet != null && item.sanPhamChiTiet.size() > 0}"
-                                             src="/admin/assets/img/no-image.png" class="product-image-preview"
+                                             src="/admin/assets/images/no-image.png" class="product-image-preview"
                                              alt="No Image">
                                     </td>
                                     <td th:text="${item.ten}"></td>
