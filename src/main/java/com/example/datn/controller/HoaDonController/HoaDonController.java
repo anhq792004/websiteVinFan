@@ -30,9 +30,12 @@ public class HoaDonController {
             @RequestParam(defaultValue = "5") int size,
             Model model
     ) {
+        if (page < 0) {
+            page = 0; // Tránh giá trị âm
+        }
         Page<HoaDon> listHoaDon = hoaDonSerivce.findAllHoaDonAndSortDay(page, size);
         model.addAttribute("list", listHoaDon);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("page", page);
         model.addAttribute("totalPages", listHoaDon.getTotalPages());
         return "admin/hoa_don/index";
     }
