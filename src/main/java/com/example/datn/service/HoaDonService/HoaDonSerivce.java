@@ -7,7 +7,10 @@ import com.example.datn.entity.HoaDon.HoaDon;
 import com.example.datn.entity.HoaDon.HoaDonChiTiet;
 import com.example.datn.entity.HoaDon.LichSuHoaDon;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +19,9 @@ public interface HoaDonSerivce {
     List<HoaDon> findAll();
 
     Page<HoaDon> findAllHoaDonAndSortDay(int page, int size);
+
+//    Page<HoaDon> searchHoaDon(String query, Boolean loaiHoaDon, LocalDateTime tuNgay, LocalDateTime denNgay, Integer trangThai, Pageable pageable);
+
 
     Optional<HoaDon> findHoaDonById(Long id);
 
