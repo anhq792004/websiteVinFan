@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{/admin/fragments/head :: head}"></head>
 <body>
@@ -19,30 +18,28 @@
             <div class="page-title">
                 <div class="row">
                     <div class="col-12 col-md-6 order-md-1 order-last">
-                        <h3>Chất liệu cánh</h3>
+                        <h3>Màu sắc</h3>
                     </div>
                 </div>
             </div>
         </div>
         <br>
         <div class="page-content">
-            <!--        dữ liệu thực hiện trong seclkion-->
             <section class="row">
                 <div class="card">
                     <div class="card-header">
-                        <form method="get" action="/chat-lieu-canh/index"
-                              th:object="${listChatLieuCanh}" style="padding-bottom: 20px">
+                        <form method="get" action="/mau-sac/index"
+                              th:object="${listMauSac}" style="padding-bottom: 20px">
                             <div class="row">
                                 <div class="col-5">
                                     <input type="text" id="searchInput" class="form-control" name="name"
-                                           placeholder="Nhập chất liệu cánh..." th:value="${param.name}">
+                                           placeholder="Nhập màu sắc..." th:value="${param.name}">
                                 </div>
                                 <div class="col-5">
                                     <select id="trangThai" name="status" class="form-select">
                                         <option value="" th:selected="${status == null}">Tất cả trạng thái</option>
                                         <option value="true" th:selected="${status == true}">Hoạt động</option>
-                                        <option value="false" th:selected="${status == false}">Không hoạt động
-                                        </option>
+                                        <option value="false" th:selected="${status == false}">Không hoạt động</option>
                                     </select>
                                 </div>
                                 <div class="col-2">
@@ -50,7 +47,7 @@
                                         <i class="bi bi-search"></i>
                                     </button>
                                     <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
-                                            data-bs-target="#modalAdd">
+                                            data-bs-target="#modalThemMoi">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
@@ -69,7 +66,7 @@
                                     <a href="#" class="dataTable-sorter">STT</a>
                                 </th>
                                 <th data-sortable="" style="width: 30%;">
-                                    <a href="#" class="dataTable-sorter">Tên Chất liệu cánh</a>
+                                    <a href="#" class="dataTable-sorter">Tên màu sắc</a>
                                 </th>
                                 <th data-sortable="" style="width: 30%;">
                                     <a href="#" class="dataTable-sorter">Trạng thái</a>
@@ -81,31 +78,23 @@
                             </thead>
                             <tbody>
                             <tr th:each="item, iter : ${list.content}" th:data-id="${item.id}">
-                                <td
-                                        th:text="${(list.number * list.size) + iter.index + 1}"></td>
+                                <td th:text="${(list.number * list.size) + iter.index + 1}"></td>
                                 <td th:text="${item.ten}"></td>
                                 <td>
                                     <span th:if="${item.trangThai}" class="badge bg-light-success">Hoạt động</span>
-                                    <span th:unless="${item.trangThai}"
-                                          class="badge bg-light-danger"> Không hoạt động</span>
+                                    <span th:unless="${item.trangThai}" class="badge bg-light-danger">Không hoạt động</span>
                                 </td>
-
                                 <td style="text-align: center">
-                                    <button class="btn btn-outline-primary thayDoiTrangThai"
+                                    <button class="btn btn-outline-primary changeStatusMauSac"
                                             th:attr="data-id=${item.id}">
-
-                                        <td>
-                                            <button class="btn btn-primary thayDoiTrangThai"
-                                                    th:attr="data-id=${item.id}">
-
-                                                <i class="bi bi-arrow-left-right"></i>
-                                            </button>
-                                            <button class="btn btn-outline-warning hienThiThongTinModal"
-                                                    th:attr="data-id=${item.id}"
-                                                    data-bs-toggle="modal" data-bs-target="#modalChinhSua">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                        </td>
+                                        <i class="bi bi-arrow-left-right"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning hienThiThongTinModal"
+                                            th:attr="data-id=${item.id}"
+                                            data-bs-toggle="modal" data-bs-target="#modalChinhSua">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -116,7 +105,7 @@
                             <!-- Nút Previous -->
                             <li th:class="${list.number == 0} ? 'disabled page-item' : 'page-item'">
                                 <a class="page-link"
-                                   th:href="@{/chat-lieu-canh/index(name=${name}, status=${status}, page=${list.number - 1}, size=${list.size})}">
+                                   th:href="@{/mau-sac/index(name=${name}, status=${status}, page=${list.number - 1}, size=${list.size})}">
                                     <i class="bi bi-chevron-left"></i>
                                 </a>
                             </li>
@@ -124,7 +113,7 @@
                             <!-- Hiển thị trang đầu tiên nếu currentPage > 2 -->
                             <li th:if="${list.number > 2}" class="page-item">
                                 <a class="page-link"
-                                   th:href="@{/chat-lieu-canh/index(name=${name}, status=${status}, page=0, size=${list.size})}">1</a>
+                                   th:href="@{/mau-sac/index(name=${name}, status=${status}, page=0, size=${list.size})}">1</a>
                             </li>
 
                             <!-- Dấu ... nếu currentPage > 3 -->
@@ -137,7 +126,7 @@
                               (list.number + 2 < list.totalPages - 1 ? list.number + 2 : list.totalPages - 1))}"
                                 th:class="${list.number == i} ? 'active page-item' : 'page-item'">
                                 <a class="page-link"
-                                   th:href="@{/chat-lieu-canh/index(name=${name}, status=${status}, page=${i}, size=${list.size})}"
+                                   th:href="@{/mau-sac/index(name=${name}, status=${status}, page=${i}, size=${list.size})}"
                                    th:text="${i + 1}"></a>
                             </li>
 
@@ -149,38 +138,36 @@
                             <!-- Hiển thị trang cuối nếu currentPage < totalPages - 2 -->
                             <li th:if="${list.number < list.totalPages - 2}" class="page-item">
                                 <a class="page-link"
-                                   th:href="@{/chat-lieu-canh/index(name=${name}, status=${status}, page=${list.totalPages - 1}, size=${list.size})}"
+                                   th:href="@{/mau-sac/index(name=${name}, status=${status}, page=${list.totalPages - 1}, size=${list.size})}"
                                    th:text="${list.totalPages}"></a>
                             </li>
 
                             <!-- Nút Next -->
                             <li th:class="${list.number + 1 >= list.totalPages} ? 'disabled page-item' : 'page-item'">
                                 <a class="page-link"
-                                   th:href="@{/chat-lieu-canh/index(name=${name}, status=${status}, page=${list.number + 1}, size=${list.size})}">
+                                   th:href="@{/mau-sac/index(name=${name}, status=${status}, page=${list.number + 1}, size=${list.size})}">
                                     <i class="bi bi-chevron-right"></i>
                                 </a>
                             </li>
                         </ul>
                     </nav>
-
                 </div>
             </section>
-            <!--Add chất liệu-->
-            <div class="modal fade" id="modalAdd" tabindex="-1" aria-labelledby="modalAddLabel"
+
+            <!--Add màu sắc-->
+            <div class="modal fade" id="modalThemMoi" tabindex="-1" aria-labelledby="modalThemMoiLabel"
                  aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="modalAddLabel">Thêm Mới Chất liệu cánh</h5>
+                            <h5 class="modal-title" id="modalThemMoiLabel">Thêm Mới Màu sắc</h5>
                         </div>
                         <div class="modal-body">
-                            <form id="addChatLieuCanh" method="post"
-                                  action="/chat-lieu-canh/add">
+                            <form id="addMauSac" method="post" action="/mau-sac/add">
                                 <div class="mb-3">
-                                    <label for="name" class="form-label">Tên chất liệu cánh</label>
-                                    <input type="text" class="form-control" id="name"
-                                           name="name"
-                                           placeholder="Nhập tên chất liệu cánh">
+                                    <label for="name" class="form-label">Tên màu sắc</label>
+                                    <input type="text" class="form-control" id="name" name="name"
+                                           placeholder="Nhập tên màu sắc">
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-outline-success">
@@ -205,8 +192,34 @@
 <div>
     <script th:replace="/admin/fragments/script :: script"></script>
 </div>
-<script th:replace="/admin/fragments/script :: script"></script>
-<script th:src="@{/admin/assets/static/js/pages/thuocTinh/chatLieuCanh.js}"></script>
+<script th:src="@{/admin/assets/compiled/js/mau_sac.js}"></script>
+
+<!-- Modal Chỉnh sửa -->
+<div class="modal fade" id="modalChinhSua" tabindex="-1" aria-labelledby="modalChinhSuaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalChinhSuaLabel">Chỉnh sửa màu sắc</h5>
+            </div>
+            <div class="modal-body">
+                <form id="updateMauSac" method="post" action="/mau-sac/update" onsubmit="return false;">
+                    <input type="hidden" id="id" name="id">
+                    <div class="mb-3">
+                        <label for="updateName" class="form-label">Tên màu sắc</label>
+                        <input type="text" class="form-control" id="updateName" name="name" placeholder="Nhập tên màu sắc">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-outline-success">
+                            <i class="bi bi-floppy"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
-
