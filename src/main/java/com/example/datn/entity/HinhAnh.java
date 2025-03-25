@@ -1,5 +1,7 @@
 package com.example.datn.entity;
 
+import com.example.datn.entity.SanPham.SanPham;
+import com.example.datn.entity.SanPham.SanPhamChiTiet;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,4 +26,10 @@ public class HinhAnh {
 
     @Column(name = "ngay_tao")
     LocalDateTime ngayTao;
+
+
+
+    public String getDuongDan() {
+        return hinhAnh;
+    }
 }

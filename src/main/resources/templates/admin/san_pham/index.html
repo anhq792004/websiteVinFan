@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{/admin/fragments/head :: head}"></head>
+<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/sanPham.css}">
 <body>
 <!-- Site wrapper -->
 <div class="wrapper">
@@ -18,11 +18,134 @@
             <section class="row">
                 <div class="card">
                     <div class="card-header">
-                        <h1 th:text="${message}">SP</h1>
+                        <!-- Nội dung được nhét vào đây -->
+                        <div class="dataTable-top">
+                            <form method="get" action="/admin/san-pham/list">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <input type="text" id="searchInput" class="form-control" name="search"
+                                               placeholder="Tìm kiếm sản phẩm..." th:value="${search}">
+                                    </div>
+                                    <div class="col-3">
+                                        <select class="form-select" id="kieuQuat" name="kieuQuat">
+                                            <option value="">Tất cả kiểu quạt</option>
+                                            <!-- Các option sẽ được thêm từ DB -->
+                                        </select>
+                                    </div>
+                                    <div class="col-3">
+                                        <select class="form-select" id="trangThai" name="trangThai">
+                                            <option value="">Tất cả trạng thái</option>
+                                            <option value="true">Đang kinh doanh</option>
+                                            <option value="false">Ngừng kinh doanh</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-2 d-flex">
+                                        <div>
+                                            <button class="btn btn-outline-primary" type="submit"
+                                                    style="width: 70px; margin-right: 10px">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <a class="btn btn-outline-warning" href="/admin/san-pham/list"
+                                               style="width: 70px">
+                                                <i class="bi bi-arrow-counterclockwise"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="dataTable-container mt-3">
+                            <div class="d-flex justify-content-between mb-3">
+                                <h5 class="card-title">Danh sách sản phẩm (<span
+                                        th:text="${sanPhamPage.totalElements}"></span> sản phẩm)</h5>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#addProductModal">
+                                    <i class="bi bi-plus-circle"></i> Thêm sản phẩm
+                                </button>
+                            </div>
+
+                            <table class="table table-striped dataTable-table">
+                                <thead>
+                                <tr>
+                                    <th style="width: 5%;">STT</th>
+                                    <th style="width: 10%;">Mã SP</th>
+                                    <th style="width: 15%;">Hình ảnh</th>
+                                    <th style="width: 20%;">Tên sản phẩm</th>
+                                    <th style="width: 10%;">Kiểu quạt</th>
+                                    <th style="width: 10%;">Số lượng</th>
+                                    <th style="width: 10%;">Ngày tạo</th>
+                                    <th style="width: 10%;">Trạng thái</th>
+                                    <th style="width: 10%;">Hành động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item, iterStat : ${sanPhamPage.content}">
+                                    <td th:text="${iterStat.count}"></td>
+                                    <td th:text="${item.ma}"></td>
+                                    <td>
+                                        <img th:if="${item.sanPhamChiTiet != null && item.sanPhamChiTiet.size() > 0}"
+                                             th:src="${item.sanPhamChiTiet[0].hinhAnh != null ? item.sanPhamChiTiet[0].hinhAnh.duongDan : '/admin/assets/images/no-image.png'}"
+                                             class="product-image-preview" alt="Product Image">
+                                        <img th:unless="${item.sanPhamChiTiet != null && item.sanPhamChiTiet.size() > 0}"
+                                             src="/admin/assets/images/no-image.png" class="product-image-preview"
+                                             alt="No Image">
+                                    </td>
+                                    <td th:text="${item.ten}"></td>
+                                    <td th:text="${item.kieuQuat != null ? item.kieuQuat.ten : 'N/A'}"></td>
+                                    <td th:text="${item.sanPhamChiTiet != null ? #aggregates.sum(item.sanPhamChiTiet.![soLuong]) : 0}"></td>
+                                    <td th:text="${#temporals.format(item.ngayTao, 'dd-MM-yyyy')}"></td>
+                                    <td>
+                                        <span th:if="${item.trangThai}" class="badge bg-success">Đang kinh doanh</span>
+                                        <span th:unless="${item.trangThai}"
+                                              class="badge bg-danger">Ngừng kinh doanh</span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/admin/san-pham/detail(id=${item.id})}"
+                                           class="btn btn-sm btn-outline-info">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-warning edit-product-btn"
+                                                th:data-id="${item.id}">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger toggle-status-btn"
+                                                th:data-id="${item.id}" th:data-status="${item.trangThai}">
+                                            <i class="bi bi-power"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Phân trang -->
+                        <nav class="mt-3">
+                            <ul class="pagination">
+                                <li th:class="${currentPage == 0} ? 'disabled page-item' : 'page-item'">
+                                    <a class="page-link"
+                                       th:href="@{/admin/san-pham/list(page=${currentPage - 1}, size=5)}">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
+                                </li>
+                                <li th:each="i : ${#numbers.sequence(0, totalPage - 1)}"
+                                    th:class="${currentPage == i} ? 'active page-item' : 'page-item'">
+                                    <a class="page-link" th:href="@{/admin/san-pham/list(page=${i}, size=5)}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li th:class="${currentPage + 1 >= totalPage} ? 'disabled page-item' : 'page-item'">
+                                    <a class="page-link"
+                                       th:href="@{/admin/san-pham/list(page=${currentPage + 1}, size=5)}">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                     <div class="card-body">
                     </div>
-
                 </div>
             </section>
         </div>
@@ -32,8 +155,14 @@
         <footer th:replace="/admin/fragments/footer :: footer"></footer>
     </div>
 </div>
+
+<!-- Modals includes -->
+<div th:replace="~{/admin/fragments/product/addProductModal :: addProductModal}"></div>
+<div th:replace="~{/admin/fragments/product/editProductModal :: editProductModal}"></div>
+
 <div>
     <script th:replace="/admin/fragments/script :: script"></script>
 </div>
+<script th:src="@{/admin/assets/js/sanPham.js}"></script>
 </body>
 </html>

@@ -1,0 +1,95 @@
+<!-- Fragment for Add Product Variant Modal -->
+<div th:fragment="addProductSpct">
+  <div class="modal fade" id="addProductSpctModal" tabindex="-1" aria-labelledby="addProductSpctModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addProductSpctModalLabel">Thêm biến thể sản phẩm</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addProductSpctForm">
+            <input type="hidden" name="sanPham.id" th:value="${sanPham.id}">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="mauSac" class="form-label">Màu sắc</label>
+                <select class="form-select" id="mauSac" name="mauSac.id" required>
+                  <option value="">-- Chọn màu sắc --</option>
+                  <!-- Options will be loaded dynamically -->
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="chatLieuCanh" class="form-label">Chất liệu cánh</label>
+                <select class="form-select" id="chatLieuCanh" name="chatLieuCanh.id">
+                  <option value="">-- Chọn chất liệu cánh --</option>
+                  <!-- Options will be loaded dynamically -->
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="chatLieuKhung" class="form-label">Chất liệu khung</label>
+                <select class="form-select" id="chatLieuKhung" name="chatLieuKhung.id">
+                  <option value="">-- Chọn chất liệu khung --</option>
+                  <!-- Options will be loaded dynamically -->
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="duongKinhCanh" class="form-label">Đường kính cánh</label>
+                <select class="form-select" id="duongKinhCanh" name="duongKinhCanh.id">
+                  <option value="">-- Chọn đường kính cánh --</option>
+                  <!-- Options will be loaded dynamically -->
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="congSuat" class="form-label">Công suất</label>
+                <select class="form-select" id="congSuat" name="congSuat.id">
+                  <option value="">-- Chọn công suất --</option>
+                  <!-- Options will be loaded dynamically -->
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="hang" class="form-label">Hãng</label>
+                <select class="form-select" id="hang" name="hang.id">
+                  <option value="">-- Chọn hãng --</option>
+                  <!-- Options will be loaded dynamically -->
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="cheDoGio" class="form-label">Chế độ gió</label>
+                <select class="form-select" id="cheDoGio" name="cheDoGio.id">
+                  <option value="">-- Chọn chế độ gió --</option>
+                  <!-- Options will be loaded dynamically -->
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="gia" class="form-label">Giá bán (VNĐ)</label>
+                <input type="number" class="form-control" id="gia" name="gia" min="0" required>
+              </div>
+              <div class="col-md-6">
+                <label for="soLuong" class="form-label">Số lượng</label>
+                <input type="number" class="form-control" id="soLuong" name="soLuong" min="0" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="moTa" class="form-label">Mô tả</label>
+              <textarea class="form-control" id="moTa" name="moTa" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="hinhAnh" class="form-label">Hình ảnh</label>
+              <input type="file" class="form-control" id="hinhAnh" name="hinhAnh">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-primary" id="saveProductSpctBtn">Lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

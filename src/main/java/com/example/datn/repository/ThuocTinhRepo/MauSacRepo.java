@@ -8,16 +8,16 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-
-public interface MauSacRepo extends JpaRepository<MauSac, Long> {
-    @Query("SELECT ms FROM MauSac ms " +
-            "WHERE (LOWER(ms.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
-            "AND (:trang_thai IS NULL OR ms.trangThai = :trang_thai))")
-    Page<MauSac> search(String query, Boolean trang_thai, Pageable pageable);
+@Repository
+public interface MauSacRepo extends JpaRepository<MauSac, Integer> {
+    @Query("SELECT m FROM MauSac m " +
+            "WHERE (LOWER(m.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "AND (:trangThai IS NULL OR m.trangThai = :trangThai))")
+    Page<MauSac> search(String query, Boolean trangThai, Pageable pageable);
 
     Optional<MauSac> findByTen(String ten);
 
-    @Query("SELECT ms FROM MauSac ms " +
-            "WHERE LOWER(ms.ten) LIKE LOWER(CONCAT('%', :query, '%'))")
+    @Query("SELECT m FROM MauSac m " +
+            "WHERE LOWER(m.ten) LIKE LOWER(CONCAT('%', :query, '%'))")
     Page<MauSac> searchOnlyTen(String query, Pageable pageable);
 }
