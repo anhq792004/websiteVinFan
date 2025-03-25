@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface CheDoGioRepo extends JpaRepository<CheDoGio, Integer> {
+public interface CheDoGioRepo extends JpaRepository<CheDoGio, Long> {
     @Query("SELECT cdg FROM CheDoGio cdg " +
             "WHERE (LOWER(cdg.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
             "AND (:trang_thai IS NULL OR cdg.trangThai = :trangThai))")

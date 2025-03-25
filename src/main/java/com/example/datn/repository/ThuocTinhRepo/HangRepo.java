@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface HangRepo extends JpaRepository<Hang, Integer> {
+public interface HangRepo extends JpaRepository<Hang, Long> {
     @Query("SELECT h FROM Hang h " +
             "WHERE (LOWER(h.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
             "AND (:trang_thai IS NULL OR h.trangThai = :trangThai))")

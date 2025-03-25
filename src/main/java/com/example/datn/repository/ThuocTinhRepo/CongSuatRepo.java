@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface CongSuatRepo extends JpaRepository<CongSuat, Integer> {
+public interface CongSuatRepo extends JpaRepository<CongSuat, Long> {
     @Query("SELECT cs FROM CongSuat cs " +
             "WHERE (LOWER(cs.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
             "AND (:trang_thai IS NULL OR cs.trangThai = :trangThai))")

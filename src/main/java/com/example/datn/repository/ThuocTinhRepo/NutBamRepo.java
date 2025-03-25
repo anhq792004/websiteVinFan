@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface NutBamRepo extends JpaRepository<NutBam, Integer> {
+public interface NutBamRepo extends JpaRepository<NutBam, Long> {
     @Query("SELECT nb FROM NutBam nb " +
             "WHERE (LOWER(nb.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
             "AND (:trang_thai IS NULL OR nb.trangThai = :trang_thai))")

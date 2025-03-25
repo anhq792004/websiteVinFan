@@ -7,12 +7,14 @@ import com.example.datn.service.ThuocTinhService.ChatLieuCanhService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/chat-lieu-canh")
@@ -45,7 +47,23 @@ public class ChatLieuCanhController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> themMoi(@RequestParam("name") String name) {
-        return chatLieuCanhService.add(name);
+    public ResponseEntity<?> add(@RequestParam("nameAdd") String nameAdd) {
+        return chatLieuCanhService.add(nameAdd);
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<?> thongTin(@RequestParam("id") Long id) {
+        Optional<ChatLieuCanh> chatLieuCanh = chatLieuCanhService.getAll(id);
+        if (chatLieuCanh.isPresent()) {
+            return ResponseEntity.ok(chatLieuCanh.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tồn tại chất liệu cánh.");
+        }
+    }
+    @PostMapping("/update")
+    public ResponseEntity<String> updateChatLieuCanh(
+            @RequestParam("id") Long id,
+            @RequestParam("nameUpdate") String nameUpdate) {
+        return chatLieuCanhService.update(id, nameUpdate);
     }
 }

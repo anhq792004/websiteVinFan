@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 
-public interface MauSacRepo extends JpaRepository<MauSac, Integer> {
+public interface MauSacRepo extends JpaRepository<MauSac, Long> {
     @Query("SELECT ms FROM MauSac ms " +
             "WHERE (LOWER(ms.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
             "AND (:trang_thai IS NULL OR ms.trangThai = :trang_thai))")
