@@ -1,8 +1,8 @@
 package com.example.datn.controller.ThuocTinhController;
 
-import com.example.datn.entity.ThuocTinh.KieuQuat;
-import com.example.datn.repository.ThuocTinhRepo.KieuQuatRepo;
-import com.example.datn.service.ThuocTinhService.KieuQuatService;
+import com.example.datn.entity.ThuocTinh.CongSuat;
+import com.example.datn.repository.ThuocTinhRepo.CongSuatRepo;
+import com.example.datn.service.ThuocTinhService.CongSuatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,17 +14,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/kieu-quat")
+@RequestMapping("/cong-suat")
 @RequiredArgsConstructor
-public class KieuQuatController {
-    private final KieuQuatRepo kieuQuatRepo;
-    private final KieuQuatService  kieuQuatService;
+public class CongSuatController {
+    private final CongSuatRepo congSuatRepo;
+    private final CongSuatService congSuatService;
 
-    @ModelAttribute("listKieuQuat")
-    public List<KieuQuat> listKieuQuat() {
-        return kieuQuatRepo.findAll();
+    @ModelAttribute("listCongSuat")
+    public List<CongSuat> listCongSuat() {
+        return congSuatRepo.findAll();
     }
-
 
     @GetMapping("/index")
     public String timKiem(
@@ -34,14 +33,20 @@ public class KieuQuatController {
             @RequestParam(defaultValue = "5") int size,
             Model model
     ){
-        Page<KieuQuat> searchPage = kieuQuatService.search(name.trim(), status, PageRequest.of(page, size));
+        Page<CongSuat> searchPage = congSuatService.search(name.trim(), status, PageRequest.of(page, size));
         if (searchPage.isEmpty() && page < 0) {
-            searchPage = kieuQuatService.search(name.trim(), status, PageRequest.of(0, size));
+            searchPage = congSuatService.search(name.trim(), status, PageRequest.of(0, size));
         }
         model.addAttribute("list", searchPage);
         model.addAttribute("name", name);
         model.addAttribute("status", status != null ? status : "");
-        return "admin/thuoc_tinh/kieu_quat";
+        return "admin/thuoc_tinh/cong_suat";
+    }
+
+    @GetMapping("/find-by-id")
+    @ResponseBody
+    public CongSuat findById(@RequestParam("id") Integer id) {
+        return congSuatService.findById(id);
     }
 
     @PostMapping("/add")
@@ -49,10 +54,18 @@ public class KieuQuatController {
         if (name == null || name.trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Tên không được để trống");
         }
-        return kieuQuatService.add(name.trim());
+        return congSuatService.add(name.trim());
     }
+
+    @PostMapping("/update")
+    public ResponseEntity<?> capNhat(
+            @RequestParam(value = "id", required = true) Integer id,
+            @RequestParam(value = "name", required = true) String name) {
+        return congSuatService.update(id, name.trim());
+    }
+
     @PostMapping("/change-status")
     public ResponseEntity<?> thayDoiTrangThai(@RequestParam(value = "id", required = true) Integer id) {
-        return kieuQuatService.changeStatus(id);
+        return congSuatService.changeStatus(id);
     }
 }

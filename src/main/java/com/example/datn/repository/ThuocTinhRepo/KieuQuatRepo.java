@@ -20,5 +20,6 @@ public interface KieuQuatRepo extends JpaRepository<KieuQuat, Integer> {
     @Query("SELECT kq FROM KieuQuat kq " +
             "WHERE LOWER(kq.ten) LIKE LOWER(CONCAT('%', :query, '%'))")
     Page<KieuQuat> searchOnlyTen(String query, Pageable pageable);
+    Optional<KieuQuat> findByTen(String ten);
 }
 
