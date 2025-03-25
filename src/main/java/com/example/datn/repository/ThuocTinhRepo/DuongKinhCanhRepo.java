@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
 
-public interface DuongKinhCanhRepo extends JpaRepository<DuongKinhCanh, Long> {
+public interface DuongKinhCanhRepo extends JpaRepository<DuongKinhCanh, Integer> {
     @Query("SELECT dkc FROM DuongKinhCanh dkc " +
             "WHERE (LOWER(dkc.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
             "AND (:trangThai IS NULL OR dkc.trangThai = :trangThai))")

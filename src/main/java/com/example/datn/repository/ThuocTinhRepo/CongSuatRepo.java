@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 @Repository
-public interface CongSuatRepo extends JpaRepository<CongSuat, Long> {
+public interface CongSuatRepo extends JpaRepository<CongSuat, Integer> {
     @Query("SELECT cs FROM CongSuat cs " +
             "WHERE (LOWER(cs.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
             "AND (:trangThai IS NULL OR cs.trangThai = :trangThai))")
