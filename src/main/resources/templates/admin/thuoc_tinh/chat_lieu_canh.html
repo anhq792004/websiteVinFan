@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{/admin/fragments/head :: head}"></head>
 <body>
@@ -89,23 +88,15 @@
                                     <span th:unless="${item.trangThai}"
                                           class="badge bg-light-danger"> Không hoạt động</span>
                                 </td>
-
-                                <td style="text-align: center">
-                                    <button class="btn btn-outline-primary thayDoiTrangThai"
-                                            th:attr="data-id=${item.id}">
-
-                                        <td>
-                                            <button class="btn btn-primary thayDoiTrangThai"
-                                                    th:attr="data-id=${item.id}">
-
-                                                <i class="bi bi-arrow-left-right"></i>
-                                            </button>
-                                            <button class="btn btn-outline-warning hienThiThongTinModal"
-                                                    th:attr="data-id=${item.id}"
-                                                    data-bs-toggle="modal" data-bs-target="#modalChinhSua">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                        </td>
+                                <td>
+                                    <button class="btn btn-primary thayDoiTrangThai" th:attr="data-id=${item.id}">
+                                        <i class="bi bi-arrow-left-right"></i>
+                                    </button>
+                                    <button class="btn btn-warning detailModal" th:attr="data-id=${item.id}"
+                                            data-bs-toggle="modal" data-bs-target="#modalDetail">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -177,8 +168,8 @@
                             <form id="addChatLieuCanh" method="post"
                                   action="/chat-lieu-canh/add">
                                 <div class="mb-3">
-                                    <label for="name" class="form-label">Tên chất liệu cánh</label>
-                                    <input type="text" class="form-control" id="name"
+                                    <label for="nameAdd" class="form-label">Tên chất liệu cánh</label>
+                                    <input type="text" class="form-control" id="nameAdd"
                                            name="name"
                                            placeholder="Nhập tên chất liệu cánh">
                                 </div>
@@ -195,18 +186,42 @@
                     </div>
                 </div>
             </div>
+
+            <!--    chỉnh sửa-->
+            <div class="modal fade" id="modalDetail" tabindex="-1" aria-labelledby="modalDetailLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalDetailLabel">Chỉnh sửa chất liệu cánh</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form id="updateKieuQuat" method="post" action="/chat-lieu-canh/update">
+                                <input type="hidden" id="id" name="id">
+                                <div class="mb-3">
+                                    <label for="nameUpdate" class="form-label">Tên chất liệu cánh</label>
+                                    <input type="text" class="form-control" id="nameUpdate"
+                                           name="nameUpdate" placeholder="Nhập tên chất liệu cánh mới">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-outline-success">
+                                        <i class="bi bi-floppy"></i> Lưu
+                                    </button>
+                                    <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal">
+                                        <i class="bi bi-x"></i> Hủy
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
-    <!-- Footer-->
-    <div>
-        <footer th:replace="/admin/fragments/footer :: footer"></footer>
-    </div>
-</div>
-<div>
-    <script th:replace="/admin/fragments/script :: script"></script>
 </div>
 <script th:replace="/admin/fragments/script :: script"></script>
 <script th:src="@{/admin/assets/static/js/pages/thuocTinh/chatLieuCanh.js}"></script>
 </body>
 </html>
-

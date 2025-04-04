@@ -8,10 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-
 @Repository
-public interface KieuQuatRepo extends JpaRepository<KieuQuat, Integer> {
 
+public interface KieuQuatRepo extends JpaRepository<KieuQuat, Integer> {
     @Query("SELECT kq FROM KieuQuat kq " +
             "WHERE (LOWER(kq.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
             "AND (:trangThai IS NULL OR kq.trangThai = :trangThai))")

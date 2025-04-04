@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
 public interface CheDoGioRepo extends JpaRepository<CheDoGio, Integer> {
     @Query("SELECT cdg FROM CheDoGio cdg " +
             "WHERE (LOWER(cdg.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
