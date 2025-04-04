@@ -60,77 +60,6 @@ $('#addChatLieuKhung').on('submit', function (e) {
         }
     });
 });
-
-// Xử lý cập nhật chất liệu khung
-$('#updateChatLieuKhung').on('submit', function (e) {
-    e.preventDefault(); // Ngăn form thực hiện submit mặc định
-
-    const id = $('#modalChinhSua #id').val();
-    const name = $('#modalChinhSua #updateName').val();
-
-    // Kiểm tra tên có trống không
-    if (!name || name.trim() === '') {
-        Swal.fire({
-            toast: true,
-            icon: 'error',
-            title: 'Tên chất liệu khung không được để trống',
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-        });
-        return;
-    }
-
-    // Gửi request AJAX
-    $.ajax({
-        url: '/chat-lieu-khung/update',
-        type: 'POST',
-        data: {id: id, name: name},
-        success: function (response) {
-            if (response === "Cập nhật chất liệu khung thành công.") {
-                const modal = bootstrap.Modal.getInstance(document.getElementById('modalChinhSua'));
-                if (modal) {
-                    modal.hide();
-                }
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: response,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 1000,
-                    timerProgressBar: true
-                }).then(() => {
-                    location.reload();
-                });
-            } else {
-                Swal.fire({
-                    toast: true,
-                    icon: 'error',
-                    title: response,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                });
-            }
-        },
-        error: function (xhr) {
-            console.error('Error:', xhr);
-            Swal.fire({
-                toast: true,
-                icon: 'error',
-                title: "Có lỗi xảy ra khi cập nhật chất liệu khung",
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-        }
-    });
-});
-
 // Xử lý thay đổi trạng thái chất liệu khung
 $('.changeStatusChatLieuKhung').on('click', function () {
     const id = $(this).data('id');
@@ -178,22 +107,69 @@ $('.changeStatusChatLieuKhung').on('click', function () {
     });
 });
 
-// Xử lý hiển thị thông tin trong modal chỉnh sửa
-$('.hienThiThongTinModal').on('click', function () {
-    const id = $(this).data('id');
-    const ten = $(this).closest('tr').find('td:eq(1)').text().trim();
+// Lấy thông tin để cập nhật
+$(document).on('click', 'detailModal', function () {
+    let id = $(this).data('id');
+    $('#id').val(id);
 
-    $('#modalChinhSua #id').val(id);
-    $('#modalChinhSua #updateName').val(ten);
+    $.ajax({
+        url: `/chat-lieu-khung/detail?id=${id}`,
+        type: 'GET',
+        success: function (response) {
+            console.log("Reponse:", response);
+            $('#chatLieuKhungId').val(response.id);
+            $('#nameUpdate').val(response.ten);
+        },
+        error: function (xhr) {
+            Swal.fire({
+                icon: 'error',
+                title: xhr.responseText,
+                text: xhr.responseText
+            });
+        }
+    });
 });
 
-// Xử lý tìm kiếm
-$('#searchInput, #trangThai').on('change', function(e) {
-    e.preventDefault(); // Ngăn chặn sự kiện mặc định
+// Cập nhật
+$('#updateChatLieuKhung').on('submit', function (e) {
+    e.preventDefault();
 
-    const name = $('#searchInput').val();
-    const trangThai = $('#trangThai').val();
+    let id = $('#id').val();
+    let nameUpdate = $('#nameUpdate').val();
 
-    // Submit form tìm kiếm
-    window.location.href = `/chat-lieu-khung/index?name=${name}&trangThai=${trangThai}`;
+    $.ajax({
+        url: '/chat-lieu-khung/update',
+        type: 'POST',
+        data: {
+            id: id,
+            nameUpdate: nameUpdate
+        },
+        success: function (response){
+            swal.fire({
+                toast: true,
+                icon: 'success',
+                tittle: response,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+            })
+                .then(()=>{
+                location.reload();
+            })
+        },
+        error: function (xhr) {
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: xhr.responseText,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+    })
 });
+
+

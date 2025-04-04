@@ -6,6 +6,7 @@ import com.example.datn.service.ThuocTinhService.ChatLieuKhungService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +18,9 @@ import java.util.Optional;
 public class ChatLieuKhungServiceImpl implements ChatLieuKhungService {
     private final ChatLieuKhungRepo chatLieuKhungRepo;
 
-    @Override
-    public List<ChatLieuKhung> findAllChatLieuKhung() {
-        return chatLieuKhungRepo.findAll();
-    }
 
     @Override
-    public ChatLieuKhung findById(Integer id) {
+    public ChatLieuKhung findById(Long id) {
         return chatLieuKhungRepo.findById(id).orElse(null);
     }
 
@@ -58,25 +55,29 @@ public class ChatLieuKhungServiceImpl implements ChatLieuKhungService {
     }
 
     @Override
-    public ResponseEntity<?> update(Integer id, String name) {
-        if (name == null || name.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("Tên chất liệu khung không được để trống.");
+    public ResponseEntity<String> update(Long id, String nameUpdate) {
+        if (nameUpdate == null || nameUpdate.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Tên chất liệu cánh không được để trống.");
         }
-        Optional<ChatLieuKhung> checkTonTai = chatLieuKhungRepo.findByTen(name.trim());
-        if (checkTonTai.isPresent() && !checkTonTai.get().getId().equals(id)) {
-            return ResponseEntity.badRequest().body("Đã tồn tại chất liệu khung.");
+
+        Optional<ChatLieuKhung> checkTonTai = chatLieuKhungRepo.findByTen(nameUpdate.trim());
+        if (checkTonTai.isPresent()) {
+            return ResponseEntity.badRequest().body("Đã tồn tại chất liệu cánh.");
         }
-        ChatLieuKhung chatLieuKhung = chatLieuKhungRepo.findById(id).orElse(null);
-        if (chatLieuKhung == null) {
-            return ResponseEntity.badRequest().body("Không tìm thấy chất liệu khung.");
+
+        Optional<ChatLieuKhung> chatLieuKhungOptional = chatLieuKhungRepo.findById(id);
+        if (chatLieuKhungOptional.isPresent()) {
+            ChatLieuKhung chatLieuKhung = chatLieuKhungOptional.get();
+            chatLieuKhung.setTen(nameUpdate.trim());
+            chatLieuKhungRepo.save(chatLieuKhung);
+            return ResponseEntity.ok("Cập nhật chất liệu khung thành công.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy chất liệu khung.");
         }
-        chatLieuKhung.setTen(name.trim());
-        chatLieuKhungRepo.save(chatLieuKhung);
-        return ResponseEntity.ok("Cập nhật chất liệu khung thành công.");
     }
 
     @Override
-    public ResponseEntity<?> changeStatus(Integer id) {
+    public ResponseEntity<?> changeStatus(Long id) {
         ChatLieuKhung chatLieuKhung = chatLieuKhungRepo.findById(id).orElse(null);
         if (chatLieuKhung == null) {
             return ResponseEntity.badRequest().body("Không tìm thấy chất liệu khung.");
