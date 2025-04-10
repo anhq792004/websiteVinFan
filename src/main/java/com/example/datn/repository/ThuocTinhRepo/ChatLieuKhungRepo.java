@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface ChatLieuKhungRepo extends JpaRepository<ChatLieuKhung, Integer> {
+public interface ChatLieuKhungRepo extends JpaRepository<ChatLieuKhung, Long> {
     @Query("SELECT clk FROM ChatLieuKhung clk " +
             "WHERE (LOWER(clk.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
             "AND (:trang_thai IS NULL OR clk.trangThai = :trangThai))")

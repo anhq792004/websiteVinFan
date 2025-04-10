@@ -54,15 +54,18 @@ public class ChatLieuKhungController {
         }
         return chatLieuKhungService.add(name.trim());
     }
-    @PostMapping("/update")
-    public ResponseEntity<?> capNhat(
-            @RequestParam(value = "id", required = true) Integer id,
-            @RequestParam(value = "name", required = true) String name) {
-        return chatLieuKhungService.update(id, name.trim());
+@PostMapping("/update")
+public ResponseEntity<String> capNhat(
+        @RequestParam(value = "id", required = true) Long id,
+        @RequestParam(value = "nameUpdate", required = true) String nameUpdate) {
+    if (id == null) {
+        return ResponseEntity.badRequest().body("Không tìm thấy id!");
     }
+    return chatLieuKhungService.update(id, nameUpdate.trim());
+}
 
     @PostMapping("/change-status")
-    public ResponseEntity<?> thayDoiTrangThai(@RequestParam(value = "id", required = true) Integer id) {
+    public ResponseEntity<?> thayDoiTrangThai(@RequestParam(value = "id", required = true) Long id) {
         return chatLieuKhungService.changeStatus(id);
     }
 }
