@@ -75,7 +75,6 @@
                                     <th style="width: 15%;">Hình ảnh</th>
                                     <th style="width: 20%;">Tên sản phẩm</th>
                                     <th style="width: 10%;">Kiểu quạt</th>
-                                    <th style="width: 10%;">Số lượng</th>
                                     <th style="width: 10%;">Ngày tạo</th>
                                     <th style="width: 10%;">Trạng thái</th>
                                     <th style="width: 10%;">Hành động</th>
@@ -95,7 +94,6 @@
                                     </td>
                                     <td th:text="${item.ten}"></td>
                                     <td th:text="${item.kieuQuat != null ? item.kieuQuat.ten : 'N/A'}"></td>
-                                    <td th:text="${item.sanPhamChiTiet != null ? #aggregates.sum(item.sanPhamChiTiet.![soLuong]) : 0}"></td>
                                     <td th:text="${#temporals.format(item.ngayTao, 'dd-MM-yyyy')}"></td>
                                     <td>
                                         <span th:if="${item.trangThai}" class="badge bg-success">Đang kinh doanh</span>
@@ -163,6 +161,6 @@
 <div>
     <script th:replace="/admin/fragments/script :: script"></script>
 </div>
-<script th:src="@{/admin/assets/js/sanPham.js}"></script>
+<script th:src="@{/admin/assets/compiled/js/sanPham.js}"></script>
 </body>
 </html>

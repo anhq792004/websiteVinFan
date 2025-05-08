@@ -6,6 +6,7 @@ import com.example.datn.service.ThuocTinhService.ChatLieuKhungService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/chat-lieu-khung")
@@ -54,15 +56,21 @@ public class ChatLieuKhungController {
         }
         return chatLieuKhungService.add(name.trim());
     }
-@PostMapping("/update")
-public ResponseEntity<String> capNhat(
-        @RequestParam(value = "id", required = true) Long id,
-        @RequestParam(value = "nameUpdate", required = true) String nameUpdate) {
-    if (id == null) {
-        return ResponseEntity.badRequest().body("Không tìm thấy id!");
+    @GetMapping("/detail")
+    public ResponseEntity<?> thongTin(@RequestParam("id") Long id) {
+        Optional<ChatLieuKhung> chatLieuKhung = chatLieuKhungService.findById(id);
+        if (chatLieuKhung.isPresent()) {
+            return ResponseEntity.ok(chatLieuKhung.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tồn tại chất liệu khung.");
+        }
     }
-    return chatLieuKhungService.update(id, nameUpdate.trim());
-}
+    @PostMapping("/update")
+    public ResponseEntity<String> updateChatLieuKhung(
+            @RequestParam("id") Long id,
+            @RequestParam("nameUpdate") String nameUpdate) {
+        return chatLieuKhungService.update(id, nameUpdate);
+    }
 
     @PostMapping("/change-status")
     public ResponseEntity<?> thayDoiTrangThai(@RequestParam(value = "id", required = true) Long id) {

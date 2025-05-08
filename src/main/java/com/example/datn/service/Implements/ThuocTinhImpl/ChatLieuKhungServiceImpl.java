@@ -10,18 +10,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ChatLieuKhungServiceImpl implements ChatLieuKhungService {
+
     private final ChatLieuKhungRepo chatLieuKhungRepo;
 
 
     @Override
-    public ChatLieuKhung findById(Long id) {
-        return chatLieuKhungRepo.findById(id).orElse(null);
+    public Optional<ChatLieuKhung> findById(Long id) {
+        return chatLieuKhungRepo.findById(id);
     }
 
     @Override

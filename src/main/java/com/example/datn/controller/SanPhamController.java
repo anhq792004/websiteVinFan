@@ -95,6 +95,7 @@ public class SanPhamController {
 
     @GetMapping("/api/kieu-quat")
     @ResponseBody
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<KieuQuat>> getKieuQuat() {
         List<KieuQuat> kieuQuatList = kieuQuatService.findAllKieuQuat();
         return ResponseEntity.ok(kieuQuatList);

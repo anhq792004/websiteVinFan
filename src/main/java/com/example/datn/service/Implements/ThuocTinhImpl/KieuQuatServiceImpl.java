@@ -25,7 +25,7 @@ public class KieuQuatServiceImpl implements KieuQuatService {
     }
 
     @Override
-    public KieuQuat findById(Integer id) {
+    public KieuQuat findById(Long id) {
         return kieuQuatRepo.findById(id).orElse(null);
     }
 
@@ -43,7 +43,7 @@ public class KieuQuatServiceImpl implements KieuQuatService {
     }
 
     @Override
-    public ResponseEntity<String> add(String name) {
+    public ResponseEntity<?> add(String name) {
         if (name == null || name.trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Tên kiểu quạt không được để trống.");
         }
@@ -60,7 +60,7 @@ public class KieuQuatServiceImpl implements KieuQuatService {
     }
 
     @Override
-    public ResponseEntity<?> changeStatus(Integer id) {
+    public ResponseEntity<?> changeStatus(Long id) {
         KieuQuat kieuQuat = kieuQuatRepo.findById(id).orElse(null);
         if (kieuQuat == null) {
             return ResponseEntity.badRequest().body("Không tìm thấy kiểu quạt.");
