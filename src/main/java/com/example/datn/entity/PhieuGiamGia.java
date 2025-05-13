@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -33,11 +34,11 @@ public class PhieuGiamGia {
 
     @Column(name = "ngay_bat_dau")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date ngayBatDau;
+    LocalDateTime ngayBatDau;
 
     @Column(name = "ngay_ket_thuc")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date ngayKetThuc;
+    LocalDateTime ngayKetThuc;
 
     @Column(name = "so_luong")
     Integer soLuong;
@@ -50,7 +51,7 @@ public class PhieuGiamGia {
 
     @Column(name = "ngay_tao")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date ngayTao;
+    LocalDateTime ngayTao;
 
     @Column(name = "nguoi_tao")
     String nguoiTao;

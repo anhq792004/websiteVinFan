@@ -5,10 +5,9 @@ import com.example.datn.entity.ThuocTinh.*;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "san_pham_chi_tiet")
@@ -68,19 +67,17 @@ public class SanPhamChiTiet {
     @Column(name = "so_luong")
     Integer soLuong;
 
+    @Column(name = "mo_ta")
+    String moTa;
+
     @Column(name = "ngay_tao")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date ngayTao;
+    LocalDateTime ngayTao;
+
+    @Column(name = "ngay_sua")
+    LocalDateTime ngaySua;
 
     @Column(name = "nguoi_tao")
     String nguoiTao;
-
-    @Column(name = "ngay_sua")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date ngaySua;
-
-    @Column(name = "nguoi_sua")
-    String nguoiSua;
 
     @Column(name = "trang_thai")
     Boolean trangThai;

@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface ChatLieuCanhRepository extends JpaRepository<ChatLieuCanh, Integer> {
+public interface ChatLieuCanhRepo extends JpaRepository<ChatLieuCanh, Long> {
     @Query("SELECT cls FROM ChatLieuCanh cls " +
             "WHERE (LOWER(cls.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
-            "AND (:trang_thai IS NULL OR cls.trangThai = :trangThai))")
+            "AND (:trangThai IS NULL OR cls.trangThai = :trangThai))")
     Page<ChatLieuCanh> search(String query, Boolean trangThai, Pageable pageable);
 
     Optional<ChatLieuCanh> findByTen(String ten);

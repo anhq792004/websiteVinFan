@@ -6,7 +6,9 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "san_pham")
@@ -31,11 +33,8 @@ public class SanPham {
 
     @Column(name = "ngay_tao")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date ngayTao;
+    LocalDateTime ngayTao;
 
-    @Column(name = "ngay_sua")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date ngaySua;
 
     @Column(name = "trang_thai")
     Boolean trangThai;
@@ -43,4 +42,8 @@ public class SanPham {
     @ManyToOne
     @JoinColumn(name = "id_kieu_quat")
     KieuQuat kieuQuat;
+
+    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<SanPhamChiTiet> sanPhamChiTiet;
+
 }
