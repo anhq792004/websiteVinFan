@@ -8,8 +8,6 @@ public class DatnApplication {
     public static void main(String[] args) {
         SpringApplication.run(DatnApplication.class, args);
         System.out.println("Build success");
-        System.out.println("Build success");
-
     }
 
 }

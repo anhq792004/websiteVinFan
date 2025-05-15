@@ -151,31 +151,6 @@ $(document).ready(function () {
     });
 });
 
-$(document).ready(function () {
-    let itemsPerPage = 5; // Số sản phẩm trên mỗi trang
-    let items = $(".product-item"); // Lấy danh sách sản phẩm
-    let numItems = items.length; // Tổng số sản phẩm
-    let totalPages = Math.ceil(numItems / itemsPerPage); // Tổng số trang
-
-    // Ẩn toàn bộ sản phẩm, chỉ hiển thị sản phẩm đầu tiên
-    items.hide().slice(0, itemsPerPage).show();
-
-    // Khởi tạo phân trang
-    $("#pagination").pagination({
-        items: numItems,
-        itemsOnPage: itemsPerPage,
-        displayedPages: 3, // Số trang hiển thị trên thanh phân trang
-        edges: 1, // Số trang hiển thị ở đầu/cuối danh sách
-        prevText: "«",
-        nextText: "»",
-        onPageClick: function (pageNumber) {
-            let start = (pageNumber - 1) * itemsPerPage;
-            let end = start + itemsPerPage;
-            items.hide().slice(start, end).show();
-        }
-    });
-});
-
 // diaChi
 document.addEventListener("DOMContentLoaded", function () {
     let citis = document.getElementById("city");
@@ -222,6 +197,154 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         };
     }
+});
+
+$(".btn-add-sanPham").click(function () {
+    const hoaDonId = $(this).data("id-hd");
+    const sanPhamId = $(this).data("id-sp");
+    const gia = $(this).data("gia");
+    const soLuong = 1;
+
+    $.ajax({
+        url: '/hoa-don/addSP',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            idHD: hoaDonId,
+            idSP: sanPhamId,
+            gia: gia,
+            soLuong: soLuong
+        }),
+        success: function (response) {
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: response,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 500,
+                timerProgressBar: true
+            }).then(() => {
+                location.reload();
+            });
+        },
+        error: function (xhr) {
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: xhr.responseText,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true
+            });
+        }
+    });
+});
+
+
+$(".btn-xoa-sanPham").click(function () {
+    const sanPhamId = $(this).data("id");
+
+    $.ajax({
+        url: '/hoa-don/xoa',
+        type: 'POST',
+        data: {
+            idSP: sanPhamId
+        },
+        success: function (response) {
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: response,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true
+            }).then(() => {
+                location.reload();
+            });
+        },
+        error: function (xhr) {
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: xhr.responseText,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true
+            });
+        }
+    });
+});
+
+$(".quantity-btn").click(function () {
+    const idSP = $(this).closest("form").data("idsp");  // lấy từ data-idsp
+    const idHD = $(this).closest("form").data("idhd");  // lấy từ data-idhd
+
+    $.ajax({
+        url: '/hoa-don/tangSoLuong',
+        type: 'POST',
+        data: {
+            idSP: idSP,
+            idHD: idHD,
+        },
+        success: function (response) {
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: response,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000
+            }).then(() => location.reload());
+        },
+        error: function (xhr) {
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: xhr.responseText,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000
+            });
+        }
+    });
+});
+
+$(".quantity-btn-1").click(function () {
+    const idSP = $(this).closest("form").data("idsp");  // lấy từ data-idsp
+    const idHD = $(this).closest("form").data("idhd");  // lấy từ data-idhd
+
+    $.ajax({
+        url: '/hoa-don/giamSoLuong',
+        type: 'POST',
+        data: {
+            idSP: idSP,
+            idHD: idHD,
+        },
+        success: function (response) {
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: response,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000
+            }).then(() => location.reload());
+        },
+        error: function (xhr) {
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: xhr.responseText,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000
+            });
+        }
+    });
 });
 
 

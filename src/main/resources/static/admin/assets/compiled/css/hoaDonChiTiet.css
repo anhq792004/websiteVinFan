@@ -397,12 +397,10 @@
 
 
 /*thong tin san pham*/
-.product-item {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-    padding: 15px 0;
+.product-soLuong{
+    width: 35%;
 }
+
 .product-img {
     width: 80px;
     height: 80px;
@@ -442,19 +440,19 @@
     font-weight: bold;
 }
 /*sản phẩm trong hóa đơn*/
-.product-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-}
+/*.product-item {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: space-between;*/
+/*    padding: 10px;*/
+/*}*/
 
-.product-img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 8px;
-}
+/*.product-img {*/
+/*    width: 80px;*/
+/*    height: 80px;*/
+/*    object-fit: cover;*/
+/*    border-radius: 8px;*/
+/*}*/
 
 .product-price {
     font-weight: bold;
@@ -506,6 +504,13 @@
     background: white;
 }
 .quantity-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #888;
+    cursor: pointer;
+}
+.quantity-btn-1 {
     background: none;
     border: none;
     font-size: 18px;

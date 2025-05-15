@@ -6,7 +6,7 @@ import com.example.datn.entity.KhachHang;
 import com.example.datn.repository.HoaDonRepo.HoaDonRepo;
 import com.example.datn.repository.HoaDonRepo.LichSuHoaDonRepo;
 import com.example.datn.service.BanHang.BanHangService;
-import com.example.datn.service.HoaDonService.HoaDonSerivce;
+import com.example.datn.service.HoaDonService.HoaDonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,22 +18,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BanHangServiceImpl implements BanHangService {
 
-    private final HoaDonSerivce hoaDonSerivce;
+    private final HoaDonService hoaDonService;
     private final HoaDonRepo hoaDonRepo;
     private final LichSuHoaDonRepo lichSuHoaDonRepo;
     @Transactional
     @Override
     public void taoHoaDonCho(HoaDon hoaDon) {
-        List<HoaDon> listHoaDon = hoaDonSerivce.findAll();
+        List<HoaDon> listHoaDon = hoaDonService.findAll();
         int count = (int) listHoaDon.stream()
-                .filter(sl -> sl.getTrangThai() == hoaDonSerivce.getTrangThaiHoaDon().getHoaDonCho())
+                .filter(sl -> sl.getTrangThai() == hoaDonService.getTrangThaiHoaDon().getHoaDonCho())
                 .count();
         if (count >= 10) {
             // Thông báo khi số lượng hóa đơn chờ vượt quá 10
             throw new IllegalStateException("Số lượng hóa đơn chờ tối qua là 10");
         }
-        hoaDon.setMa(hoaDonSerivce.generateOrderCode());
-        hoaDon.setTrangThai(hoaDonSerivce.getTrangThaiHoaDon().getHoaDonCho());
+        hoaDon.setMa(hoaDonService.generateOrderCode());
+        hoaDon.setTrangThai(hoaDonService.getTrangThaiHoaDon().getHoaDonCho());
         hoaDon.setNgayTao(LocalDateTime.now());
         hoaDon.setLoaiHoaDon(true);
 
@@ -51,7 +51,7 @@ public class BanHangServiceImpl implements BanHangService {
     @Override
     public List<HoaDon> findHoaDon() {
         return hoaDonRepo.findAll().stream().
-                filter(loc -> loc.getTrangThai() == hoaDonSerivce.getTrangThaiHoaDon()
+                filter(loc -> loc.getTrangThai() == hoaDonService.getTrangThaiHoaDon()
                         .getHoaDonCho()).toList();
     }
 
