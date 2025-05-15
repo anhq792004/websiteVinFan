@@ -26,16 +26,27 @@ public class SecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @Autowired
-    private DataSource dataSource;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // Tạm thời vô hiệu hóa CSRF để loại trừ vấn đề token
+                .csrf(csrf -> csrf.disable())
+
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/admin/assets/**", "/", "/home", "/register",
-                                "/login", "/forgot-password", "/request-reset", "/reset-password").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        // Tài nguyên tĩnh và trang công khai
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/admin/assets/**", "/", "/home",
+                                "/register",
+                                "/login",
+                                "/forgot-password",
+                                "/request-reset",
+                                "/reset-password").permitAll()
+
+                        // Cách 1: Tạm thời cho phép truy cập vào tất cả các đường dẫn admin để kiểm tra
+                        .requestMatchers("/admin/**").permitAll()
+
+                        // Cách 2 (dùng sau khi đã kiểm tra thành công):
+                        // .requestMatchers("/admin/**").hasAnyRole("ADMIN", "USER")
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
