@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{/admin/fragments/head :: head}"></head>
+<body>
+<!-- Site wrapper -->
+<div class="wrapper">
+    <!-- Sidebar -->
+    <div>
+        <aside th:replace="/admin/fragments/sidebar :: sidebar"></aside>
+    </div>
+
+    <!-- Main-->
+    <div id="main">
+        <header th:replace="/admin/fragments/header :: header"></header>
+        <div class="page-content">
+            <section class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 th:text="${phieuGiamGia.id != null ? 'Sửa phiếu giảm giá' : 'Thêm phiếu giảm giá'}"></h4>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{${phieuGiamGia.id != null ? '/phieu-giam-gia/update' : '/phieu-giam-gia/save'}}" method="post" th:object="${phieuGiamGia}">
+                                <input type="hidden" th:field="*{id}"/>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                            <label for="ma">Mã phiếu giảm giá</label>
+                                            <!-- Hiển thị mã tự tạo (đã tự tạo trong controller) -->
+                                            <input type="text" class="form-control" id="ma" th:field="*{ma}"
+                                                   th:readonly="${phieuGiamGia.id == null}" /> <!-- Chỉ readonly khi tạo mới -->
+                                            <small class="text-muted" th:if="${phieuGiamGia.id == null}">Mã được tạo tự động</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                            <label for="ten">Tên</label>
+                                            <input type="text" class="form-control" id="ten" th:field="*{ten}" required />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                            <label for="ngayBatDau">Ngày bắt đầu</label>
+                                            <input type="date" class="form-control" id="ngayBatDau" th:field="*{ngayBatDau}" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                            <label for="ngayKetThuc">Ngày kết thúc</label>
+                                            <input type="date" class="form-control" id="ngayKetThuc" th:field="*{ngayKetThuc}" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-group">
+                                            <label for="soLuong">Số lượng</label>
+                                            <input type="number" class="form-control" id="soLuong" th:field="*{soLuong}" min="0" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-group">
+                                            <label for="giaTriGiam">Giá trị giảm</label>
+                                            <input type="number" step="0.01" class="form-control" id="giaTriGiam" th:field="*{giaTriGiam}" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-group">
+                                            <label for="loaiGiamGia">Loại giảm giá</label>
+                                            <select class="form-select" id="loaiGiamGia" th:field="*{loaiGiamGia}">
+                                                <option th:value="true">Phần trăm</option>
+                                                <option th:value="false">Tiền mặt</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-group">
+                                            <label for="trangThai">Trạng thái</label>
+                                            <select class="form-select" id="trangThai" th:field="*{trangThai}">
+                                                <option th:value="true">Hoạt động</option>
+                                                <option th:value="false">Không hoạt động</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <button type="submit" class="btn btn-primary me-2">Lưu</button>
+                                    <a th:href="@{/phieu-giam-gia/index}" class="btn btn-secondary">Hủy</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Footer-->
+    <div>
+        <footer th:replace="/admin/fragments/footer :: footer"></footer>
+    </div>
+</div>
+
+<div>
+    <script th:replace="/admin/fragments/script :: script"></script>
+</div>
+
+<script>
+    // Script kiểm tra ngày bắt đầu phải nhỏ hơn ngày kết thúc
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const ngayBatDau = document.getElementById('ngayBatDau');
+        const ngayKetThuc = document.getElementById('ngayKetThuc');
+
+        form.addEventListener('submit', function(event) {
+            if (ngayBatDau.value && ngayKetThuc.value) {
+                const startDate = new Date(ngayBatDau.value);
+                const endDate = new Date(ngayKetThuc.value);
+
+                if (startDate > endDate) {
+                    event.preventDefault();
+                    alert('Ngày bắt đầu không thể sau ngày kết thúc');
+                }
+            }
+        });
+
+        // Xử lý hiển thị ô giá trị giảm dựa trên loại giảm giá
+        const loaiGiamGia = document.getElementById('loaiGiamGia');
+        const giaTriGiam = document.getElementById('giaTriGiam');
+
+        function updateGiaTriGiamLabel() {
+            const isPercent = loaiGiamGia.value === 'true';
+            if (isPercent) {
+                giaTriGiam.setAttribute('max', '100');
+                giaTriGiam.setAttribute('placeholder', 'Nhập giá trị từ 0-100');
+                document.querySelector('label[for="giaTriGiam"]').textContent = 'Giá trị giảm (%)';
+            } else {
+                giaTriGiam.removeAttribute('max');
+                giaTriGiam.setAttribute('placeholder', 'Nhập số tiền');
+                document.querySelector('label[for="giaTriGiam"]').textContent = 'Giá trị giảm (VNĐ)';
+            }
+        }
+
+        loaiGiamGia.addEventListener('change', updateGiaTriGiamLabel);
+        updateGiaTriGiamLabel(); // Chạy khi trang tải xong
+    });
+</script>
+</body>
+</html>

@@ -31,8 +31,11 @@ public class TaiKhoan {
     String resetToken;
 
     @Column(name = "ngay_tao")
-    LocalDateTime ngayTao;
+    String ngayTao;
 
     @Column(name = "trang_thai")
     Boolean trangThai;
+
+    @Column(name = "vai_tro")
+    String vaiTro;
 }
