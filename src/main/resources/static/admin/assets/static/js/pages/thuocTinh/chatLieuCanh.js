@@ -2,7 +2,7 @@
 $('#addChatLieuCanh').on('submit', function (e) {
     e.preventDefault(); // Ngăn form thực hiện submit mặc định
 
-    let nameAdd = $('#nameAdd').val();
+    const nameAdd = $('#nameAdd').val();
 
     $.ajax({
         url: '/chat-lieu-canh/add',
@@ -37,7 +37,7 @@ $('#addChatLieuCanh').on('submit', function (e) {
 
 <!--    lấy thoogn tin để cập nhật-->
 $(document).on('click', '.detailModal', function () {
-    let id = $(this).data('id');
+    const id = $(this).data('id');
     $('#id').val(id); // Gắn ID vào input ẩn trong form
 
     $.ajax({
@@ -61,8 +61,8 @@ $(document).on('click', '.detailModal', function () {
 $('#updateKieuQuat').on('submit', function (e) {
     e.preventDefault(); // Ngăn submit mặc định của form
 
-    let id = $('#id').val();
-    let nameUpdate = $('#nameUpdate').val();
+    const id = $('#id').val();
+    const nameUpdate = $('#nameUpdate').val();
 
     $.ajax({
         url: `/chat-lieu-canh/update`,

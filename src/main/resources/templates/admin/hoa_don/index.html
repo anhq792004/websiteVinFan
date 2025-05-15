@@ -205,7 +205,8 @@
                                 </li>
 
                                 <!-- Hiển thị trang cuối nếu currentPage < totalPages - 2 -->
-                                <li th:if="${page < totalPages - 2}" class="page-item">
+                                <li class="page-item"
+                                    th:if="${page + 2 < totalPages - 1}">
                                     <a class="page-link" th:href="@{/hoa-don/index(page=${totalPages - 1}, size=5)}"
                                        th:text="${totalPages}"></a>
                                 </li>
