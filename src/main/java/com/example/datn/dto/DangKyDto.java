@@ -18,7 +18,7 @@ public class DangKyDto {
     private String email;
 
     @NotEmpty(message = "Mật khẩu không được để trống")
-    @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự")
+    @Size(min = 1, message = "Mật khẩu phải có ít nhất 6 ký tự")
     private String matKhau;
 
     @NotEmpty(message = "Xác nhận mật khẩu không được để trống")
