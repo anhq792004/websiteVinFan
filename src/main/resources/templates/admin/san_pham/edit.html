@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{/admin/fragments/head :: head}"></head>
+<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/sanPham.css}">
+<body>
+<!-- Site wrapper -->
+<div class="wrapper">
+    <!-- Sidebar -->
+    <div>
+        <aside th:replace="/admin/fragments/sidebar :: sidebar"></aside>
+    </div>
+
+    <!-- Main-->
+    <div id="main">
+        <header th:replace="/admin/fragments/header :: header"></header>
+        <div class="page-content">
+            <!--        dữ liệu thực hiện trong secsion-->
+            <section class="row">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Chỉnh sửa sản phẩm</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="editProductForm" th:action="@{/admin/san-pham/update}" method="post" enctype="multipart/form-data">
+                            <input type="hidden" id="editProductId" name="id" th:value="${sanPham.id}">
+                            
+                            <!-- Thông tin cơ bản -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="editProductCode" class="form-label" style="color: #222; font-weight: 600;">Mã sản phẩm <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="editProductCode" name="ma" th:value="${sanPham.ma}" required>
+                                    <div class="invalid-feedback">Vui lòng nhập mã sản phẩm</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editProductName" class="form-label" style="color: #222; font-weight: 600;">Tên sản phẩm <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="editProductName" name="ten" th:value="${sanPham.ten}" required>
+                                    <div class="invalid-feedback">Vui lòng nhập tên sản phẩm</div>
+                                </div>
+                            </div>
+
+                            <!-- Kiểu quạt và trạng thái -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="editFanType" class="form-label" style="color: #222; font-weight: 600;">Kiểu quạt <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="editFanType" name="kieuQuat.id" required>
+                                        <option value="">-- Chọn kiểu quạt --</option>
+                                    </select>
+                                    <div class="invalid-feedback">Vui lòng chọn kiểu quạt</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editProductStatus" class="form-label" style="color: #222; font-weight: 600;">Trạng thái</label>
+                                    <select class="form-select" id="editProductStatus" name="trangThai">
+                                        <option value="true" th:selected="${sanPham.trangThai}">Đang kinh doanh</option>
+                                        <option value="false" th:selected="${!sanPham.trangThai}">Ngừng kinh doanh</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Hình ảnh -->
+                            <div class="mb-3">
+                                <label for="editProductImage" class="form-label" style="color: #222; font-weight: 600;">Hình ảnh sản phẩm</label>
+                                <input type="file" class="form-control" id="editProductImage" name="hinhAnh" accept="image/*">
+                                <div class="mt-2">
+                                    <img id="editProductImagePreview" 
+                                         th:if="${sanPham.sanPhamChiTiet != null && sanPham.sanPhamChiTiet.size() > 0 && sanPham.sanPhamChiTiet[0].hinhAnh != null}" 
+                                         th:src="${sanPham.sanPhamChiTiet[0].hinhAnh.duongDan}" 
+                                         alt="Hình ảnh sản phẩm" 
+                                         style="max-width: 200px;">
+                                    <img id="editProductImagePreview" 
+                                         th:unless="${sanPham.sanPhamChiTiet != null && sanPham.sanPhamChiTiet.size() > 0 && sanPham.sanPhamChiTiet[0].hinhAnh != null}" 
+                                         src="/admin/assets/images/no-image.png" 
+                                         alt="Không có hình ảnh" 
+                                         style="max-width: 200px;">
+                                </div>
+                            </div>
+
+                            <!-- Mô tả -->
+                            <div class="mb-3">
+                                <label for="editProductDescription" class="form-label" style="color: #222; font-weight: 600;">Mô tả sản phẩm</label>
+                                <textarea class="form-control" id="editProductDescription" name="moTa" rows="3" th:text="${sanPham.moTa}"></textarea>
+                            </div>
+                            
+                            <div class="d-flex justify-content-end mt-4">
+                                <a th:href="@{/admin/san-pham/list}" class="btn btn-secondary me-2">Hủy</a>
+                                <button type="submit" class="btn btn-primary">Cập nhật sản phẩm</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <!-- Footer-->
+    <div>
+        <footer th:replace="/admin/fragments/footer :: footer"></footer>
+    </div>
+</div>
+
+<div>
+    <script th:replace="/admin/fragments/script :: script"></script>
+</div>
+<script th:src="@{/admin/assets/compiled/js/sanPhamForm.js}"></script>
+<script>
+    // Thiết lập giá trị cho kiểu quạt sau khi tải
+    $(document).ready(function() {
+        // Thiết lập giá trị cho kiểu quạt
+        const kieuQuatId = "[[${sanPham.kieuQuat != null ? sanPham.kieuQuat.id : ''}]]";
+        if (kieuQuatId) {
+            setTimeout(function() {
+                $("#editFanType").val(kieuQuatId);
+            }, 1000); // Đảm bảo danh sách đã được tải xong
+        }
+        
+        // Preview hình ảnh khi chọn
+        document.getElementById('editProductImage').addEventListener('change', function() {
+            const fileInput = this;
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('editProductImagePreview').src = e.target.result;
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        });
+    });
+</script>
+</body>
+</html> 

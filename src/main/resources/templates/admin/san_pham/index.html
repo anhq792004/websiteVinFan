@@ -61,10 +61,9 @@
                             <div class="d-flex justify-content-between mb-3">
                                 <h5 class="card-title">Danh sách sản phẩm (<span
                                         th:text="${sanPhamPage.totalElements}"></span> sản phẩm)</h5>
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#addProductModal">
+                                <a th:href="@{/admin/san-pham/add}" class="btn btn-primary">
                                     <i class="bi bi-plus-circle"></i> Thêm sản phẩm
-                                </button>
+                                </a>
                             </div>
 
                             <table class="table table-striped dataTable-table">
@@ -105,10 +104,10 @@
                                            class="btn btn-sm btn-outline-info">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <button type="button" class="btn btn-sm btn-outline-warning edit-product-btn"
-                                                th:data-id="${item.id}">
+                                        <a th:href="@{/admin/san-pham/edit(id=${item.id})}"
+                                           class="btn btn-sm btn-outline-warning">
                                             <i class="bi bi-pencil-square"></i>
-                                        </button>
+                                        </a>
                                         <button type="button" class="btn btn-sm btn-outline-danger toggle-status-btn"
                                                 th:data-id="${item.id}" th:data-status="${item.trangThai}">
                                             <i class="bi bi-power"></i>
@@ -153,10 +152,6 @@
         <footer th:replace="/admin/fragments/footer :: footer"></footer>
     </div>
 </div>
-
-<!-- Modals includes -->
-<div th:replace="~{/admin/fragments/product/addProductModal :: addProductModal}"></div>
-<div th:replace="~{/admin/fragments/product/editProductModal :: editProductModal}"></div>
 
 <div>
     <script th:replace="/admin/fragments/script :: script"></script>
