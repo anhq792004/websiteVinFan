@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{/admin/fragments/head :: head}"></head>
+<!-- Bỏ link Bootstrap CDN vì có thể gây xung đột CSS -->
+<!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet"> -->
 <body>
 <!-- Site wrapper -->
 <div class="wrapper">
@@ -14,26 +15,90 @@
     <div id="main">
         <header th:replace="/admin/fragments/header :: header"></header>
         <div class="page-content">
-            <!--        dữ liệu thực hiện trong secsion-->
+            <!-- Card tiêu đề -->
             <section class="row">
                 <div class="card">
                     <div class="card-header">
-                        <h1 th:text="${message}">PGG!</h1>
+                        <h1>Quản lý phiếu giảm giá</h1>
                     </div>
                     <div class="card-body">
-                    </div>
+                        <a class="btn btn-primary mb-3" th:href="@{/phieu-giam-gia/create}">Thêm mới</a>
+                        <a class="btn btn-success mb-3" th:href="@{/ap-dung-pgg/ap-dung}">Áp dụng phiếu giảm giá</a>
 
+                        <!-- Bảng hiển thị dữ liệu -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Mã</th>
+                                    <th>Tên</th>
+                                    <th>Ngày bắt đầu</th>
+                                    <th>Ngày kết thúc</th>
+                                    <th>Giá trị giảm</th>
+                                    <th>Loại giảm</th>
+                                    <th>Trạng thái</th>
+                                    <th>Hành động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="pgg : ${dsPhieuGiamGia}">
+                                    <td th:text="${pgg.ma}"></td>
+                                    <td th:text="${pgg.ten}"></td>
+                                    <td th:text="${#dates.format(pgg.ngayBatDau, 'yyyy-MM-dd')}"></td>
+                                    <td th:text="${#dates.format(pgg.ngayKetThuc, 'yyyy-MM-dd')}"></td>
+                                    <td>
+                                        <!-- Nếu loại giảm là phần trăm (true), hiển thị dấu % -->
+                                        <span th:if="${pgg.loaiGiamGia}" th:text="${pgg.giaTriGiam} + ' %'"></span>
+                                        <!-- Nếu loại giảm là tiền mặt (false), hiển thị VND -->
+                                        <span th:unless="${pgg.loaiGiamGia}" class="giaVND" th:text="${pgg.giaTriGiam}"></span>
+                                    </td>
+                                    <td th:text="${pgg.loaiGiamGia ? 'Phần trăm' : 'Tiền mặt'}"></td>
+                                    <td>
+                                        <span th:if="${pgg.trangThai}" class="badge bg-success">Hoạt động</span>
+                                        <span th:unless="${pgg.trangThai}" class="badge bg-danger">Không hoạt động</span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{|/phieu-giam-gia/edit/${pgg.id}|}" class="btn btn-warning btn-sm">Sửa</a>
+                                        <a th:href="@{|/phieu-giam-gia/delete/${pgg.id}|}" class="btn btn-danger btn-sm"
+                                           onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>
     </div>
+
     <!-- Footer-->
     <div>
         <footer th:replace="/admin/fragments/footer :: footer"></footer>
     </div>
 </div>
+
 <div>
     <script th:replace="/admin/fragments/script :: script"></script>
 </div>
+
+<script>
+    // Định dạng số thành tiền VNĐ chỉ cho những phần tử có class giaVND
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.giaVND').forEach(element => {
+            const originalValue = parseFloat(element.innerText || '0');
+            if (!isNaN(originalValue)) {
+                element.innerText = originalValue.toLocaleString('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND',
+                    currencyDisplay: 'symbol'
+                });
+            }
+        });
+
+        // Debug để kiểm tra dữ liệu
+        console.log("Số lượng phiếu giảm giá:", document.querySelectorAll('tbody tr').length);
+    });
+</script>
 </body>
 </html>

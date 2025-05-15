@@ -82,4 +82,7 @@ public class SanPhamChiTiet {
     @Column(name = "trang_thai")
     Boolean trangThai;
 
+    @Column(name = "gia_sau_giam")
+    BigDecimal giaSauGiam;
+
 }

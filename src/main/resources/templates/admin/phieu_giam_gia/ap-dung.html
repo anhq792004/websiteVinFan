@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{/admin/fragments/head :: head}">
+    <!-- Thêm một số style cụ thể cho trang này -->
+    <style>
+        .product-card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            background-color: #fff;
+            position: relative;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .product-card.selected {
+            border-color: #0d6efd;
+            background-color: #f0f7ff;
+        }
+
+        .product-item {
+            padding: 8px;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-price {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .applied-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .discount-info {
+            background-color: #17a2b8;
+            color: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .discount-info p {
+            margin-bottom: 8px;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: white;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-container {
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .action-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <div th:replace="/admin/fragments/sidebar :: sidebar"></div>
+    <div id="main">
+        <header th:replace="/admin/fragments/header :: header"></header>
+        <div class="page-content container">
+            <div class="card mt-4">
+                <div class="card-header bg-info text-white">
+                    <h3>Áp dụng phiếu giảm giá cho sản phẩm</h3>
+                </div>
+                <div class="card-body">
+
+                    <!-- Thông báo -->
+                    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+                    <!-- Chọn phiếu giảm giá -->
+                    <form th:action="@{/ap-dung-pgg/chon-phieu}" method="get" class="mb-4">
+                        <label class="form-label fw-bold">Chọn phiếu giảm giá</label>
+                        <div class="d-flex">
+                            <select class="form-select me-2" name="phieuGiamGiaId" required>
+                                <option value="" disabled th:selected="${phieuGiamGia == null}">-- Chọn phiếu giảm giá --</option>
+                                <option th:each="pgg : ${dsPhieuGiamGia}"
+                                        th:value="${pgg.id}"
+                                        th:text="${pgg.ten + ' (' + pgg.ma + ')'}"
+                                        th:selected="${phieuGiamGia != null and pgg.id == phieuGiamGia.id}">
+                                </option>
+                            </select>
+                            <button type="submit" class="btn btn-primary">Chọn</button>
+                        </div>
+                    </form>
+
+                    <!-- Nếu đã chọn phiếu giảm giá -->
+                    <div th:if="${phieuGiamGia != null}">
+                        <div class="discount-info">
+                            <h5 class="mb-3"><i class="bi bi-tag-fill me-2"></i>Thông tin phiếu giảm giá:</h5>
+                            <p><strong>Tên:</strong> <span th:text="${phieuGiamGia.ten}"></span></p>
+                            <p><strong>Mã:</strong> <span th:text="${phieuGiamGia.ma}"></span></p>
+                            <p><strong>Giá trị giảm:</strong>
+                                <span th:if="${phieuGiamGia.loaiGiamGia}" th:text="${phieuGiamGia.giaTriGiam} + ' %'"></span>
+                                <span th:unless="${phieuGiamGia.loaiGiamGia}" th:text="${#numbers.formatDecimal(phieuGiamGia.giaTriGiam, 0, 0)} + ' VND'"></span>
+                            </p>
+                        </div>
+
+                        <form th:action="@{/ap-dung-pgg/ap-dung}" method="post">
+                            <input type="hidden" name="phieuGiamGiaId" th:value="${phieuGiamGia.id}" />
+
+                            <!-- Tìm kiếm + chọn sản phẩm -->
+                            <label class="form-label fw-bold">Chọn sản phẩm áp dụng</label>
+                            <div class="search-container">
+                                <div class="input-group">
+                                    <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm sản phẩm...">
+                                    <button type="button" class="btn btn-outline-primary" id="btnSelectAll"><i class="bi bi-check-all me-1"></i>Chọn tất cả</button>
+                                    <button type="button" class="btn btn-outline-secondary" id="btnUnselectAll"><i class="bi bi-x-lg me-1"></i>Bỏ chọn tất cả</button>
+                                </div>
+                                <div class="mt-2 small text-muted">
+                                    <span id="selectedCount">0</span> sản phẩm được chọn
+                                </div>
+                            </div>
+
+                            <div class="product-container" id="productContainer">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-4 product-item" th:each="spct : ${dsSanPhamChiTiet}">
+                                        <div class="product-card"
+                                             th:data-id="${spct.id}"
+                                             th:classappend="${dsSanPhamChiTietIdsDaApDung != null and dsSanPhamChiTietIdsDaApDung.contains(spct.id) ? 'selected' : ''}">
+                                            <div class="form-check">
+                                                <input class="form-check-input product-checkbox"
+                                                       type="checkbox"
+                                                       name="sanPhamChiTietIds"
+                                                       th:id="'spct' + ${spct.id}"
+                                                       th:value="${spct.id}"
+                                                       th:checked="${dsSanPhamChiTietIdsDaApDung != null and dsSanPhamChiTietIdsDaApDung.contains(spct.id)}" />
+                                                <label class="form-check-label w-100" th:for="'spct' + ${spct.id}">
+                                                    <div class="product-name" th:text="${spct.sanPham.ten}"></div>
+                                                    <div class="product-price" th:text="'Giá: ' + ${#numbers.formatDecimal(spct.gia, 0, 0)} + ' VND'"></div>
+                                                </label>
+                                                <span th:if="${dsSanPhamChiTietIdsDaApDung != null and dsSanPhamChiTietIdsDaApDung.contains(spct.id)}"
+                                                      class="badge bg-success applied-badge">Đã áp dụng</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="action-buttons">
+                                <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle me-1"></i>Áp dụng phiếu giảm giá</button>
+                                <a th:href="@{/ap-dung-pgg/huy-ap-dung/{id}(id=${phieuGiamGia.id})}"
+                                   class="btn btn-danger"
+                                   onclick="return confirm('Bạn có chắc muốn hủy áp dụng phiếu giảm giá cho tất cả sản phẩm không?')">
+                                    <i class="bi bi-x-circle me-1"></i>Hủy áp dụng tất cả
+                                </a>
+                                <a class="btn btn-secondary" th:href="@{/phieu-giam-gia/index}">
+                                    <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div th:unless="${phieuGiamGia != null}" class="mt-4">
+                        <a class="btn btn-secondary" th:href="@{/phieu-giam-gia/index}">
+                            <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách phiếu giảm giá
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer th:replace="/admin/fragments/footer :: footer"></footer>
+    </div>
+</div>
+
+<script th:replace="/admin/fragments/script :: script"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('searchInput');
+        const productItems = document.querySelectorAll('.product-item');
+        const checkboxes = document.querySelectorAll('.product-checkbox');
+        const productCards = document.querySelectorAll('.product-card');
+        const selectedCountElement = document.getElementById('selectedCount');
+
+        // Cập nhật số lượng sản phẩm đã chọn
+        function updateSelectedCount() {
+            const selectedCount = document.querySelectorAll('.product-checkbox:checked').length;
+            selectedCountElement.textContent = selectedCount;
+        }
+
+        // Cập nhật trạng thái selected của card
+        function updateCardSelection() {
+            productCards.forEach(card => {
+                const checkbox = card.querySelector('.product-checkbox');
+                if (checkbox.checked) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+        }
+
+        // Khởi tạo số lượng ban đầu
+        updateSelectedCount();
+
+        // Tìm kiếm
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                const term = this.value.toLowerCase().trim();
+                let visibleCount = 0;
+
+                productItems.forEach(item => {
+                    const name = item.querySelector('.product-name').textContent.toLowerCase();
+                    const isVisible = name.includes(term);
+                    item.style.display = isVisible ? '' : 'none';
+                    if (isVisible) visibleCount++;
+                });
+
+                // Hiển thị thông báo nếu không tìm thấy sản phẩm nào
+                const noResultsMsg = document.getElementById('noResultsMsg');
+                if (term && visibleCount === 0) {
+                    if (!noResultsMsg) {
+                        const msg = document.createElement('div');
+                        msg.id = 'noResultsMsg';
+                        msg.className = 'alert alert-warning mt-3';
+                        msg.innerText = 'Không tìm thấy sản phẩm phù hợp';
+                        document.getElementById('productContainer').prepend(msg);
+                    }
+                } else if (noResultsMsg) {
+                    noResultsMsg.remove();
+                }
+            });
+        }
+
+        // Chọn tất cả
+        document.getElementById('btnSelectAll')?.addEventListener('click', function () {
+            checkboxes.forEach(cb => {
+                if (cb.closest('.product-item').style.display !== 'none') {
+                    cb.checked = true;
+                    cb.closest('.product-card').classList.add('selected');
+                }
+            });
+            updateSelectedCount();
+        });
+
+        // Bỏ chọn tất cả
+        document.getElementById('btnUnselectAll')?.addEventListener('click', function () {
+            checkboxes.forEach(cb => {
+                if (cb.closest('.product-item').style.display !== 'none') {
+                    cb.checked = false;
+                    cb.closest('.product-card').classList.remove('selected');
+                }
+            });
+            updateSelectedCount();
+        });
+
+        // Cập nhật selected count khi click vào checkbox
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                updateSelectedCount();
+                updateCardSelection();
+            });
+        });
+
+        // Cho phép click vào card để chọn
+        productCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Ngăn không cho kích hoạt khi click vào checkbox (tránh trigger hai lần)
+                if (e.target.type !== 'checkbox') {
+                    const checkbox = this.querySelector('.product-checkbox');
+                    checkbox.checked = !checkbox.checked;
+
+                    // Kích hoạt sự kiện change
+                    const event = new Event('change');
+                    checkbox.dispatchEvent(event);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

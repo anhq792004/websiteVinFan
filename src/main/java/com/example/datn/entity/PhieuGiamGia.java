@@ -34,11 +34,11 @@ public class PhieuGiamGia {
 
     @Column(name = "ngay_bat_dau")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDateTime ngayBatDau;
+    Date ngayBatDau;
 
     @Column(name = "ngay_ket_thuc")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDateTime ngayKetThuc;
+    Date ngayKetThuc;
 
     @Column(name = "so_luong")
     Integer soLuong;
@@ -51,14 +51,12 @@ public class PhieuGiamGia {
 
     @Column(name = "ngay_tao")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDateTime ngayTao;
-
-    @Column(name = "nguoi_tao")
-    String nguoiTao;
+    Date ngayTao;
 
     @Column(name = "trang_thai")
     boolean trangThai;
 
-    @Column(name = "gia_sau_giam")
-    BigDecimal giaSauGiam;
+    public boolean isLoaiGiamGia() {
+        return loaiGiamGia;
+    }
 }
