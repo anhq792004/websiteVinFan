@@ -1,20 +1,19 @@
 package com.example.datn.service.HoaDonService;
 
+import com.example.datn.dto.request.AddSPToHDCTRequest;
 import com.example.datn.dto.request.TrangThaiHoaDonRequest;
+import com.example.datn.dto.request.UpdateSoLuongRequest;
 import com.example.datn.dto.response.LichSuHoaDonResponse;
 import com.example.datn.dto.response.LichSuThanhToanResponse;
 import com.example.datn.entity.HoaDon.HoaDon;
 import com.example.datn.entity.HoaDon.HoaDonChiTiet;
 import com.example.datn.entity.HoaDon.LichSuHoaDon;
+import com.example.datn.entity.SanPham.SanPhamChiTiet;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface HoaDonSerivce {
+public interface HoaDonService {
     //hoaDon
     List<HoaDon> findAll();
 
@@ -34,6 +33,10 @@ public interface HoaDonSerivce {
 
     LichSuThanhToanResponse getLSTTByHoaDonId(Long id);
 
+    List<SanPhamChiTiet> findSPCTByIdSanPham();
+
+    void deleteSPInHD(Long idSPCT);
+
     void xacNhan(Long id);
 
     void giaoHang(Long id);
@@ -41,6 +44,17 @@ public interface HoaDonSerivce {
     void hoanThanh(Long id);
 
     void huy(Long id);
+
+    void addSPToHDCT(AddSPToHDCTRequest addSPToHDCTRequest);
+
+    void updateSoluong(UpdateSoLuongRequest updateSoLuongRequest);
+
+    void tangSoLuong(Long idHD, Long idSPCT);
+
+    void giamSoLuong(Long idHD, Long idSPCT);
+
+    Integer tongSoLuong(Long idHD);
+
 
     //lichSuHoaDon
     List<LichSuHoaDon> lichSuHoaDonList(Long id);
