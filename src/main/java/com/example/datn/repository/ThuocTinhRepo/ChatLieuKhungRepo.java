@@ -7,12 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
-
 public interface ChatLieuKhungRepo extends JpaRepository<ChatLieuKhung, Long> {
     @Query("SELECT clk FROM ChatLieuKhung clk " +
             "WHERE (LOWER(clk.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
-            "AND (:trang_thai IS NULL OR clk.trangThai = :trangThai))")
-    Page<ChatLieuKhung> search(String query, Boolean trang_thai, Pageable pageable);
+            "AND (:trangThai IS NULL OR clk.trangThai = :trangThai))")
+    Page<ChatLieuKhung> search(String query, Boolean trangThai, Pageable pageable);
 
     Optional<ChatLieuKhung> findByTen(String ten);
 

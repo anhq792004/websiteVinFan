@@ -1,156 +1,164 @@
-<!-- Cập nhật Modal chỉnh sửa biến thể -->
-<div class="modal fade" id="editVariantModal" tabindex="-1" aria-labelledby="editVariantModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editVariantModalLabel">Chỉnh sửa biến thể sản phẩm</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editVariantForm">
-                    <input type="hidden" id="editVariantId" name="id">
-                    <input type="hidden" name="sanPham.id" th:value="${sanPham.id}">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="editMauSac" class="form-label">Màu sắc</label>
-                            <select class="form-select" id="editMauSac" name="mauSac.id" required>
-                                <option value="">-- Chọn màu sắc --</option>
-                                <!-- Options will be loaded dynamically -->
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="editChatLieuCanh" class="form-label">Chất liệu cánh</label>
-                            <select class="form-select" id="editChatLieuCanh" name="chatLieuCanh.id">
-                                <option value="">-- Chọn chất liệu cánh --</option>
-                                <!-- Options will be loaded dynamically -->
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="editChatLieuKhung" class="form-label">Chất liệu khung</label>
-                            <select class="form-select" id="editChatLieuKhung" name="chatLieuKhung.id">
-                                <option value="">-- Chọn chất liệu khung --</option>
-                                <!-- Options will be loaded dynamically -->
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="editDuongKinhCanh" class="form-label">Đường kính cánh</label>
-                            <select class="form-select" id="editDuongKinhCanh" name="duongKinhCanh.id">
-                                <option value="">-- Chọn đường kính cánh --</option>
-                                <!-- Options will be loaded dynamically -->
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label for="editCongSuat" class="form-label">Công suất</label>
-                            <select class="form-select" id="editCongSuat" name="congSuat.id">
-                                <option value="">-- Chọn công suất --</option>
-                                <!-- Options will be loaded dynamically -->
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="editHang" class="form-label">Hãng</label>
-                            <select class="form-select" id="editHang" name="hang.id">
-                                <option value="">-- Chọn hãng --</option>
-                                <!-- Options will be loaded dynamically -->
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="editCheDoGio" class="form-label">Chế độ gió</label>
-                            <select class="form-select" id="editCheDoGio" name="cheDoGio.id">
-                                <option value="">-- Chọn chế độ gió --</option>
-                                <!-- Options will be loaded dynamically -->
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="editGia" class="form-label">Giá bán (VNĐ)</label>
-                            <input type="number" class="form-control" id="editGia" name="gia" min="0" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="editSoLuong" class="form-label">Số lượng</label>
-                            <input type="number" class="form-control" id="editSoLuong" name="soLuong" min="0" required>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editMoTa" class="form-label">Mô tả</label>
-                        <textarea class="form-control" id="editMoTa" name="moTa" rows="3"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editHinhAnh" class="form-label">Hình ảnh mới (để trống nếu không thay đổi)</label>
-                        <input type="file" class="form-control" id="editHinhAnh" name="hinhAnh">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-primary" id="updateVariantBtn">Cập nhật</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Cập nhật Modal chi tiết biến thể -->
-<div class="modal fade" id="variantDetailModal" tabindex="-1" aria-labelledby="variantDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="variantDetailModalLabel">Chi tiết biến thể</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="text-center mb-3" id="variantImageContainer">
-                    <img id="variantImage" src="" alt="Hình ảnh biến thể" class="img-fluid rounded" style="max-height: 200px;">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Fragment for Edit Product Variant Modal -->
+<div th:fragment="editProductSpct">
+    <!-- Cập nhật Modal chỉnh sửa biến thể -->
+    <div class="modal fade" id="editProductSpctModal" tabindex="-1" aria-labelledby="editProductSpctModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProductSpctModalLabel">Chỉnh sửa biến thể sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <table class="table table-bordered">
-                    <tr>
-                        <th style="width: 40%">Màu sắc:</th>
-                        <td id="detailMauSac"></td>
-                    </tr>
-                    <tr>
-                        <th>Chất liệu cánh:</th>
-                        <td id="detailChatLieuCanh"></td>
-                    </tr>
-                    <tr>
-                        <th>Chất liệu khung:</th>
-                        <td id="detailChatLieuKhung"></td>
-                    </tr>
-                    <tr>
-                        <th>Đường kính cánh:</th>
-                        <td id="detailDuongKinhCanh"></td>
-                    </tr>
-                    <tr>
-                        <th>Công suất:</th>
-                        <td id="detailCongSuat"></td>
-                    </tr>
-                    <tr>
-                        <th>Hãng:</th>
-                        <td id="detailHang"></td>
-                    </tr>
-                    <tr>
-                        <th>Chế độ gió:</th>
-                        <td id="detailCheDoGio"></td>
-                    </tr>
-                    <tr>
-                        <th>Số lượng:</th>
-                        <td id="detailSoLuong"></td>
-                    </tr>
-                    <tr>
-                        <th>Giá:</th>
-                        <td id="detailGia"></td>
-                    </tr>
-                    <tr>
-                        <th>Mô tả:</th>
-                        <td id="detailMoTa"></td>
-                    </tr>
-                </table>
+                <div class="modal-body">
+                    <form id="editVariantForm">
+                        <input type="hidden" id="editVariantId" name="id">
+                        <input type="hidden" name="sanPham.id" th:value="${sanPham.id}">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="editMauSac" class="form-label">Màu sắc</label>
+                                <select class="form-select" id="editMauSac" name="mauSac.id" required>
+                                    <option value="">-- Chọn màu sắc --</option>
+                                    <!-- Options will be loaded dynamically -->
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editChatLieuCanh" class="form-label">Chất liệu cánh</label>
+                                <select class="form-select" id="editChatLieuCanh" name="chatLieuCanh.id">
+                                    <option value="">-- Chọn chất liệu cánh --</option>
+                                    <!-- Options will be loaded dynamically -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="editChatLieuKhung" class="form-label">Chất liệu khung</label>
+                                <select class="form-select" id="editChatLieuKhung" name="chatLieuKhung.id">
+                                    <option value="">-- Chọn chất liệu khung --</option>
+                                    <!-- Options will be loaded dynamically -->
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editDuongKinhCanh" class="form-label">Đường kính cánh</label>
+                                <select class="form-select" id="editDuongKinhCanh" name="duongKinhCanh.id">
+                                    <option value="">-- Chọn đường kính cánh --</option>
+                                    <!-- Options will be loaded dynamically -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="editCongSuat" class="form-label">Công suất</label>
+                                <select class="form-select" id="editCongSuat" name="congSuat.id">
+                                    <option value="">-- Chọn công suất --</option>
+                                    <!-- Options will be loaded dynamically -->
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="editHang" class="form-label">Hãng</label>
+                                <select class="form-select" id="editHang" name="hang.id">
+                                    <option value="">-- Chọn hãng --</option>
+                                    <!-- Options will be loaded dynamically -->
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="editCheDoGio" class="form-label">Chế độ gió</label>
+                                <select class="form-select" id="editCheDoGio" name="cheDoGio.id">
+                                    <option value="">-- Chọn chế độ gió --</option>
+                                    <!-- Options will be loaded dynamically -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="editGia" class="form-label">Giá bán (VNĐ)</label>
+                                <input type="number" class="form-control" id="editGia" name="gia" min="0" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editSoLuong" class="form-label">Số lượng</label>
+                                <input type="number" class="form-control" id="editSoLuong" name="soLuong" min="0" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editMoTa" class="form-label">Mô tả</label>
+                            <textarea class="form-control" id="editMoTa" name="moTa" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editHinhAnh" class="form-label">Hình ảnh mới (để trống nếu không thay đổi)</label>
+                            <input type="file" class="form-control" id="editHinhAnh" name="hinhAnh">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="updateVariantBtn">Cập nhật</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Cập nhật Modal chi tiết biến thể -->
+    <div class="modal fade" id="variantDetailModal" tabindex="-1" aria-labelledby="variantDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="variantDetailModalLabel">Chi tiết biến thể</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-3" id="variantImageContainer">
+                        <img id="variantImage" src="" alt="Hình ảnh biến thể" class="img-fluid rounded" style="max-height: 200px;">
+                    </div>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th style="width: 40%">Màu sắc:</th>
+                            <td id="detailMauSac"></td>
+                        </tr>
+                        <tr>
+                            <th>Chất liệu cánh:</th>
+                            <td id="detailChatLieuCanh"></td>
+                        </tr>
+                        <tr>
+                            <th>Chất liệu khung:</th>
+                            <td id="detailChatLieuKhung"></td>
+                        </tr>
+                        <tr>
+                            <th>Đường kính cánh:</th>
+                            <td id="detailDuongKinhCanh"></td>
+                        </tr>
+                        <tr>
+                            <th>Công suất:</th>
+                            <td id="detailCongSuat"></td>
+                        </tr>
+                        <tr>
+                            <th>Hãng:</th>
+                            <td id="detailHang"></td>
+                        </tr>
+                        <tr>
+                            <th>Chế độ gió:</th>
+                            <td id="detailCheDoGio"></td>
+                        </tr>
+                        <tr>
+                            <th>Số lượng:</th>
+                            <td id="detailSoLuong"></td>
+                        </tr>
+                        <tr>
+                            <th>Giá:</th>
+                            <td id="detailGia"></td>
+                        </tr>
+                        <tr>
+                            <th>Mô tả:</th>
+                            <td id="detailMoTa"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+</body>
+</html>

@@ -206,7 +206,7 @@
                                 <div class="mb-3">
                                     <label for="nameUpdate" class="form-label">Tên chất liệu khung</label>
                                     <input type="text" class="form-control" id="nameUpdate"
-                                           name="nameUpdate" placeholder="Nhập tên chất liệu cánh mới">
+                                           name="nameUpdate" placeholder="Nhập tên chất liệu khung mới">
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-outline-success">
@@ -221,18 +221,18 @@
                         </div>
                     </div>
                 </div>
-                <!-- Footer-->
-                <div>
-                    <footer th:replace="/admin/fragments/footer :: footer"></footer>
-                </div>
+            </div>
+            <!-- Footer-->
+            <div>
+                <footer th:replace="/admin/fragments/footer :: footer"></footer>
             </div>
         </div>
-        <div>
-            <script th:replace="/admin/fragments/script :: script"></script>
-        </div>
-        <script th:src="@{/admin/assets/compiled/js/chat_lieu_khung.js}"></script>
-
     </div>
+    <div>
+        <script th:replace="/admin/fragments/script :: script"></script>
+    </div>
+    <script th:src="@{/admin/assets/compiled/js/chat_lieu_khung.js}"></script>
+
 </div>
 </body>
 </html>

@@ -51,8 +51,25 @@ public class KieuQuatController {
         }
         return kieuQuatService.add(name.trim());
     }
+    
+    @PostMapping("/update")
+    public ResponseEntity<?> capNhat(
+            @RequestParam(value = "id", required = true) Long id,
+            @RequestParam(value = "name", required = true) String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Tên không được để trống");
+        }
+        KieuQuat kieuQuat = kieuQuatService.findById(id);
+        if (kieuQuat == null) {
+            return ResponseEntity.badRequest().body("Không tìm thấy kiểu quạt");
+        }
+        kieuQuat.setTen(name.trim());
+        kieuQuatService.save(kieuQuat);
+        return ResponseEntity.ok("Cập nhật kiểu quạt thành công.");
+    }
+    
     @PostMapping("/change-status")
-    public ResponseEntity<?> thayDoiTrangThai(@RequestParam(value = "id", required = true) Integer id) {
+    public ResponseEntity<?> thayDoiTrangThai(@RequestParam(value = "id", required = true) Long id) {
         return kieuQuatService.changeStatus(id);
     }
 }
