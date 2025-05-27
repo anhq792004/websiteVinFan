@@ -96,15 +96,15 @@ public class HoaDonServiceImpl implements HoaDonService {
 
 
         if (hoaDonOptional.isPresent()) {
-//            for (HoaDonChiTiet hdct : listHDCT) {
-//                SanPhamChiTiet spct = hdct.getSanPhamChiTiet();
-//                int soLuongTon = spct.getSoLuong(); // Số lượng hiện tại trong kho
-//                int soLuongBan = hdct.getSoLuong();    // Số lượng trong hóa đơn chi tiết
-//
-//                if (soLuongTon < soLuongBan) {
-//                    throw new RuntimeException("Số lượng tồn kho không đủ cho sản phẩm: " + spct.getSanPham().getTen());
-//                }
-//            }
+            for (HoaDonChiTiet hdct : listHDCT) {
+                SanPhamChiTiet spct = hdct.getSanPhamChiTiet();
+                int soLuongTon = spct.getSoLuong(); // Số lượng hiện tại trong kho
+                int soLuongBan = hdct.getSoLuong();    // Số lượng trong hóa đơn chi tiết
+
+                if (soLuongTon < soLuongBan) {
+                    throw new RuntimeException("Số lượng tồn kho không đủ cho sản phẩm: " + spct.getSanPham().getTen());
+                }
+            }
             HoaDon hoaDon = hoaDonOptional.get();
 
             // Cập nhật trạng thái của HoaDon

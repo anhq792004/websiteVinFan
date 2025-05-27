@@ -36,4 +36,7 @@ public class LichSuHoaDon {
     @Column(name = "mo_ta")
     String moTa;
 
+    @Column(name = "nguoi_tao")
+    String nguoiTao;
+
 }

@@ -23,9 +23,7 @@
                         <div class="row">
                             <!-- Nút Thêm Hóa Đơn -->
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5>
-                                    Bán hàng
-                                </h5>
+                                <h5>Bán hàng</h5>
                                 <form id="taoHoaDon" method="post" action="/sale/tao-tao-don">
                                     <button type="submit" class="btn btn-success"
                                             style="width: 60px; text-align: center">
@@ -95,7 +93,7 @@
                                               method="post"
                                               action="/sale/updateSoLuong"
                                               class="update-so-luong-form">
-                                            <div class="quantity-container" >
+                                            <div class="quantity-container">
                                                 <button class="quantity-btn-1" type="button">−</button>
                                                 <input type="text" class="quantity-input"
                                                        th:value="${item.soLuong}" id="soLuong" name="soLuong">
@@ -107,7 +105,8 @@
 
                                     <a href="javascript:void(0);"
                                        class="btn btn-outline-danger text-danger btn-xoa-sanPham"
-                                       th:data-id="${item.sanPhamChiTiet.id}">
+                                       th:data-id-sp="${item.sanPhamChiTiet.id}"
+                                       th:data-id-hd="${idHD}">
                                         <i class="bi bi-trash"></i>
                                     </a>
                                 </div>
@@ -115,41 +114,112 @@
                         </div>
                     </div>
                     <!--                khách hàng-->
-                    <div class="card shadow-sm">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h1 class="h5 mb-0">Tài khoản</h1>
-                            <div class="ms-auto d-flex gap-2">
-                                <button type="button" class="btn btn-outline-primary"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalTaiKhoan"
-                                        th:disabled="${idHD == null}">
-                                    Chọn tài khoản
-                                </button>
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5>Khách hàng</h5>
+                                <div class="ms-auto d-flex gap-2">
+                                    <button type="button" class="btn btn-outline-primary"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalTaiKhoan"
+                                            th:disabled="${idHD == null}">
+                                        Chọn tài khoản
+                                    </button>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="card-body">
-                            <div class="row gap-2 ">
-                                <div class="col floating-group">
-                                    <input type="text" class="form-control border-0 shadow-sm"
-                                           style="border-bottom: 1px solid #E9EAEC !important;"
-                                           placeholder="" aria-label="name" id="name">
-                                    <label for="name">Tên</label>
+                        <hr>
+                        <div class="row">
+                            <div class="mb-3 col-md-6">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex gap-3">
+                                        <strong>Tên khách hàng:</strong><span>AnhQ</span>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-outline-warning btn-sm">Chọn địa chỉ</button>
+                                    </div>
                                 </div>
-                                <div class="col floating-group">
-                                    <input type="text" class="form-control border-0 shadow-sm"
-                                           style="border-bottom: 1px solid #E9EAEC !important;"
-                                           placeholder="" id="sdt"
-                                           aria-label="sdt">
-                                    <label for="sdt">Số điện thoại</label>
-
+                                <div class="gap-3 d-flex justify-content-between">
+                                    <div class="col floating-group">
+                                        <input type="text" class="form-control" placeholder="" aria-label="name"
+                                               id="name">
+                                        <label for="name">Tên</label>
+                                    </div>
+                                    <div class="col floating-group">
+                                        <input type="text" class="form-control" placeholder="" aria-label="sdt"
+                                               id="sdt">
+                                        <label for="sdt">Số điện thoại</label>
+                                    </div>
                                 </div>
-                                <div class="col floating-group">
-                                    <input type="text" class="form-control border-0 shadow-sm"
-                                           style="border-bottom: 1px solid #E9EAEC !important;"
-                                           placeholder=""
-                                           aria-label="Email" id="email">
-                                    <label for="email">Email</label>
+                                <div class="gap-3 d-flex justify-content-between">
+                                    <div class="col floating-group">
+                                        <input type="text" class="form-control" placeholder="" aria-label="tinh"
+                                               id="tinh">
+                                        <label for="name">Tỉnh/Thành phố</label>
+                                    </div>
+                                    <div class="col floating-group">
+                                        <input type="text" class="form-control" placeholder="" aria-label="Huyen"
+                                               id="Huyen">
+                                        <label for="sdt">Quận/Huyện</label>
+                                    </div>
+                                    <div class="col floating-group">
+                                        <input type="text" class="form-control" placeholder="" aria-label="xa"
+                                               id="Xa">
+                                        <label for="sdt">Xã/Phường</label>
+                                    </div>
+                                </div>
+                                <div class="gap-3 d-flex justify-content-between">
+                                    <div class="col floating-group">
+                                        <input type="text" class="form-control" placeholder="" aria-label="diaChi"
+                                               id="diaChi">
+                                        <label for="diaChi">Địa chỉ cụ thể</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="fw-bold text-end">Giao hàng</p>
+                                <div class="total-section">
+                                    <div class="d-flex justify-content-between">
+                                        <p>Tiền hàng:</p>
+                                        <p th:if="${hoaDon == null}">0</p>
+                                        <p th:if="${hoaDon != null}" th:text="${hoaDon.tongTien}"></p>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p>Phí vận chuyển: </p>
+                                        <div class="col-3 floating-group">
+                                            <input type="text" class="form-control" placeholder="" aria-label="vc"
+                                                   id="vc">
+                                            <label for="vc">Phí vận chuyển</label>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <p>Giảm giá: </p>
+                                        <p>137.500 VND</p>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <p>Tổng số tiền: </p>
+                                        <p class="fw-bold text-danger">137.500 VND</p>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <p>Khách thanh toán: </p>
+                                        <div class="col-3 floating-group">
+                                            <input type="number" class="form-control" placeholder="" aria-label="tt"
+                                                   id="tt">
+                                            <label for="tt">Tiền</label>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <p>Tiền thừa: </p>
+                                        <p class="fw-bold text-danger">137.500 VND</p>
+                                    </div>
+                                </div>
+                                <div class="float-end mt-3">
+                                    <button type="button"
+                                            class="btn btn-outline-warning"
+                                            id="btnThanhToan"
+                                            th:attr="data-id=${idHD}">
+                                        Thanh toán
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -158,127 +228,128 @@
             </section>
         </div>
     </div>
-    <!-- Modal -->
-    <div class="modal fade" id="modalThemSanPham" tabindex="-1" aria-labelledby="exampleModalThemSanPham"
-         aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalThemSanPham">Sản phẩm</h1>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="modalThemSanPham" tabindex="-1" aria-labelledby="exampleModalThemSanPham"
+     aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalThemSanPham">Sản phẩm</h1>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-12">
+                    <label for="inputSearch" class="form-label">Tìm kiếm sản phẩm</label>
+                    <input type="text" class="form-control" id="inputSearch" placeholder="Tìm kiếm sản phẩm">
                 </div>
-                <div class="modal-body">
-                    <div class="col-12">
-                        <label for="inputSearch" class="form-label">Tìm kiếm sản phẩm</label>
-                        <input type="text" class="form-control" id="inputSearch" placeholder="Tìm kiếm sản phẩm">
-                    </div>
-                    <table class="table table-striped dataTable-table">
-                        <thead>
-                        <tr>
-                            <th>STT</th>
-                            <th>Tên sản phẩm</th>
-                            <th>Giá</th>
-                            <th>Công xuất</th>
-                            <th>Màu</th>
-                            <th>Số lượng</th>
-                            <th>Thao tác</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="item, iter : ${findSPCTByIdSanPham}">
-                            <td th:text="${iter.count}"></td>
-                            <td th:text="${item.sanPham.ten}"></td>
-                            <td th:text="${item.gia}">h1</td>
-                            <td th:text="${item.congSuat.ten}"></td>
-                            <td th:text="${item.mauSac.ten}"></td>
-                            <td th:text="${item.soLuong}">
+                <table class="table table-striped dataTable-table">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Công xuất</th>
+                        <th>Màu</th>
+                        <th>Số lượng</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item, iter : ${findSPCTByIdSanPham}">
+                        <td th:text="${iter.count}"></td>
+                        <td th:text="${item.sanPham.ten}"></td>
+                        <td th:text="${item.gia}">h1</td>
+                        <td th:text="${item.congSuat.ten}"></td>
+                        <td th:text="${item.mauSac.ten}"></td>
+                        <td th:text="${item.soLuong}">
 
-                            </td>
-                            <td>
-                                <button type="button"
-                                        class="btn btn-outline-success btn-add-sanPham"
-                                        th:data-id-hd="${idHD}"
-                                        th:data-id-sp="${item.id}"
-                                        th:data-gia="${item.gia}">
-                                    Thêm
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                        </td>
+                        <td>
+                            <button type="button"
+                                    class="btn btn-outline-success btn-add-sanPham"
+                                    th:data-id-hd="${idHD}"
+                                    th:data-id-sp="${item.id}"
+                                    th:data-gia="${item.gia}">
+                                Thêm
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-    <!--    modal thêm khách hàng-->
-    <div class="modal fade" id="modalTaiKhoan" tabindex="-1"
-         aria-labelledby="exampleModalLabelTaiKhoan"
-         aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabelTaiKhoan">Thông tin tài
-                        khoản</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" id="searchKH"
-                               placeholder="Tìm kiếm theo tên, số điện thoại khách hàng">
-                        <button type="button" class="btn btn-outline-primary"
-                                id="searchButtonKH">Tìm kiếm
-                        </button>
-                    </div>
-                    <!-- Bảng danh sách sản phẩm -->
-                    <table class="table table-striped dataTable-table mt-3">
-                        <thead class="table-light">
-                        <tr>
-                            <th>STT</th>
-                            <th>Tên khách hàng</th>
-                            <th>Số điện thoại</th>
-                            <th>Email</th>
-                            <th>Thao tác</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!--                                                    <tr th:each="khachHang, stat : ${listsKhachhang}">-->
-                        <!--                                                        <td th:text="${stat.index + 1}"></td>-->
-                        <!--                                                        <td th:text="${khachHang.ten}"></td>-->
-                        <!--                                                        <td th:text="${khachHang.soDienThoai}"></td>-->
-                        <!--                                                        <td th:text="${khachHang.email}"></td>-->
-                        <!--                                                        <td>-->
-                        <!--                                                            <form method="post" th:action="@{/ban-hang-tai-quay/addKH}"-->
-                        <!--                                                                  class="d-inline">-->
-                        <!--                                                                <input type="hidden" name="idHD" th:value="${idHD}">-->
-                        <!--                                                                <input type="hidden" name="idKH"-->
-                        <!--                                                                       th:value="${khachHang.id}">-->
-                        <!--                                                                <button type="submit" class="btn btn-outline-success"-->
-                        <!--                                                                        th:disabled="${khachHang.id == 1}">Chọn-->
-                        <!--                                                                </button>-->
-                        <!--                                                            </form>-->
-                        <!--                                                        </td>-->
-                        <!--                                                    </tr>-->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal">
-                        Đóng
+</div>
+<!--    modal thêm khách hàng-->
+<div class="modal fade" id="modalTaiKhoan" tabindex="-1"
+     aria-labelledby="exampleModalLabelTaiKhoan"
+     aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabelTaiKhoan">Thông tin tài
+                    khoản</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="searchKH"
+                           placeholder="Tìm kiếm theo tên, số điện thoại khách hàng">
+                    <button type="button" class="btn btn-outline-primary"
+                            id="searchButtonKH">Tìm kiếm
                     </button>
                 </div>
+                <!-- Bảng danh sách sản phẩm -->
+                <table class="table table-striped dataTable-table mt-3">
+                    <thead class="table-light">
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên khách hàng</th>
+                        <th>Số điện thoại</th>
+                        <th>Email</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!--                                                    <tr th:each="khachHang, stat : ${listsKhachhang}">-->
+                    <!--                                                        <td th:text="${stat.index + 1}"></td>-->
+                    <!--                                                        <td th:text="${khachHang.ten}"></td>-->
+                    <!--                                                        <td th:text="${khachHang.soDienThoai}"></td>-->
+                    <!--                                                        <td th:text="${khachHang.email}"></td>-->
+                    <!--                                                        <td>-->
+                    <!--                                                            <form method="post" th:action="@{/ban-hang-tai-quay/addKH}"-->
+                    <!--                                                                  class="d-inline">-->
+                    <!--                                                                <input type="hidden" name="idHD" th:value="${idHD}">-->
+                    <!--                                                                <input type="hidden" name="idKH"-->
+                    <!--                                                                       th:value="${khachHang.id}">-->
+                    <!--                                                                <button type="submit" class="btn btn-outline-success"-->
+                    <!--                                                                        th:disabled="${khachHang.id == 1}">Chọn-->
+                    <!--                                                                </button>-->
+                    <!--                                                            </form>-->
+                    <!--                                                        </td>-->
+                    <!--                                                    </tr>-->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal">
+                    Đóng
+                </button>
             </div>
         </div>
     </div>
+</div>
 
 
-    <!-- Footer-->
-    <div>
-        <footer th:replace="/admin/fragments/footer :: footer"></footer>
-    </div>
+<!-- Footer-->
+<div>
+    <footer th:replace="/admin/fragments/footer :: footer"></footer>
+</div>
 </div>
 <script th:replace="/admin/fragments/script :: script"></script>
 <script th:src="@{/admin/assets/static/js/pages/sale.js}"></script>
