@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -58,10 +59,63 @@ public class SanPhamController {
         model.addAttribute("sanPham", sanPhamOptional.get());
         return "admin/san_pham/detail";
     }
+    
+    @GetMapping("/add")
+    public String showAddSanPhamForm(Model model) {
+        model.addAttribute("sanPham", new SanPham());
+        model.addAttribute("kieuQuat", kieuQuatService.findAllKieuQuat());
+        return "admin/san_pham/add";
+    }
+    
+    @PostMapping("/add")
+    public String addSanPham(
+            @ModelAttribute SanPham sanPham,
+            @RequestParam(value = "hinhAnh", required = false) MultipartFile hinhAnh) {
+        
+        // Set ngày tạo cho sản phẩm -> Lấy ngày hiện tại
+        sanPham.setNgayTao(LocalDateTime.now());
+        
+        // Lưu hình ảnh nếu có
+        if (hinhAnh != null && !hinhAnh.isEmpty()) {
+            // Xử lý lưu hình ảnh trong service
+            sanPhamService.saveSanPhamWithImage(sanPham, hinhAnh);
+        } else {
+            sanPhamService.saveSanPham(sanPham);
+        }
+        
+        return "redirect:/admin/san-pham/list";
+    }
+    
+    @GetMapping("/edit")
+    public String showEditSanPhamForm(@RequestParam(value = "id") Long id, Model model) {
+        Optional<SanPham> sanPhamOptional = sanPhamService.findSanPhamById(id);
+        if (sanPhamOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy sản phẩm");
+        }
+        model.addAttribute("sanPham", sanPhamOptional.get());
+        model.addAttribute("kieuQuat", kieuQuatService.findAllKieuQuat());
+        return "admin/san_pham/edit";
+    }
+    
+    @PostMapping("/update")
+    public String updateSanPham(
+            @ModelAttribute SanPham sanPham,
+            @RequestParam(value = "hinhAnh", required = false) MultipartFile hinhAnh) {
+        
+        // Lưu hình ảnh nếu có
+        if (hinhAnh != null && !hinhAnh.isEmpty()) {
+            // Xử lý lưu hình ảnh trong service
+            sanPhamService.updateSanPhamWithImage(sanPham, hinhAnh);
+        } else {
+            sanPhamService.updateSanPham(sanPham);
+        }
+        
+        return "redirect:/admin/san-pham/list";
+    }
 
     @PostMapping("/them")
     @ResponseBody
-    public ResponseEntity<String> addSanPham(@RequestBody SanPham sanPham) {
+    public ResponseEntity<String> addSanPhamAPI(@RequestBody SanPham sanPham) {
         // Set ngày tạo cho sản phẩm -> Lấy ngày hiện tại
         sanPham.setNgayTao(LocalDateTime.now());
         sanPhamService.saveSanPham(sanPham);
@@ -70,7 +124,7 @@ public class SanPhamController {
 
     @PostMapping("/sua")
     @ResponseBody
-    public ResponseEntity<String> updateSanPham(@RequestBody SanPham sanPham) {
+    public ResponseEntity<String> updateSanPhamAPI(@RequestBody SanPham sanPham) {
         sanPhamService.updateSanPham(sanPham);
         return ResponseEntity.ok("Sửa sản phẩm thành công");
     }
@@ -95,6 +149,7 @@ public class SanPhamController {
 
     @GetMapping("/api/kieu-quat")
     @ResponseBody
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<KieuQuat>> getKieuQuat() {
         List<KieuQuat> kieuQuatList = kieuQuatService.findAllKieuQuat();
         return ResponseEntity.ok(kieuQuatList);

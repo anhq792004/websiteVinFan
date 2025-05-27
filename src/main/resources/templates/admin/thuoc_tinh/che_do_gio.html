@@ -207,20 +207,21 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalChinhSuaLabel">Chỉnh sửa chế độ gió</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="updateCheDoGio" method="post" action="/che-do-gio/update" onsubmit="return false;">
+                <form id="updateCheDoGio" onsubmit="return false;">
                     <input type="hidden" id="id" name="id">
                     <div class="mb-3">
                         <label for="updateName" class="form-label">Tên chế độ gió</label>
                         <input type="text" class="form-control" id="updateName" name="name" placeholder="Nhập tên chế độ gió">
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-outline-success">
-                            <i class="bi bi-floppy"></i>
+                        <button type="button" id="btnSaveUpdate" class="btn btn-outline-success">
+                            <i class="bi bi-floppy"></i> Lưu
                         </button>
                         <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal">
-                            <i class="bi bi-x"></i>
+                            <i class="bi bi-x"></i> Hủy
                         </button>
                     </div>
                 </form>

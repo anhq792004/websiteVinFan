@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface KieuQuatService {
     List<KieuQuat> findAllKieuQuat();
-    KieuQuat findById(Integer id);
+    KieuQuat findById(Long id);
     void save(KieuQuat kieuQuat);
     Page<KieuQuat> search(String query, Boolean trangThai, Pageable pageable);
     ResponseEntity<?> add(String name);
-    ResponseEntity<?> changeStatus(Integer id);
+    ResponseEntity<?> changeStatus(Long id);
 }

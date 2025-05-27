@@ -108,26 +108,13 @@ $('.changeStatusChatLieuKhung').on('click', function () {
 });
 
 // Lấy thông tin để cập nhật
-$(document).on('click', 'detailModal', function () {
+$('.hienThiThongTinModal').on('click', function () {
     let id = $(this).data('id');
+    const ten = $(this).closest('tr').find('td:eq(1)').text();
+    
+    // Điền thông tin trực tiếp vào form
     $('#id').val(id);
-
-    $.ajax({
-        url: `/chat-lieu-khung/detail?id=${id}`,
-        type: 'GET',
-        success: function (response) {
-            console.log("Reponse:", response);
-            $('#chatLieuKhungId').val(response.id);
-            $('#nameUpdate').val(response.ten);
-        },
-        error: function (xhr) {
-            Swal.fire({
-                icon: 'error',
-                title: xhr.responseText,
-                text: xhr.responseText
-            });
-        }
-    });
+    $('#nameUpdate').val(ten);
 });
 
 // Cập nhật
@@ -136,6 +123,20 @@ $('#updateChatLieuKhung').on('submit', function (e) {
 
     let id = $('#id').val();
     let nameUpdate = $('#nameUpdate').val();
+    
+    // Kiểm tra tên có trống không
+    if (!nameUpdate || nameUpdate.trim() === '') {
+        Swal.fire({
+            toast: true,
+            icon: 'error',
+            title: 'Tên chất liệu khung không được để trống',
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+        return;
+    }
 
     $.ajax({
         url: '/chat-lieu-khung/update',
@@ -145,18 +146,18 @@ $('#updateChatLieuKhung').on('submit', function (e) {
             nameUpdate: nameUpdate
         },
         success: function (response){
-            swal.fire({
+            Swal.fire({
                 toast: true,
                 icon: 'success',
-                tittle: response,
+                title: response,
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 1000,
-                timerProgressBar: true,
+                timerProgressBar: true
             })
-                .then(()=>{
+            .then(() => {
                 location.reload();
-            })
+            });
         },
         error: function (xhr) {
             Swal.fire({
@@ -169,7 +170,7 @@ $('#updateChatLieuKhung').on('submit', function (e) {
                 timerProgressBar: true
             });
         }
-    })
+    });
 });
 
 
