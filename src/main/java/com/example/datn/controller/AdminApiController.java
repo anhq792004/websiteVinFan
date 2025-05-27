@@ -1,7 +1,6 @@
 package com.example.datn.controller;
 
 import com.example.datn.entity.ThuocTinh.*;
-import com.example.datn.repository.ThuocTinhRepo.*;
 import com.example.datn.service.ThuocTinhService.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +20,9 @@ import java.util.Map;
 public class AdminApiController {
 
     private final MauSacService mauSacService;
-    private final ChatLieuCanhRepo chatLieuCanhRepo;
-    private final ChatLieuKhungRepo chatLieuKhungRepo;
-    private final DuongKinhCanhService duongKinhCanhService;
     private final CongSuatService congSuatService;
     private final HangService hangService;
-    private final CheDoGioService cheDoGioService;
-    
+
     // Endpoint kiểm tra hoạt động
     @GetMapping("/check")
     public ResponseEntity<Map<String, String>> check() {
@@ -42,20 +37,6 @@ public class AdminApiController {
         return ResponseEntity.ok(mauSacService.findAllMauSac());
     }
 
-    @GetMapping("/chat-lieu-canh")
-    public ResponseEntity<List<ChatLieuCanh>> getAllChatLieuCanh() {
-        return ResponseEntity.ok(chatLieuCanhRepo.findAll());
-    }
-
-    @GetMapping("/chat-lieu-khung")
-    public ResponseEntity<List<ChatLieuKhung>> getAllChatLieuKhung() {
-        return ResponseEntity.ok(chatLieuKhungRepo.findAll());
-    }
-
-    @GetMapping("/duong-kinh-canh")
-    public ResponseEntity<List<DuongKinhCanh>> getAllDuongKinhCanh() {
-        return ResponseEntity.ok(duongKinhCanhService.findAllDuongKinhCanh());
-    }
 
     @GetMapping("/cong-suat")
     public ResponseEntity<List<CongSuat>> getAllCongSuat() {
@@ -67,8 +48,5 @@ public class AdminApiController {
         return ResponseEntity.ok(hangService.findAllHang());
     }
 
-    @GetMapping("/che-do-gio")
-    public ResponseEntity<List<CheDoGio>> getAllCheDoGio() {
-        return ResponseEntity.ok(cheDoGioService.findAllCheDoGio());
-    }
+
 } 

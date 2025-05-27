@@ -24,9 +24,6 @@ public class HinhAnh {
     @Column(name = "hinh_anh")
     String hinhAnh;
 
-    @Column(name = "ngay_tao")
-    LocalDateTime ngayTao;
-
     public String getDuongDan() {
         return hinhAnh;
     }

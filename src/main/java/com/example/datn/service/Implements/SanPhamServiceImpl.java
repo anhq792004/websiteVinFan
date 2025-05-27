@@ -97,7 +97,6 @@ public class SanPhamServiceImpl implements SanPhamService {
             // Tạo đối tượng HinhAnh
             HinhAnh hinhAnh = new HinhAnh();
             hinhAnh.setHinhAnh("/uploads/" + fileName);
-            hinhAnh.setNgayTao(LocalDateTime.now());
             HinhAnh savedHinhAnh = hinhAnhRepo.save(hinhAnh);
             
             // Tạo SanPhamChiTiet mới với ảnh
@@ -184,7 +183,6 @@ public class SanPhamServiceImpl implements SanPhamService {
                     // Tạo đối tượng HinhAnh mới
                     HinhAnh hinhAnh = new HinhAnh();
                     hinhAnh.setHinhAnh("/uploads/" + fileName);
-                    hinhAnh.setNgayTao(LocalDateTime.now());
                     HinhAnh savedHinhAnh = hinhAnhRepo.save(hinhAnh);
                     
                     // Tạo SanPhamChiTiet mới với ảnh
