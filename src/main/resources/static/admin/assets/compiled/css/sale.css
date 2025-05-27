@@ -53,8 +53,6 @@
     width: 100%;
     padding: 8px 6px;
     font-size: 0.875rem;
-    border: none;
-    border-bottom: 2px solid #ccc;
     outline: none;
     background: transparent;
 }
@@ -78,7 +76,7 @@
 .floating-group input:focus + label,
 .floating-group input:not(:placeholder-shown):valid + label {
     top: -8px;
-    left: 16px;
+    left: 8px;
     font-size: 0.7rem;
     color: #007BFF;
 }

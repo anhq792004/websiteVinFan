@@ -75,6 +75,9 @@ public class HoaDon {
     @Column(name = "ngay_sua")
     LocalDateTime ngaySua;
 
+    @Column(name = "nguoi_tao")
+    String nguoiTao;
+
     @Column(name = "trang_thai")
     Integer trangThai;
 }
