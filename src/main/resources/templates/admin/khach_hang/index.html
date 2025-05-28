@@ -64,10 +64,10 @@
 <!--                                    <th style="width: 5%;">Ảnh</th>-->
                                     <th style="width: 5%;">Mã</th>
                                     <th style="width: 5%;">Họ và tên</th>
-                                    <th style="width: 5%;">Email</th>
-                                    <th style="width: 5%;">Ngày sinh</th>
-                                    <th style="width: 5%;">Giới tính</th>
-                                    <th style="width: 5%;">Trạng thái</th>
+<!--                                    <th style="width: 5%;">Email</th>-->
+<!--                                    <th style="width: 5%;">Ngày sinh</th>-->
+<!--                                    <th style="width: 5%;">Giới tính</th>-->
+<!--                                    <th style="width: 5%;">Trạng thái</th>-->
                                     <th style="width: 5%;">Hành động</th>
                                 </tr>
                                 </thead>
@@ -81,9 +81,9 @@
                                     </td>
                                     <td th:text="${khachHang.ma}"></td>
                                     <td th:text="${khachHang.ten}"></td>
-                                    <td th:text="${khachHang.email}"></td>
-                                    <td th:text="${khachHang.ngaySinh}"></td>
-                                    <td th:text="${khachHang.gioiTinh ? 'Nam' : 'Nữ'}"></td>
+<!--                                    <td th:text="${khachHang.email}"></td>-->
+<!--                                    <td th:text="${khachHang.ngaySinh}"></td>-->
+<!--                                    <td th:text="${khachHang.gioiTinh ? 'Nam' : 'Nữ'}"></td>-->
                                     <!--                                    <td th:text="${khachHang.trangThai ? 'Đang làm việc' : 'Đã nghỉ việc'}"></td>-->
                                     <td>
                                         <a th:href="@{/nhan-vien/detail/{id}(id=${khachHang.id})}" class="btn btn-sm btn-info">Chi tiết</a>

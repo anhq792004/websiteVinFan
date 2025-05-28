@@ -14,7 +14,7 @@ import com.example.datn.entity.SanPham.SanPhamChiTiet;
 import com.example.datn.repository.HoaDonRepo.HoaDonChiTietRepo;
 import com.example.datn.repository.HoaDonRepo.HoaDonRepo;
 import com.example.datn.repository.HoaDonRepo.LichSuHoaDonRepo;
-import com.example.datn.repository.KhachHangRepo;
+import com.example.datn.repository.KhachHangRepo.KhachHangRepo;
 import com.example.datn.repository.SanPhamRepo.SanPhamChiTietRepo;
 import com.example.datn.service.HoaDonService.HoaDonService;
 import lombok.RequiredArgsConstructor;
