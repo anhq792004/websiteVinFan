@@ -22,10 +22,6 @@ public class PhieuGiamGia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @OneToOne(optional = true)
-    @JoinColumn(name = "id_san_pham_chi_tiet")
-    SanPhamChiTiet sanPhamChiTiet;
-
     @Column(name = "ma")
     String ma;
 
