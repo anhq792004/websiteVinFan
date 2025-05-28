@@ -18,6 +18,10 @@ public class TaiKhoan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @OneToOne
+    @JoinColumn(name = "id_chuc_vu")
+    private ChucVu chucVu;
+
     @Column(name = "ma")
     String ma;
 
@@ -36,6 +40,4 @@ public class TaiKhoan {
     @Column(name = "trang_thai")
     Boolean trangThai;
 
-    @Column(name = "vai_tro")
-    String vaiTro;
 }

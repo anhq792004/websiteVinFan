@@ -61,7 +61,7 @@ $(document).ready(function () {
                             timer: 1000,
                             timerProgressBar: true
                         }).then(() => {
-                            location.reload();
+                            window.location.href = "/sale/index";
                         });
                     },
                     error: function () {
@@ -88,6 +88,49 @@ $(".btn-add-sanPham").click(function () {
             idSP: sanPhamId,
             gia: gia,
             soLuong: soLuong
+        }),
+        success: function (response) {
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: response,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 500,
+                timerProgressBar: true
+            }).then(() => {
+                location.reload();
+            });
+        },
+        error: function (xhr) {
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: xhr.responseText,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true
+            });
+        }
+    });
+});
+
+$(".btn-add-khachHang").click(function () {
+    const hoaDonId = $(this).data("id-hd");
+    const sanPhamId = $(this).data("id-sp");
+    const ten = $(this).data("ten");
+    const sdt = $(this).data("sdt");
+
+    $.ajax({
+        url: '/sale/addKH',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            idHD: hoaDonId,
+            idSP: sanPhamId,
+            ten: ten,
+            sdt: sdt
         }),
         success: function (response) {
             Swal.fire({
@@ -307,3 +350,48 @@ $(document).ready(function () {
         });
     });
 });
+//tính tiền thừa
+document.addEventListener("DOMContentLoaded", function () {
+    const inputTienKhachTra = document.getElementById('tienKhachTra');
+    const pTienThanhToan = document.getElementById('tienThanhToan');
+    const pTienThua = document.getElementById('tienThua');
+
+    if (!pTienThanhToan) {
+        console.error("Không tìm thấy phần tử 'tienThanhToan'");
+        return;
+    }
+
+    inputTienKhachTra.addEventListener('input', function () {
+        const tienKhachTra = parseFloat(inputTienKhachTra.value) || 0;
+        const tienThanhToan = parseFloat(pTienThanhToan.getAttribute('data-value')) || 0;
+        const tienThua = tienKhachTra - tienThanhToan;
+
+        // Format tiền thừa (có thể âm)
+        const tienThuaFormatted = tienThua.toLocaleString('vi-VN', {minimumFractionDigits: 0}) + ' ₫';
+        pTienThua.innerText = tienThuaFormatted;
+
+        // Optional: đổi màu nếu âm
+        if (tienThua < 0) {
+            pTienThua.classList.add("text-danger");
+        } else {
+            pTienThua.classList.remove("text-danger");
+        }
+    });
+});
+// button ẩn form
+document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.getElementById('toggleForm');
+    const form = document.getElementById('shippingForm');
+    const btn = document.getElementById('btnDiaChi');
+
+    toggle.addEventListener('change', function () {
+        if (toggle.checked) {
+            form.style.visibility = 'visible';
+            btn.style.visibility = 'visible';
+        } else {
+            form.style.visibility = 'hidden';
+            btn.style.visibility = 'hidden';
+        }
+    });
+});
+

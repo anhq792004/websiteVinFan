@@ -2,7 +2,7 @@ package com.example.datn.entity.HoaDon;
 
 import com.example.datn.entity.DiaChi;
 import com.example.datn.entity.KhachHang;
-import com.example.datn.entity.NhanVien;
+import com.example.datn.entity.NhanVien.NhanVien;
 import com.example.datn.entity.PhieuGiamGia;
 import jakarta.persistence.*;
 import lombok.*;

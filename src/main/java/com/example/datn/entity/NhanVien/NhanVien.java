@@ -1,5 +1,8 @@
-package com.example.datn.entity;
+package com.example.datn.entity.NhanVien;
 
+import com.example.datn.entity.ChucVu;
+import com.example.datn.entity.DiaChi;
+import com.example.datn.entity.TaiKhoan;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,7 +25,7 @@ public class NhanVien {
 
     @ManyToOne
     @JoinColumn(name = "id_chuc_vu")
-    private ChucVu chucVu;
+    private ChucVu chucVu=new ChucVu();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tai_khoan")
@@ -40,7 +43,6 @@ public class NhanVien {
 
     @Column(name = "gioi_tinh")
     Boolean gioiTinh;
-
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "ngay_sinh")
     Date ngaySinh;
@@ -63,5 +65,5 @@ public class NhanVien {
     private Boolean trangThai;
 
     @Column(name = "hinh_anh")
-    String hinhAnh;
+    String anh;
 }

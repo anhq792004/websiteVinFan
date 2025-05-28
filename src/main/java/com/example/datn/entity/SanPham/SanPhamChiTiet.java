@@ -52,7 +52,7 @@ public class SanPhamChiTiet {
     Integer soLuong;
 
     @Column(name = "can_nang")
-    Integer canNang;
+    Float canNang;
 
     @Column(name = "mo_ta")
     String moTa;

@@ -1,5 +1,6 @@
 package com.example.datn.service.Implements;
 
+import com.example.datn.dto.request.AddKHToHDCTRequest;
 import com.example.datn.dto.request.AddSPToHDCTRequest;
 import com.example.datn.dto.request.TrangThaiHoaDonRequest;
 import com.example.datn.dto.request.UpdateSoLuongRequest;
@@ -8,10 +9,12 @@ import com.example.datn.dto.response.LichSuThanhToanResponse;
 import com.example.datn.entity.HoaDon.HoaDon;
 import com.example.datn.entity.HoaDon.HoaDonChiTiet;
 import com.example.datn.entity.HoaDon.LichSuHoaDon;
+import com.example.datn.entity.KhachHang;
 import com.example.datn.entity.SanPham.SanPhamChiTiet;
 import com.example.datn.repository.HoaDonRepo.HoaDonChiTietRepo;
 import com.example.datn.repository.HoaDonRepo.HoaDonRepo;
 import com.example.datn.repository.HoaDonRepo.LichSuHoaDonRepo;
+import com.example.datn.repository.KhachHangRepo.KhachHangRepo;
 import com.example.datn.repository.SanPhamRepo.SanPhamChiTietRepo;
 import com.example.datn.service.HoaDonService.HoaDonService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +36,7 @@ public class HoaDonServiceImpl implements HoaDonService {
     private final SanPhamChiTietRepo sanPhamChiTietRepo;
     private final HoaDonChiTietRepo hoaDonChiTietRepo;
     private final LichSuHoaDonRepo lichSuHoaDonRepo;
+    private final KhachHangRepo khachHangRepo;
 
     @Override
     public List<HoaDon> findAll() {
@@ -218,11 +222,25 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     @Override
+    public void addKHToHDCT(AddKHToHDCTRequest addKHToHDCTRequest) {
+        Optional<KhachHang> khachHangOptional = khachHangRepo.findById(addKHToHDCTRequest.getIdSP());
+        Optional<HoaDon> hoaDonOptional = hoaDonRepo.findById(addKHToHDCTRequest.getIdHD());
+
+        KhachHang khachHang = khachHangOptional.get();
+        HoaDon hoaDon = hoaDonOptional.get();
+
+        hoaDon.setTenNguoiNhan(khachHang.getTen());
+        hoaDon.setKhachHang(khachHang);
+        hoaDon.setSdtNguoiNhan(khachHang.getSoDienThoai());
+        hoaDonRepo.save(hoaDon);
+    }
+
+    @Override
     public void updateSoluong(UpdateSoLuongRequest request) {
         Optional<SanPhamChiTiet> spOpt = sanPhamChiTietRepo.findById(request.getIdSP());
         Optional<HoaDon> hdOpt = hoaDonRepo.findById(request.getIdHD());
-        System.out.println("id san pham là"+ request.getIdSP());
-        System.out.println("id hd là"+ request.getIdHD());
+        System.out.println("id san pham là" + request.getIdSP());
+        System.out.println("id hd là" + request.getIdHD());
 
         if (spOpt.isEmpty()) {
             throw new RuntimeException("Không tìm thấy sản phẩm với ID: " + request.getIdSP());
