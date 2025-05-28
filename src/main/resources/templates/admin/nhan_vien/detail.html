@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{/admin/fragments/head :: head}"></head>
+<body>
+<!-- Site wrapper -->
+<div class="wrapper">
+  <!-- Sidebar -->
+  <div>
+    <aside th:replace="/admin/fragments/sidebar :: sidebar"></aside>
+  </div>
+
+  <!-- Main-->
+  <div id="main">
+    <header th:replace="/admin/fragments/header :: header"></header>
+    <div class="page-content">
+      <!--        dữ liệu thực hiện trong secsion-->
+      <section class="row">
+        <div class="card">
+          <div class="card-header">
+            <form action="/nhan-vien/update" method="post" th:object="${nhanVien}">
+              <div class="container">
+                <div class="row justify-content-around">
+                  <div class="col-md-4">
+                    Thông tin nhân viên
+                    <hr>
+                    <div class="mb-3">
+                      Ảnh
+<!--                      <img th:src="@{${nhanVien.anhUrl}}" alt="Ảnh nhân viên" width="100" />-->
+                      <input type="image" name="anh" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label"><span class="text-danger">*</span>Họ và tên</label>
+<!--                      <input class="form-control" th:field="*{ten}" required>-->
+                      <p [[${nhanVien.ten}]]>
+
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label"><span class="text-danger">*</span>Email</label>
+<!--                      <input class="form-control" th:field="*{email}" type="email" required>-->
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label"><span class="text-danger">*</span>Số Điện Thoại</label>
+<!--                      <input class="form-control" th:field="*{soDienThoai}" type="tel" required>-->
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label"><span class="text-danger">*</span>Ngày sinh</label>
+<!--                      <input class="form-control" th:field="*{ngaySinh}" type="date" required>-->
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label"><span class="text-danger">*</span>Giới Tính</label>
+                      <input type="radio"  name="gioiTinh" th:value="true"> Nam
+                      <input type="radio"  name="gioiTinh" th:value="false"> Nữ
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    Danh sách địa chỉ
+                    <hr>
+                    <div th:each="diaChi : ${nhanVien.ten}">
+                      <p th:text="${diaChi.tenDiaChi}"></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                <a th:href="@{/nhan-vien/index}" class="btn btn-secondary m-1">
+                  <i class="bi bi-arrow-left"></i> Hủy
+                </a>
+              </div>
+            </form>
+          </div>
+          <div class="card-body">
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </div>
+  <!-- Footer-->
+  <div>
+    <footer th:replace="/admin/fragments/footer :: footer"></footer>
+  </div>
+</div>
+<div>
+  <script th:replace="/admin/fragments/script :: script"></script>
+</div>
+</body>
+</html>
