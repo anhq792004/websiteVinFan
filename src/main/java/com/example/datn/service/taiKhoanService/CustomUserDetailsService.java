@@ -40,6 +40,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 //            // Mặc định là ROLE_USER nếu không có vai trò
 //            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 //        }
+//        // Thêm vai trò cho người dùng (nếu có)
+//        if (taiKhoan.getVaiTro() != null && !taiKhoan.getVaiTro().isEmpty()) {
+//            authorities.add(new SimpleGrantedAuthority("ROLE_" + taiKhoan.getVaiTro().toUpperCase()));
+//        } else {
+//            // Mặc định là ROLE_USER nếu không có vai trò
+//            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+//        }
 
         return new User(taiKhoan.getEmail(), taiKhoan.getMatKhau(), authorities);
     }
