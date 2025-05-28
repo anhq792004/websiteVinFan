@@ -12,4 +12,8 @@ public interface BanHangService {
 
     KhachHang getKhachHangLe(Long id);
 
+    void thanhToan(Long idHD);
+
+    void updateTongTienHoaDon(Long idHD);
+
 }

@@ -30,20 +30,8 @@ public class SanPhamChiTiet {
     SanPham sanPham;
 
     @ManyToOne
-    @JoinColumn(name = "id_chat_lieu_canh")
-    ChatLieuCanh chatLieuCanh;
-
-    @ManyToOne
     @JoinColumn(name = "id_nut_bam")
     NutBam nutBam;
-
-    @ManyToOne
-    @JoinColumn(name = "id_duong_kinh_canh")
-    DuongKinhCanh duongKinhCanh;
-
-    @ManyToOne
-    @JoinColumn(name = "id_chat_lieu_khung")
-    ChatLieuKhung chatLieuKhung;
 
     @ManyToOne
     @JoinColumn(name = "id_cong_suat")
@@ -54,10 +42,6 @@ public class SanPhamChiTiet {
     Hang hang;
 
     @ManyToOne
-    @JoinColumn(name = "id_che_do_gio")
-    CheDoGio cheDoGio;
-
-    @ManyToOne
     @JoinColumn(name = "id_hinh_anh")
     HinhAnh hinhAnh;
 
@@ -66,6 +50,9 @@ public class SanPhamChiTiet {
 
     @Column(name = "so_luong")
     Integer soLuong;
+
+    @Column(name = "can_nang")
+    Integer canNang;
 
     @Column(name = "mo_ta")
     String moTa;
@@ -81,8 +68,5 @@ public class SanPhamChiTiet {
 
     @Column(name = "trang_thai")
     Boolean trangThai;
-
-    @Column(name = "gia_sau_giam")
-    BigDecimal giaSauGiam;
 
 }

@@ -61,12 +61,35 @@ $('#addKieuQuat').on('submit', function (e) {
     });
 });
 
+// Hiển thị thông tin kiểu quạt khi nhấn nút chỉnh sửa
+$('.hienThiThongTinModal').on('click', function() {
+    const id = $(this).data('id');
+    const ten = $(this).closest('tr').find('td:eq(1)').text();
+    
+    $('#id').val(id);
+    $('#nameUpdate').val(ten);
+});
+
 // Xử lý cập nhật kiểu quạt
 $('#updateKieuQuat').on('submit', function (e) {
     e.preventDefault(); // Ngăn form thực hiện submit mặc định
 
     const id = $('#id').val();
-    const name = $('#name').val();
+    const name = $('#nameUpdate').val();
+
+    // Kiểm tra tên có trống không
+    if (!name || name.trim() === '') {
+        Swal.fire({
+            toast: true,
+            icon: 'error',
+            title: 'Tên kiểu quạt không được để trống',
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+        return;
+    }
 
     $.ajax({
         url: '/kieu-quat/update',

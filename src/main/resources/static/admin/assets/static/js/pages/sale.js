@@ -109,7 +109,7 @@ $(".btn-add-sanPham").click(function () {
                 title: xhr.responseText,
                 position: 'top-end',
                 showConfirmButton: false,
-                timer: 1000000,
+                timer: 1000,
                 timerProgressBar: true
             });
         }
@@ -117,13 +117,15 @@ $(".btn-add-sanPham").click(function () {
 });
 
 $(".btn-xoa-sanPham").click(function () {
-    const sanPhamId = $(this).data("id");
+    const sanPhamId = $(this).data("id-sp");
+    const hoaDonId = $(this).data("id-hd");
 
     $.ajax({
         url: '/sale/xoa',
         type: 'POST',
         data: {
-            idSP: sanPhamId
+            idSP: sanPhamId,
+            idHD: hoaDonId
         },
         success: function (response) {
             Swal.fire({
@@ -147,7 +149,7 @@ $(".btn-xoa-sanPham").click(function () {
                 showConfirmButton: false,
                 timer: 1500,
                 timerProgressBar: true
-            });
+            }).then(() => location.reload());
         }
     });
 });
@@ -181,7 +183,8 @@ $(".quantity-btn").click(function () {
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 1000
-            });
+            })
+                .then(() => location.reload());
         }
     });
 });
@@ -205,7 +208,8 @@ $(".quantity-btn-1").click(function () {
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 1000
-            }).then(() => location.reload());
+            })
+                .then(() => location.reload());
         },
         error: function (xhr) {
             Swal.fire({
@@ -215,7 +219,8 @@ $(".quantity-btn-1").click(function () {
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 1000
-            });
+            })
+                .then(() => location.reload());
         }
     });
 });
@@ -250,6 +255,42 @@ $(document).ready(function () {
                     timerProgressBar: true
                 }).then(() => {
                     location.reload();
+                });
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    toast: true,
+                    icon: 'error',
+                    title: xhr.responseText,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            }
+        });
+    });
+});
+
+$(document).ready(function () {
+    $('#btnThanhToan').click(function () {
+        const idHD = $(this).data('id'); // lấy giá trị id hóa đơn từ nút
+
+        $.ajax({
+            url: '/sale/thanh-toan',
+            type: 'POST',
+            data: {idHD: idHD}, // gửi dữ liệu lên server
+            success: function (response) {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: response,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true
+                }).then(() => {
+                    window.location.href = '/sale/index';
                 });
             },
             error: function (xhr) {

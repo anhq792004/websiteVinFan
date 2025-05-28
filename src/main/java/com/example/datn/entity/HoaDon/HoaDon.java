@@ -54,9 +54,6 @@ public class HoaDon {
     @Column(name = "tong_tien_sau_giam_gia")
     BigDecimal tongTienSauGiamGia;
 
-    @Column(name = "so_tien_sau_giam_gia")
-    BigDecimal soTienSauGiamGia;
-
     @Column(name = "phi_van_chuyen")
     BigDecimal phiVanChuyen;
 
@@ -74,6 +71,9 @@ public class HoaDon {
 
     @Column(name = "ngay_sua")
     LocalDateTime ngaySua;
+
+    @Column(name = "nguoi_tao")
+    String nguoiTao;
 
     @Column(name = "trang_thai")
     Integer trangThai;

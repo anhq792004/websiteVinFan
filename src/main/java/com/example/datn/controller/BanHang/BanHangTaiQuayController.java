@@ -1,6 +1,7 @@
 package com.example.datn.controller.BanHang;
 
 import com.example.datn.dto.request.AddSPToHDCTRequest;
+import com.example.datn.dto.request.ThanhToanRequest;
 import com.example.datn.dto.request.UpdateSoLuongRequest;
 import com.example.datn.entity.HoaDon.HoaDon;
 import com.example.datn.entity.HoaDon.HoaDonChiTiet;
@@ -14,8 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/sale")
@@ -37,6 +41,10 @@ public class BanHangTaiQuayController {
 
     @GetMapping("/hdct")
     public String viewHDCT(Model model, @RequestParam("idHD") Long idHD) {
+        Optional<HoaDon> hoaDonOptional = hoaDonService.findHoaDonById(idHD);
+        HoaDon hoaDon = hoaDonOptional.orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy hóa đơn"));
+        model.addAttribute("hoaDon", hoaDon);
         // Hiển thị danh sách hóa đơn chờ
         List<HoaDon> listHoaDon = banHangService.findHoaDon();
         model.addAttribute("listHoaDon", listHoaDon);
@@ -48,8 +56,6 @@ public class BanHangTaiQuayController {
         model.addAttribute("listHDCT", listHDCT);
         // Thêm ID hóa đơn được chọn vào model
         model.addAttribute("idHD", idHD);
-
-
 
         return "admin/sale/index";
     }
@@ -76,6 +82,7 @@ public class BanHangTaiQuayController {
     public ResponseEntity<String> addSP(@RequestBody AddSPToHDCTRequest addSPToHDCTRequest){
         try {
             hoaDonService.addSPToHDCT(addSPToHDCTRequest);
+            banHangService.updateTongTienHoaDon(addSPToHDCTRequest.getIdHD());
             return ResponseEntity.ok("Thêm sản phẩm thành công!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lỗi: " + e.getMessage());
@@ -83,9 +90,11 @@ public class BanHangTaiQuayController {
     }
     @PostMapping("/xoa")
     @ResponseBody
-    public ResponseEntity<String> deleteChiTiet(@RequestParam("idSP") Long idSP) {
+    public ResponseEntity<String> deleteChiTiet(@RequestParam("idSP") Long idSP,
+                                                @RequestParam("idHD") Long idHD) {
         try {
             hoaDonService.deleteSPInHD(idSP);
+            banHangService.updateTongTienHoaDon(idHD);
             return ResponseEntity.ok("Xóa thành công");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi xóa sản phẩm");
@@ -98,6 +107,7 @@ public class BanHangTaiQuayController {
                                               @RequestParam("idHD") Long idHD) {
         try {
             hoaDonService.tangSoLuong(idHD,idSP);
+            banHangService.updateTongTienHoaDon(idHD);
             return ResponseEntity.ok("Tăng số lượng thành công");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -109,6 +119,8 @@ public class BanHangTaiQuayController {
                                               @RequestParam("idHD") Long idHD) {
         try {
             hoaDonService.giamSoLuong(idHD,idSP);
+            banHangService.updateTongTienHoaDon(idHD);
+
             return ResponseEntity.ok("Giảm số lượng thành công");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -116,10 +128,23 @@ public class BanHangTaiQuayController {
     }
     @PostMapping("/updateSoLuong")
     @ResponseBody
-    public ResponseEntity<?> updateSoLuong(UpdateSoLuongRequest request) {
+    public ResponseEntity<String> updateSoLuong(UpdateSoLuongRequest request) {
         hoaDonService.updateSoluong(request);
+        banHangService.updateTongTienHoaDon(request.getIdHD());
+
         return ResponseEntity.ok("Cập nhật thành công");
     }
 
+    @PostMapping("/thanh-toan")
+    @ResponseBody
+    public ResponseEntity<String> thanhToan(@RequestParam("idHD") Long idHD) {
+        try {
+            banHangService.thanhToan(idHD);
+            return ResponseEntity.ok("Thanh toán thành công!");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+    }
 }
 

@@ -4,7 +4,7 @@
 <!-- Fragment for Edit Product Modal -->
 <div th:fragment="editProductModal">
     <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editProductModalLabel">Chỉnh sửa sản phẩm</h5>
@@ -13,38 +13,50 @@
                 <div class="modal-body">
                     <form id="editProductForm">
                         <input type="hidden" id="editProductId" name="id">
+                        <!-- Thông tin cơ bản -->
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="editProductCode" class="form-label">Mã sản phẩm <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="editProductCode" name="ma" required
-                                       pattern="[A-Za-z0-9]+" title="Mã sản phẩm chỉ chứa chữ cái và số">
-                                <div class="invalid-feedback">Vui lòng nhập mã sản phẩm hợp lệ</div>
+                                <label for="editProductCode" class="form-label" style="color: #222; font-weight: 600;">Mã sản phẩm <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="editProductCode" name="ma" required>
+                                <div class="invalid-feedback">Vui lòng nhập mã sản phẩm</div>
                             </div>
                             <div class="col-md-6">
-                                <label for="editProductName" class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
+                                <label for="editProductName" class="form-label" style="color: #222; font-weight: 600;">Tên sản phẩm <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="editProductName" name="ten" required>
                                 <div class="invalid-feedback">Vui lòng nhập tên sản phẩm</div>
                             </div>
                         </div>
+
+                        <!-- Kiểu quạt và trạng thái -->
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="editFanType" class="form-label">Kiểu quạt <span class="text-danger">*</span></label>
+                                <label for="editFanType" class="form-label" style="color: #222; font-weight: 600;">Kiểu quạt <span class="text-danger">*</span></label>
                                 <select class="form-select" id="editFanType" name="kieuQuat.id" required>
                                     <option value="">-- Chọn kiểu quạt --</option>
-                                    <!-- Options will be loaded dynamically -->
                                 </select>
                                 <div class="invalid-feedback">Vui lòng chọn kiểu quạt</div>
                             </div>
                             <div class="col-md-6">
-                                <label for="editProductStatus" class="form-label">Trạng thái</label>
+                                <label for="editProductStatus" class="form-label" style="color: #222; font-weight: 600;">Trạng thái</label>
                                 <select class="form-select" id="editProductStatus" name="trangThai">
                                     <option value="true">Đang kinh doanh</option>
                                     <option value="false">Ngừng kinh doanh</option>
                                 </select>
                             </div>
                         </div>
+
+                        <!-- Hình ảnh -->
                         <div class="mb-3">
-                            <label for="editProductDescription" class="form-label">Mô tả sản phẩm</label>
+                            <label for="editProductImage" class="form-label" style="color: #222; font-weight: 600;">Hình ảnh sản phẩm</label>
+                            <input type="file" class="form-control" id="editProductImage" name="hinhAnh" accept="image/*">
+                            <div class="mt-2">
+                                <img id="editProductImagePreview" src="" alt="Preview" style="max-width: 200px; display: none;">
+                            </div>
+                        </div>
+
+                        <!-- Mô tả -->
+                        <div class="mb-3">
+                            <label for="editProductDescription" class="form-label" style="color: #222; font-weight: 600;">Mô tả sản phẩm</label>
                             <textarea class="form-control" id="editProductDescription" name="moTa" rows="3"></textarea>
                         </div>
                     </form>
