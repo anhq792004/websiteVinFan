@@ -25,4 +25,13 @@ public class HinhAnh {
     @OneToOne(mappedBy = "hinhAnh")
     @JsonBackReference
     SanPhamChiTiet sanPhamChiTiet;
+    
+    // Getters and setters for compatibility
+    public String getDuongDan() {
+        return hinhAnh;
+    }
+    
+    public void setDuongDan(String duongDan) {
+        this.hinhAnh = duongDan;
+    }
 }

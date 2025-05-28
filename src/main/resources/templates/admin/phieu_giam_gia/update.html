@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{/admin/fragments/head :: head}"></head>
+<body>
+<!-- Site wrapper -->
+<div class="wrapper">
+    <!-- Sidebar -->
+    <div>
+        <aside th:replace="/admin/fragments/sidebar :: sidebar"></aside>
+    </div>
+
+    <!-- Main-->
+    <div id="main">
+        <header th:replace="/admin/fragments/header :: header"></header>
+        <div class="page-content">
+            <!-- Card tiêu đề -->
+            <section class="row">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>Chỉnh sửa phiếu giảm giá</h1>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/phieu-giam-gia/update}" method="post" th:object="${phieuGiamGia}">
+                            <!-- Trường ẩn để giữ ID -->
+                            <input type="hidden" th:field="*{id}" />
+
+                            <div class="mb-3">
+                                <label for="ma" class="form-label">Mã phiếu giảm giá</label>
+                                <input type="text" class="form-control" id="ma" th:field="*{ma}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="ten" class="form-label">Tên phiếu giảm giá</label>
+                                <input type="text" class="form-control" id="ten" th:field="*{ten}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="ngayBatDau" class="form-label">Ngày bắt đầu</label>
+                                <input type="date" class="form-control" id="ngayBatDau" th:field="*{ngayBatDau}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="ngayKetThuc" class="form-label">Ngày kết thúc</label>
+                                <input type="date" class="form-control" id="ngayKetThuc" th:field="*{ngayKetThuc}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="soLuong" class="form-label">Số lượng</label>
+                                <input type="number" class="form-control" id="soLuong" th:field="*{soLuong}" min="0">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Loại giảm giá</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="loaiPhanTram" th:field="*{loaiGiamGia}" th:value="true">
+                                    <label class="form-check-label" for="loaiPhanTram">Phần trăm (%)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="loaiTienMat" th:field="*{loaiGiamGia}" th:value="false">
+                                    <label class="form-check-label" for="loaiTienMat">Tiền mặt (VND)</label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="giaTriGiam" class="form-label">Giá trị giảm</label>
+                                <input type="number" class="form-control" id="giaTriGiam" th:field="*{giaTriGiam}" min="0" step="any" required>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="trangThai" th:field="*{trangThai}">
+                                <label class="form-check-label" for="trangThai">Hoạt động</label>
+                            </div>
+
+                            <!-- Nếu có trường sanPhamChiTiet, thêm xử lý ở đây -->
+
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                                <a th:href="@{/phieu-giam-gia/index}" class="btn btn-secondary">Hủy</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Footer-->
+    <div>
+        <footer th:replace="/admin/fragments/footer :: footer"></footer>
+    </div>
+</div>
+
+<div>
+    <script th:replace="/admin/fragments/script :: script"></script>
+</div>
+
+<script>
+    // Thêm xử lý JavaScript nếu cần
+    document.addEventListener('DOMContentLoaded', function() {
+        // Format ngày từ yyyy-MM-dd đến dd/MM/yyyy nếu cần
+        // Chuyển đổi giá trị tiền tệ nếu cần
+    });
+</script>
+</body>
+</html>

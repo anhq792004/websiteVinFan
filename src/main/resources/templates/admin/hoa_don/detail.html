@@ -17,7 +17,7 @@
         <div class="page-content">
             <!--        dữ liệu thực hiện trong secsion-->
             <section class="row">
-                <div class="card">
+                <div class="card mb-4">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2>Theo dõi đơn hàng</h2>
                         <button type="button" class="btn btn-outline-primary " data-bs-toggle="modal"
@@ -274,89 +274,64 @@
                         </div>
                     </form>
                 </div>
-
                 <!--                Thông tin sản phẩm-->
                 <div class="card mb-4">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2>Thông tin sản phẩm</h2>
                         <button class="btn btn-outline-success" type="button" data-bs-toggle="modal"
-                                data-bs-target="#addSanPham">
+                                data-bs-target="#addSanPham" th:if="${hoaDon.trangThai == 0 || hoaDon.trangThai == 1}">
                             <i class="bi bi-patch-plus-fill"></i>
                         </button>
                     </div>
-                    <!-- Modal -->
-                    <div class="modal fade" id="addSanPham" tabindex="-1" aria-labelledby="exampleModalLabel"
-                         aria-hidden="true">
-                        <div class="modal-dialog modal-xl">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Thêm sản phẩm</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+
+
+                    <!-- DANH SÁCH SẢN PHẨM -->
+                    <div id="product-list" style="max-height: 400px; overflow-y: auto;">
+                        <div class="product-item d-flex align-items-center justify-content-between border-bottom border-top p-2"
+                             th:each="item: ${listHDCT}">
+                            <div class="align-items-center d-flex">
+                                <img src="https://i.pinimg.com/736x/4c/83/36/4c83365869bfd6d9c19c554e8e7a0ad1.jpg"
+                                     class="product-img" alt="Sản phẩm">
+
+                                <div class="product-details ms-3">
+                                    <h5 class="mb-2" th:text="${item.sanPhamChiTiet.sanPham.ten}"></h5>
+                                    <p class="mb-2">Giá: <span class="product-price"
+                                                               th:text="${item.gia}"></span> VND</p>
+                                    <p class="mb-2">Hãng: <span class="product-category"
+                                                                th:text="${item.sanPhamChiTiet.hang.ten}"></span></p>
                                 </div>
-                                <div class="modal-body">
-                                    <table class="table table-striped dataTable-table">
-                                        <thead>
-                                        <tr>
-                                            <th>STT</th>
-                                            <th>Tên sản phẩm</th>
-                                            <th>Giá</th>
-                                            <th>Công xuất</th>
-                                            <th>Màu</th>
-                                            <th>Số lượng</th>
-                                            <th>Thao tác</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="item: ${listLSTT}">
-                                            <td>h1</td>
-                                            <td>h1</td>
-                                            <td>h1</td>
-                                            <td>h1</td>
-                                            <td>h1</td>
-                                            <td>h1</td>
-                                            <td>h1</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                            </div>
+                            <div class="product-soLuong d-flex align-items-center justify-content-between">
+                                <div class="text-center">
+                                    <form th:data-idsp="${item.sanPhamChiTiet.id}"
+                                          th:data-idhd="${hoaDon.id}"
+                                          th:data-gia="${item.gia}"
+                                          id="updateSoLuong"
+                                          method="post"
+                                          action="/sale/updateSoLuong"
+                                          class="update-so-luong-form">
+                                        <div class="quantity-container" >
+                                            <button class="quantity-btn-1" type="button">−</button>
+                                            <input type="text" class="quantity-input"
+                                                   th:value="${item.soLuong}" id="soLuong" name="soLuong">
+                                            <button class="quantity-btn" type="button">+</button>
+                                        </div>
+                                    </form>
                                 </div>
+
+                                <div class="product-total" th:text="${item.thanhTien} + ' VND'"></div>
+
+                                <a href="javascript:void(0);"
+                                   class="btn btn-outline-danger text-danger btn-xoa-sanPham"
+                                   th:data-id="${item.sanPhamChiTiet.id}">
+                                    <i class="bi bi-trash"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
-
-                    <div id="product-list">
-                        <div class="product-item border-bottom border-top p-2" th:each="item: ${listHDCT}">
-                            <img src="https://i.pinimg.com/736x/4c/83/36/4c83365869bfd6d9c19c554e8e7a0ad1.jpg"
-                                 class="product-img" alt="Sản phẩm">
-                            <div class="product-details">
-                                <h5 class="mb-2" th:text="${item.sanPhamChiTiet.sanPham.ten}"></h5>
-                                <p class="mb-2">Giá: <span class="product-price" th:text="${item.giaSauGiam}"></span>
-                                    VND</p>
-                                <p class="mb-2">Hãng: <span class="product-category"
-                                                            th:text="${item.sanPhamChiTiet.hang.ten}"></span></p>
-                            </div>
-                            <div class="text-center me-5">
-                                <div class="quantity-container">
-                                    <button class="quantity-btn">−</button>
-                                    <input type="text" id="quantity" class="quantity-input" value="1">
-                                    <button class="quantity-btn">+</button>
-                                </div>
-                            </div>
-                            <div class="product-total me-5" th:text="${item.thanhTien} + ' VND'"></div>
-                            <button type="button" class="btn btn-outline-danger me-3">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Nơi hiển thị nút phân trang -->
-                    <div class="pagination-container">
-                        <div id="pagination"></div>
-                    </div>
-
 
                     <div class="summary mt-5 mx-4">
-                        <p>Tổng số lượng <span class="float-end">6</span></p>
+                        <p>Tổng số lượng <span class="float-end" th:text="${tongSoLuong}"></span></p>
                         <p>Shipping fee <span class="float-end">$20.00</span></p>
                         <p>Tổng tiền <span class="order-total float-end">$7220.00</span></p>
                         <p>Discount Voucher <span class="discount float-end">$25</span></p>
@@ -364,6 +339,80 @@
                     </div>
                 </div>
             </section>
+        </div>
+    </div>
+    <!-- Modal add sản phẩm-->
+    <div class="modal fade" id="addSanPham" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Danh sách sản phẩm</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="searchQuery"
+                               placeholder="Tìm kiếm sản phẩm...">
+                        <button type="button" class="btn btn-outline-primary" id="searchButton">
+                            Tìm kiếm
+                        </button>
+                    </div>
+                    <!-- Lọc theo các trường riêng biệt -->
+                    <div class="row g-3">
+                        <div class="col">
+                            <input type="text" class="form-control" placeholder="Lọc theo tên"
+                                   aria-label="name">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control" placeholder="Lọc theo màu sắc"
+                                   aria-label="color">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control" placeholder="Lọc theo công suất"
+                                   aria-label="capacity">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control" placeholder="Lọc theo giá"
+                                   aria-label="price">
+                        </div>
+                    </div>
+                    <hr>
+                    <table class="table table-striped dataTable-table">
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Công xuất</th>
+                            <th>Màu</th>
+                            <th>Số lượng</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item, iter : ${findSPCTByIdSanPham}">
+                            <td th:text="${iter.count}"></td>
+                            <td th:text="${item.sanPham.ten}"></td>
+                            <td th:text="${item.gia}">h1</td>
+                            <td th:text="${item.congSuat.ten}"></td>
+                            <td th:text="${item.mauSac.ten}"></td>
+                            <td th:text="${item.soLuong}"></td>
+                            <td>
+                                <button type="button"
+                                        class="btn btn-outline-success btn-add-sanPham"
+                                        th:data-id-hd="${hoaDon.id}"
+                                        th:data-id-sp="${item.id}"
+                                        th:data-gia="${item.gia}">
+                                    Thêm
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
     <!-- Footer-->

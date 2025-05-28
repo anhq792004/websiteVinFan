@@ -16,21 +16,16 @@ public class DiaChi {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "phuong")
-    String phuong;
 
     @Column(name = "xa")
     String xa;
 
+    @Column(name = "huyen")
+    String huyen;
+
     @Column(name = "tinh")
     String tinh;
+    @Column(name = "so_nha_ngo_duong")
+    String soNhaNgoDuong;
 
-    @Column(name = "thanhPho")
-    String thanh_pho;
-
-    @Column(name = "ngay_tao")
-    String ngayTao;
-
-    @Column(name = "trang_thai")
-    Boolean trangThai;
 }

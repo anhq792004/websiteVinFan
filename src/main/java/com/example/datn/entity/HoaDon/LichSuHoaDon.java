@@ -1,6 +1,6 @@
 package com.example.datn.entity.HoaDon;
 
-import com.example.datn.entity.NhanVien;
+import com.example.datn.entity.NhanVien.NhanVien;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -35,5 +35,8 @@ public class LichSuHoaDon {
 
     @Column(name = "mo_ta")
     String moTa;
+
+    @Column(name = "nguoi_tao")
+    String nguoiTao;
 
 }

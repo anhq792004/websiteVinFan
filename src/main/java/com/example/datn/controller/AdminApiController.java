@@ -1,7 +1,6 @@
 package com.example.datn.controller;
 
 import com.example.datn.entity.ThuocTinh.*;
-import com.example.datn.repository.ThuocTinhRepo.*;
 import com.example.datn.service.ThuocTinhService.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +38,6 @@ public class AdminApiController {
     }
 
 
-
     @GetMapping("/cong-suat")
     public ResponseEntity<List<CongSuat>> getAllCongSuat() {
         return ResponseEntity.ok(congSuatService.findAllCongSuat());
@@ -49,5 +47,4 @@ public class AdminApiController {
     public ResponseEntity<List<Hang>> getAllHang() {
         return ResponseEntity.ok(hangService.findAllHang());
     }
-
 } 
