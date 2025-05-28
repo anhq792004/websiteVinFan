@@ -1,0 +1,16 @@
+package com.example.datn.service.KhachHangService;
+
+import com.example.datn.entity.KhachHang;
+import com.example.datn.entity.NhanVien.NhanVien;
+import org.springframework.data.domain.Page;
+
+import java.util.Optional;
+
+public interface KhachHangService {
+    Page<KhachHang> findAllKhachHang(int page, int size,String search,Boolean trangThai);
+    Optional<KhachHang> findKhachHangById(Long id);
+    void saveKhachHang(KhachHang khachHang);
+    void deleteKhachHang(Long id);
+    void updateKhachHang(KhachHang khachHang);
+    boolean thayDoiTrangThaiKhachHang(Long id);
+}

@@ -1,5 +1,6 @@
 package com.example.datn.entity;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -53,6 +54,6 @@ public class KhachHang {
     Boolean trangThai;
 
     @Column(name = "hinh_anh")
-    String hinhAnh;
+    String anh;
 
 }
