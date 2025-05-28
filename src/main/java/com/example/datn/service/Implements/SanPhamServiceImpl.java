@@ -97,14 +97,12 @@ public class SanPhamServiceImpl implements SanPhamService {
             // Tạo đối tượng HinhAnh
             HinhAnh hinhAnh = new HinhAnh();
             hinhAnh.setHinhAnh("/uploads/" + fileName);
-            hinhAnh.setNgayTao(LocalDateTime.now());
             HinhAnh savedHinhAnh = hinhAnhRepo.save(hinhAnh);
             
             // Tạo SanPhamChiTiet mới với ảnh
             SanPhamChiTiet spct = new SanPhamChiTiet();
             spct.setSanPham(savedSanPham);
             spct.setHinhAnh(savedHinhAnh);
-            spct.setNgayTao(LocalDateTime.now());
             spct.setTrangThai(true);
             
             // Khởi tạo danh sách nếu chưa có
@@ -184,14 +182,12 @@ public class SanPhamServiceImpl implements SanPhamService {
                     // Tạo đối tượng HinhAnh mới
                     HinhAnh hinhAnh = new HinhAnh();
                     hinhAnh.setHinhAnh("/uploads/" + fileName);
-                    hinhAnh.setNgayTao(LocalDateTime.now());
                     HinhAnh savedHinhAnh = hinhAnhRepo.save(hinhAnh);
                     
                     // Tạo SanPhamChiTiet mới với ảnh
                     SanPhamChiTiet spct = new SanPhamChiTiet();
                     spct.setSanPham(sanPham);
                     spct.setHinhAnh(savedHinhAnh);
-                    spct.setNgayTao(LocalDateTime.now());
                     spct.setTrangThai(true);
                     
                     // Khởi tạo danh sách nếu chưa có
@@ -217,8 +213,7 @@ public class SanPhamServiceImpl implements SanPhamService {
         Optional<SanPham> sanPhamOptional = sanPhamRepo.findById(id);
         if (sanPhamOptional.isPresent()) {
             SanPham sanPham = sanPhamOptional.get();
-            // Đảo bit trạng thái
-            sanPham.setTrangThai(sanPham.getTrangThai() == Boolean.FALSE ? Boolean.TRUE : Boolean.FALSE);
+            sanPham.setTrangThai(!sanPham.getTrangThai());
             sanPhamRepo.save(sanPham);
             return true;
         }

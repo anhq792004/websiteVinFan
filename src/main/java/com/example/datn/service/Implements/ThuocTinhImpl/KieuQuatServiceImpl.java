@@ -1,6 +1,5 @@
 package com.example.datn.service.Implements.ThuocTinhImpl;
 
-import com.example.datn.entity.ThuocTinh.ChatLieuKhung;
 import com.example.datn.entity.ThuocTinh.KieuQuat;
 import com.example.datn.repository.ThuocTinhRepo.KieuQuatRepo;
 import com.example.datn.service.ThuocTinhService.KieuQuatService;

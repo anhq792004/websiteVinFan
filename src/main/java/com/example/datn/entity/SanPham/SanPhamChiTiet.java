@@ -2,12 +2,13 @@ package com.example.datn.entity.SanPham;
 
 import com.example.datn.entity.HinhAnh;
 import com.example.datn.entity.ThuocTinh.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "san_pham_chi_tiet")
@@ -22,43 +23,33 @@ public class SanPhamChiTiet {
     Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_mau_sac")
-    MauSac mauSac;
-
-    @ManyToOne
     @JoinColumn(name = "id_san_pham")
+    @JsonBackReference
     SanPham sanPham;
 
     @ManyToOne
-    @JoinColumn(name = "id_chat_lieu_canh")
-    ChatLieuCanh chatLieuCanh;
-
-    @ManyToOne
-    @JoinColumn(name = "id_nut_bam")
-    NutBam nutBam;
-
-    @ManyToOne
-    @JoinColumn(name = "id_duong_kinh_canh")
-    DuongKinhCanh duongKinhCanh;
-
-    @ManyToOne
-    @JoinColumn(name = "id_chat_lieu_khung")
-    ChatLieuKhung chatLieuKhung;
+    @JoinColumn(name = "id_mau_sac")
+    @JsonManagedReference
+    MauSac mauSac;
 
     @ManyToOne
     @JoinColumn(name = "id_cong_suat")
+    @JsonManagedReference
     CongSuat congSuat;
 
     @ManyToOne
     @JoinColumn(name = "id_hang")
+    @JsonManagedReference
     Hang hang;
 
     @ManyToOne
-    @JoinColumn(name = "id_che_do_gio")
-    CheDoGio cheDoGio;
+    @JoinColumn(name = "id_nut_bam")
+    @JsonManagedReference
+    NutBam nutBam;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "id_hinh_anh")
+    @JsonManagedReference
     HinhAnh hinhAnh;
 
     @Column(name = "gia")
@@ -67,19 +58,12 @@ public class SanPhamChiTiet {
     @Column(name = "so_luong")
     Integer soLuong;
 
-    @Column(name = "mo_ta")
+    @Column(name = "can_nang")
+    Float canNang;
+
+    @Column(name = "mo_ta", columnDefinition = "TEXT")
     String moTa;
-
-    @Column(name = "ngay_tao")
-    LocalDateTime ngayTao;
-
-    @Column(name = "ngay_sua")
-    LocalDateTime ngaySua;
-
-    @Column(name = "nguoi_tao")
-    String nguoiTao;
 
     @Column(name = "trang_thai")
     Boolean trangThai;
-
 }
