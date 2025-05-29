@@ -8,6 +8,7 @@ import com.example.datn.entity.SanPham.SanPhamChiTiet;
 import com.example.datn.repository.HoaDonRepo.HoaDonChiTietRepo;
 import com.example.datn.repository.HoaDonRepo.HoaDonRepo;
 import com.example.datn.repository.HoaDonRepo.LichSuHoaDonRepo;
+import com.example.datn.repository.SanPhamRepo.SanPhamChiTietRepo;
 import com.example.datn.service.BanHang.BanHangService;
 import com.example.datn.service.HoaDonService.HoaDonService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class BanHangServiceImpl implements BanHangService {
     private final HoaDonRepo hoaDonRepo;
     private final LichSuHoaDonRepo lichSuHoaDonRepo;
     private final HoaDonChiTietRepo hoaDonChiTietRepo;
+    private final SanPhamChiTietRepo sanPhamChiTietRepo;
 
     @Transactional
     @Override
@@ -75,10 +77,13 @@ public class BanHangServiceImpl implements BanHangService {
 
         for (HoaDonChiTiet hdct : listHDCT) {
             SanPhamChiTiet sp = hdct.getSanPhamChiTiet();
-            if (hdct.getSoLuong() > sp.getSoLuong()) {
-                throw new RuntimeException("Không đủ số lượng sản phẩm: " + sp.getSanPham().getTen());
+            // Chỉ kiểm tra số lượng, không cần cập nhật số lượng trong kho nữa
+            // vì đã cập nhật khi thêm vào giỏ hàng
+            if (hdct.getSoLuong() < 0) {
+                throw new RuntimeException("Số lượng sản phẩm không hợp lệ: " + sp.getSanPham().getTen());
             }
         }
+        
         hoaDon.setNgaySua(LocalDateTime.now());
         hoaDon.setTrangThai(hoaDonService.getTrangThaiHoaDon().getHoanThanh());
         hoaDon.setLoaiHoaDon(true);
@@ -88,6 +93,7 @@ public class BanHangServiceImpl implements BanHangService {
         lichSuHoaDon.setTrangThai(hoaDonService.getTrangThaiHoaDon().getHoanThanh());
         lichSuHoaDon.setNgayTao(LocalDateTime.now());
         lichSuHoaDon.setNguoiTao("admin");
+        lichSuHoaDon.setMoTa("Thanh toán thành công");
         lichSuHoaDonRepo.save(lichSuHoaDon);
 
         hoaDonRepo.save(hoaDon);

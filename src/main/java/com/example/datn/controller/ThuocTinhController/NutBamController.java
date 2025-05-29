@@ -19,6 +19,21 @@ import java.util.List;
 public class NutBamController {
     private final NutBamService nutBamService;
 
+    @GetMapping("/nut-bam/index")
+    public String index(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "status", required = false) Boolean status,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<NutBam> list = nutBamService.search(name, status, pageable);
+        model.addAttribute("list", list);
+        model.addAttribute("name", name);
+        model.addAttribute("status", status);
+        return "admin/thuoc_tinh/nut_bam";
+    }
+
     @GetMapping("/nut-bam/list")
     public String list(Model model) {
         List<NutBam> nutBams = nutBamService.findAll();
@@ -49,24 +64,24 @@ public class NutBamController {
     @PostMapping("/nut-bam/them")
     public String them(@ModelAttribute NutBam nutBam) {
         nutBamService.save(nutBam);
-        return "redirect:/admin/nut-bam/list";
+        return "redirect:/admin/nut-bam/index";
     }
 
     @PostMapping("/nut-bam/sua")
     public String sua(@ModelAttribute NutBam nutBam) {
         nutBamService.save(nutBam);
-        return "redirect:/admin/nut-bam/list";
+        return "redirect:/admin/nut-bam/index";
     }
 
     @PostMapping("/nut-bam/xoa/{id}")
     public String xoa(@PathVariable("id") Long id) {
         nutBamService.delete(id);
-        return "redirect:/admin/nut-bam/list";
+        return "redirect:/admin/nut-bam/index";
     }
 
     @PostMapping("/nut-bam/thay-doi-trang-thai/{id}")
     public String thayDoiTrangThai(@PathVariable("id") Long id) {
         nutBamService.thayDoiTrangThai(id);
-        return "redirect:/admin/nut-bam/list";
+        return "redirect:/admin/nut-bam/index";
     }
 }
