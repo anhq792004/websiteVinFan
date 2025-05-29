@@ -20,11 +20,11 @@ $(document).ready(function() {
         }
 
         $.ajax({
-            url: '/nut-bam/add',
+            url: '/admin/nut-bam/add',
             type: 'POST',
             data: {name: name},
             success: function (response) {
-                if (response === "Nút bấm thêm mới thành công.") {
+                if (response === "Thêm thành công") {
                     Swal.fire({
                         toast: true,
                         icon: 'success',
@@ -92,7 +92,7 @@ $(document).ready(function() {
 
         // Gửi request AJAX
         $.ajax({
-            url: '/nut-bam/update',
+            url: '/admin/nut-bam/update',
             type: 'POST',
             data: {id: id, name: name},
             success: function (response) {
@@ -138,11 +138,11 @@ $(document).ready(function() {
         const trangThaiHienTai = trangThaiElement.hasClass('bg-light-success');
 
         $.ajax({
-            url: '/nut-bam/change-status',
+            url: '/admin/nut-bam/change-status',
             type: 'POST',
             data: {id: id},
             success: function (response) {
-                if (response === "Cập nhật trạng thái thành công.") {
+                if (response === "Thay đổi trạng thái thành công") {
                     Swal.fire({
                         toast: true,
                         icon: 'success',
@@ -188,6 +188,6 @@ $(document).ready(function() {
         const trangThai = $('#trangThai').val();
 
         // Submit form tìm kiếm
-        window.location.href = `/nut-bam/index?name=${name}&status=${trangThai}`;
+        window.location.href = `/admin/nut-bam/index?name=${name}&status=${trangThai}`;
     });
 });
