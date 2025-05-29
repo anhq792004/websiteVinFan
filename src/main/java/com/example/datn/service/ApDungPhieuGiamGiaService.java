@@ -97,7 +97,6 @@ public class ApDungPhieuGiamGiaService {
             apDungPhieuGiamGia.setGiaSauGiam(giaSauGiam);
 
             // Cập nhật giá sau giảm vào sản phẩm chi tiết
-            spct.setGiaSauGiam(giaSauGiam);
             sanPhamChiTietRepo.save(spct);
 
             return apDungPhieuGiamGia;
@@ -122,7 +121,6 @@ public class ApDungPhieuGiamGiaService {
 
         // Cập nhật lại giá sau giảm của sản phẩm chi tiết
         SanPhamChiTiet spct = apDungPhieuGiamGia.getSanPhamChiTiet();
-        spct.setGiaSauGiam(null); // hoặc có thể đặt lại bằng giá gốc
         sanPhamChiTietRepo.save(spct);
     }
 
@@ -139,7 +137,6 @@ public class ApDungPhieuGiamGiaService {
 
             // Cập nhật lại giá sau giảm của sản phẩm chi tiết
             SanPhamChiTiet spct = apDung.getSanPhamChiTiet();
-            spct.setGiaSauGiam(null); // hoặc có thể đặt lại bằng giá gốc
             sanPhamChiTietRepo.save(spct);
         }
 
