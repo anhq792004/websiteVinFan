@@ -1,7 +1,11 @@
 package com.example.datn.service.taiKhoanService;
 
 import com.example.datn.dto.DangKyDto;
+import com.example.datn.entity.ChucVu;
+import com.example.datn.entity.KhachHang;
 import com.example.datn.entity.TaiKhoan;
+import com.example.datn.repository.ChucVuRepo;
+import com.example.datn.repository.KhachHangRepo.KhachHangRepo;
 import com.example.datn.repository.TaiKhoanRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,12 +13,19 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.UUID;
 
 @Service
 public class TaiKhoanService {
     @Autowired
     private TaiKhoanRepo taiKhoanRepository;
+
+    @Autowired
+    private ChucVuRepo chucVuRepository;
+
+    @Autowired
+    private KhachHangRepo khachHangRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -27,12 +38,12 @@ public class TaiKhoanService {
     }
 
     public void dangKyTaiKhoan(DangKyDto dangKyDto) {
+        // Tạo tài khoản
         TaiKhoan taiKhoan = new TaiKhoan();
 
         // Tạo mã ngẫu nhiên cho tài khoản
-        String ma = "TK" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-
-        taiKhoan.setMa(ma);
+        String maTaiKhoan = "TK" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        taiKhoan.setMa(maTaiKhoan);
         taiKhoan.setEmail(dangKyDto.getEmail());
 
         // Mã hóa mật khẩu
@@ -42,14 +53,32 @@ public class TaiKhoanService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         taiKhoan.setNgayTao(LocalDateTime.now().format(formatter));
 
-        // Mặc định vai trò là USER
-//        taiKhoan.setVaiTro("USER");
+        // Tìm chức vụ theo tên vị trí "User"
+        ChucVu chucVuUser = chucVuRepository.findByViTri("User")
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy chức vụ mặc định 'User'"));
 
-        // Trạng thái hoạt động
+        taiKhoan.setChucVu(chucVuUser);
         taiKhoan.setTrangThai(true);
 
-        taiKhoanRepository.save(taiKhoan);
+        // Lưu tài khoản trước
+        TaiKhoan savedTaiKhoan = taiKhoanRepository.save(taiKhoan);
+
+        // Tạo khách hàng
+        KhachHang khachHang = new KhachHang();
+        String maKhachHang = "KH" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        khachHang.setMa(maKhachHang);
+        khachHang.setTen(dangKyDto.getTen());
+        khachHang.setGioiTinh(dangKyDto.getGioiTinh());
+        khachHang.setSoDienThoai(dangKyDto.getSoDienThoai());
+        khachHang.setNgaySinh(dangKyDto.getNgaySinh());
+        khachHang.setNgayTao(new Date());
+        khachHang.setTrangThai(true);
+        khachHang.setTaiKhoan(savedTaiKhoan);
+
+        // Lưu khách hàng
+        khachHangRepository.save(khachHang);
     }
+
 
     /**
      * Kiểm tra mật khẩu cũ và đổi mật khẩu
@@ -92,4 +121,5 @@ public class TaiKhoanService {
             return true;
         }
     }
+
 }
