@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:insert="~{/admin/fragments/head :: head}"></head>
+<head th:insert="~{/admin/fragments/head :: head}">
+    <!-- Thêm meta tags cho thông báo thanh toán -->
+    <meta name="payment-status" th:content="${paymentStatus}" th:if="${paymentStatus != null}">
+    <meta name="payment-message" th:content="${paymentMessage}" th:if="${paymentMessage != null}">
+</head>
 <link rel="stylesheet" th:href="@{/admin/assets/compiled/css/sale.css}">
 <body>
 <!-- Site wrapper -->

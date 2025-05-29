@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.HashMap;
 
 @Controller
 @RequestMapping("/sale")
@@ -54,7 +55,15 @@ public class BanHangTaiQuayController {
     }
 
     @GetMapping("/hdct")
-    public String viewHDCT(Model model, @RequestParam("idHD") Long idHD) {
+    public String viewHDCT(Model model, @RequestParam("idHD") Long idHD, 
+                           @ModelAttribute("paymentStatus") String paymentStatus,
+                           @ModelAttribute("paymentMessage") String paymentMessage) {
+        // Thêm thông báo thanh toán vào model nếu có
+        if (paymentStatus != null && !paymentStatus.isEmpty()) {
+            model.addAttribute("paymentStatus", paymentStatus);
+            model.addAttribute("paymentMessage", paymentMessage);
+        }
+        
         Optional<HoaDon> hoaDonOptional = hoaDonService.findHoaDonById(idHD);
         HoaDon hoaDon = hoaDonOptional.orElseThrow(()
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy hóa đơn"));
@@ -413,6 +422,48 @@ public class BanHangTaiQuayController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Lỗi khi hủy thanh toán Momo: " + e.getMessage());
+        }
+    }
+    
+    // Kiểm tra trạng thái thanh toán Momo
+    @GetMapping("/check-momo-payment-status")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> checkMomoPaymentStatus(@RequestParam("idHD") Long idHD) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // Lấy thông tin giao dịch Momo
+            MomoTransaction transaction = momoService.getTransactionByHoaDonId(idHD);
+            
+            if (transaction == null) {
+                response.put("success", false);
+                response.put("message", "Không tìm thấy giao dịch Momo cho hóa đơn này");
+                return ResponseEntity.ok(response);
+            }
+            
+            // Kiểm tra trạng thái giao dịch
+            // 0: Chờ thanh toán, 1: Đã thanh toán, 2: Lỗi, 3: Đã hủy
+            if (transaction.getTrangThai() == 1) {
+                response.put("success", true);
+                response.put("message", "Giao dịch đã được thanh toán");
+            } else if (transaction.getTrangThai() == 0) {
+                response.put("success", false);
+                response.put("message", "Giao dịch đang chờ thanh toán");
+            } else if (transaction.getTrangThai() == 2) {
+                response.put("success", false);
+                response.put("message", "Giao dịch bị lỗi: " + transaction.getMessage());
+            } else if (transaction.getTrangThai() == 3) {
+                response.put("success", false);
+                response.put("message", "Giao dịch đã bị hủy");
+            }
+            
+            response.put("status", transaction.getTrangThai());
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("success", false);
+            response.put("message", "Lỗi khi kiểm tra trạng thái thanh toán: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 }
