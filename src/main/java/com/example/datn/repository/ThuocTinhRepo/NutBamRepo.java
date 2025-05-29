@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface NutBamRepo extends JpaRepository<NutBam, Integer> {
+public interface NutBamRepo extends JpaRepository<NutBam, Long> {
     @Query("SELECT n FROM NutBam n " +
             "WHERE (LOWER(n.ten) LIKE LOWER(CONCAT('%', :query, '%')) " +
             "AND (:trangThai IS NULL OR n.trangThai = :trangThai))")
@@ -21,4 +21,8 @@ public interface NutBamRepo extends JpaRepository<NutBam, Integer> {
     @Query("SELECT n FROM NutBam n " +
             "WHERE LOWER(n.ten) LIKE LOWER(CONCAT('%', :query, '%'))")
     Page<NutBam> searchOnlyTen(String query, Pageable pageable);
+
+    Page<NutBam> findByTenContainingAndTrangThai(String ten, Boolean trangThai, Pageable pageable);
+    Page<NutBam> findByTenContaining(String ten, Pageable pageable);
+    Page<NutBam> findByTrangThai(Boolean trangThai, Pageable pageable);
 }

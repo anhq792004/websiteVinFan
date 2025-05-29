@@ -62,6 +62,13 @@ $(document).ready(function () {
                 $("#editHang").val(data.hang ? data.hang.id : '');
                 $("#editCheDoGio").val(data.cheDoGio ? data.cheDoGio.id : '');
 
+                // Hiển thị hình ảnh
+                if (data.hinhAnh && data.hinhAnh.hinhAnh) {
+                    $("#editPreviewImage img").attr("src", data.hinhAnh.hinhAnh).show();
+                } else {
+                    $("#editPreviewImage img").hide();
+                }
+
                 // Hiển thị modal
                 $("#editVariantModal").modal("show");
             },
@@ -119,8 +126,8 @@ $(document).ready(function () {
                 $("#detailMoTa").text(data.moTa ? data.moTa : 'Không có mô tả');
 
                 // Hiển thị hình ảnh
-                if (data.hinhAnh && data.hinhAnh.duongDan) {
-                    $("#variantImage").attr("src", data.hinhAnh.duongDan);
+                if (data.hinhAnh && data.hinhAnh.hinhAnh) {
+                    $("#variantImage").attr("src", data.hinhAnh.hinhAnh);
                     $("#variantImageContainer").show();
                 } else {
                     $("#variantImage").attr("src", "/admin/assets/images/no-image.png");
@@ -261,6 +268,18 @@ $(document).ready(function () {
                 console.error("Lỗi khi tải danh sách chế độ gió:", error);
             }
         });
+
+        // Load nút bấm
+        $.ajax({
+            url: "/admin/api/nut-bam/list",
+            type: "GET",
+            success: function (data) {
+                populateSelectOptions("#editNutBam", data, "Chọn nút bấm");
+            },
+            error: function (error) {
+                console.error("Lỗi khi tải danh sách nút bấm:", error);
+            }
+        });
     }
 
     // Hàm điền dữ liệu vào các select
@@ -271,4 +290,118 @@ $(document).ready(function () {
         });
         $(selector).html(options);
     }
+
+    // Preview hình ảnh khi chọn file mới
+    $('#editHinhAnh').change(function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#editPreviewImage img').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Xử lý khi click nút sửa SPCT
+    $('.edit-variant-btn').click(function() {
+        const spctId = $(this).data('id');
+        // Gọi API để lấy thông tin SPCT
+        $.get(`/api/san-pham-chi-tiet/${spctId}`, function(data) {
+            // Điền dữ liệu vào form
+            $('#editSpctId').val(data.id);
+            $('#editMauSac').val(data.mauSac ? data.mauSac.id : '');
+            $('#editCongSuat').val(data.congSuat ? data.congSuat.id : '');
+            $('#editHang').val(data.hang ? data.hang.id : '');
+            $('#editNutBam').val(data.nutBam ? data.nutBam.id : '');
+            $('#editSoLuong').val(data.soLuong);
+            $('#editGia').val(data.gia);
+            $('#editCanNang').val(data.canNang);
+            $('#editTrangThai').val(data.trangThai.toString());
+            $('#editMoTa').val(data.moTa);
+
+            // Hiển thị hình ảnh hiện tại nếu có
+            if (data.hinhAnh && data.hinhAnh.hinhAnh) {
+                $('#editPreviewImage img').attr('src', data.hinhAnh.hinhAnh).show();
+            } else {
+                $('#editPreviewImage img').hide();
+            }
+        });
+    });
+
+    // Xử lý khi submit form sửa SPCT
+    $('#saveEditSpct').click(function() {
+        const formData = new FormData($('#editProductSpctForm')[0]);
+        const spctId = $('#editSpctId').val();
+
+        $.ajax({
+            url: `/api/san-pham-chi-tiet/${spctId}`,
+            type: 'PUT',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                // Hiển thị thông báo thành công
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công',
+                    text: 'Cập nhật sản phẩm chi tiết thành công',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    // Reload lại trang
+                    location.reload();
+                });
+            },
+            error: function(xhr) {
+                // Hiển thị thông báo lỗi
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Có lỗi xảy ra khi cập nhật sản phẩm chi tiết'
+                });
+            }
+        });
+    });
+
+    // Xử lý khi click nút xóa SPCT
+    $('.delete-variant-btn').click(function() {
+        const spctId = $(this).data('id');
+        
+        Swal.fire({
+            title: 'Xác nhận xóa?',
+            text: "Bạn có chắc chắn muốn xóa sản phẩm chi tiết này?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Xóa',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/api/san-pham-chi-tiet/${spctId}`,
+                    type: 'DELETE',
+                    success: function() {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            text: 'Xóa sản phẩm chi tiết thành công',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: 'Có lỗi xảy ra khi xóa sản phẩm chi tiết'
+                        });
+                    }
+                });
+            }
+        });
+    });
 });

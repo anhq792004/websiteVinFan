@@ -19,12 +19,12 @@ public class NutBamServiceImpl implements NutBamService {
     private final NutBamRepo nutBamRepo;
 
     @Override
-    public List<NutBam> findAllNutBam() {
+    public List<NutBam> findAll() {
         return nutBamRepo.findAll();
     }
 
     @Override
-    public NutBam findById(Integer id) {
+    public NutBam findById(Long id) {
         return nutBamRepo.findById(id).orElse(null);
     }
 
@@ -34,56 +34,71 @@ public class NutBamServiceImpl implements NutBamService {
     }
 
     @Override
-    public Page<NutBam> search(String query, Boolean trangThai, Pageable pageable) {
-        if (trangThai == null) {
-            return nutBamRepo.searchOnlyTen(query, pageable);
+    public void delete(Long id) {
+        nutBamRepo.deleteById(id);
+    }
+
+    @Override
+    public void thayDoiTrangThai(Long id) {
+        Optional<NutBam> nutBamOpt = nutBamRepo.findById(id);
+        if (nutBamOpt.isPresent()) {
+            NutBam nutBam = nutBamOpt.get();
+            nutBam.setTrangThai(!nutBam.getTrangThai());
+            nutBamRepo.save(nutBam);
         }
-        return nutBamRepo.search(query, trangThai, pageable);
+    }
+
+    @Override
+    public Page<NutBam> search(String query, Boolean trangThai, Pageable pageable) {
+        if (query != null && !query.isEmpty()) {
+            if (trangThai != null) {
+                return nutBamRepo.findByTenContainingAndTrangThai(query, trangThai, pageable);
+            }
+            return nutBamRepo.findByTenContaining(query, pageable);
+        } else {
+            if (trangThai != null) {
+                return nutBamRepo.findByTrangThai(trangThai, pageable);
+            }
+            return nutBamRepo.findAll(pageable);
+        }
     }
 
     @Override
     public ResponseEntity<?> add(String name) {
         if (name == null || name.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("Tên nút bấm không được để trống.");
-        }
-        Optional<NutBam> checkTonTai = nutBamRepo.findByTen(name.trim());
-        if (checkTonTai.isPresent()) {
-            return ResponseEntity.badRequest().body("Đã tồn tại nút bấm.");
+            return ResponseEntity.badRequest().body("Tên không được để trống");
         }
         NutBam nutBam = new NutBam();
         nutBam.setTen(name.trim());
         nutBam.setTrangThai(true);
         nutBamRepo.save(nutBam);
-
-        return ResponseEntity.ok("Nút bấm thêm mới thành công.");
+        return ResponseEntity.ok("Thêm thành công");
     }
 
     @Override
     public ResponseEntity<?> update(Integer id, String name) {
         if (name == null || name.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("Tên nút bấm không được để trống.");
+            return ResponseEntity.badRequest().body("Tên không được để trống");
         }
-        Optional<NutBam> checkTonTai = nutBamRepo.findByTen(name.trim());
-        if (checkTonTai.isPresent() && !checkTonTai.get().getId().equals(id)) {
-            return ResponseEntity.badRequest().body("Đã tồn tại nút bấm.");
+        Optional<NutBam> nutBamOpt = nutBamRepo.findById(Long.valueOf(id));
+        if (nutBamOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Không tìm thấy nút bấm");
         }
-        NutBam nutBam = nutBamRepo.findById(id).orElse(null);
-        if (nutBam == null) {
-            return ResponseEntity.badRequest().body("Không tìm thấy nút bấm.");
-        }
+        NutBam nutBam = nutBamOpt.get();
         nutBam.setTen(name.trim());
         nutBamRepo.save(nutBam);
-        return ResponseEntity.ok("Cập nhật nút bấm thành công.");
+        return ResponseEntity.ok("Cập nhật thành công");
     }
 
     @Override
     public ResponseEntity<?> changeStatus(Integer id) {
-        NutBam nutBam = nutBamRepo.findById(id).orElse(null);
-        if (nutBam == null) {
-            return ResponseEntity.badRequest().body("Không tìm thấy nút bấm.");
+        Optional<NutBam> nutBamOpt = nutBamRepo.findById(Long.valueOf(id));
+        if (nutBamOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Không tìm thấy nút bấm");
         }
+        NutBam nutBam = nutBamOpt.get();
         nutBam.setTrangThai(!nutBam.getTrangThai());
         nutBamRepo.save(nutBam);
-        return ResponseEntity.ok("Cập nhật trạng thái thành công.");
+        return ResponseEntity.ok("Thay đổi trạng thái thành công");
     }
 }

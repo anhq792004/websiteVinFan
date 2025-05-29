@@ -1,5 +1,6 @@
 package com.example.datn.service.HoaDonService;
 
+import com.example.datn.dto.request.AddKHToHDCTRequest;
 import com.example.datn.dto.request.AddSPToHDCTRequest;
 import com.example.datn.dto.request.TrangThaiHoaDonRequest;
 import com.example.datn.dto.request.UpdateSoLuongRequest;
@@ -47,6 +48,8 @@ public interface HoaDonService {
 
     void addSPToHDCT(AddSPToHDCTRequest addSPToHDCTRequest);
 
+    void addKHToHDCT(AddKHToHDCTRequest addKHToHDCTRequest);
+
     void updateSoluong(UpdateSoLuongRequest updateSoLuongRequest);
 
     void tangSoLuong(Long idHD, Long idSPCT);
@@ -63,4 +66,7 @@ public interface HoaDonService {
 
     //trang thai hoa don
     TrangThaiHoaDonRequest getTrangThaiHoaDon();
+    
+    // Phương thức lưu hóa đơn
+    void saveHoaDon(HoaDon hoaDon);
 }

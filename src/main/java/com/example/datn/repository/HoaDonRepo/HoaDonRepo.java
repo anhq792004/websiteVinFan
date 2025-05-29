@@ -2,6 +2,7 @@ package com.example.datn.repository.HoaDonRepo;
 
 import com.example.datn.dto.response.LichSuThanhToanResponse;
 import com.example.datn.entity.HoaDon.HoaDon;
+import com.example.datn.entity.HoaDon.HoaDonChiTiet;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public interface HoaDonRepo extends JpaRepository<HoaDon,Long> {
     @Query("SELECT hd from HoaDon hd order by hd.ngayTao desc ")
@@ -36,11 +38,15 @@ public interface HoaDonRepo extends JpaRepository<HoaDon,Long> {
 //            "order by hd.ngayTao desc, hd.trangThai asc ")
 //    Page<HoaDon> searchHoaDonKhongtrangThai(String query, Boolean loaiHoaDon, LocalDateTime tuNgay, LocalDateTime denNgay, Pageable pageable);
 
+    @Query("SELECT h.khachHang.id FROM HoaDon h WHERE h.id = :hoaDonId")
+    Long findKhachHangIdByHoaDonId(@Param("hoaDonId") Long hoaDonId);
 
     @Query("SELECT new com.example.datn.dto.response.LichSuThanhToanResponse(" +
-            "hd.tongTienSauGiamGia , hd.ngayTao, hd.loaiHoaDon,hd.hinhThucThanhToan, hd.trangThai) " +
+            "hd.tongTienSauGiamGia, hd.ngayTao, COALESCE(hd.loaiHoaDon, TRUE), " +
+            "hd.phuongThucThanhToan, " +
+            "hd.trangThai) " +
             "FROM HoaDon hd " +
-            "where hd.id =:hoaDonId")
+            "where hd.id = :hoaDonId")
     LichSuThanhToanResponse findThanhToanHoaDonId(@Param("hoaDonId") long id);
 
 

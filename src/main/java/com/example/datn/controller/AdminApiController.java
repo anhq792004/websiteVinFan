@@ -22,7 +22,7 @@ public class AdminApiController {
     private final MauSacService mauSacService;
     private final CongSuatService congSuatService;
     private final HangService hangService;
-
+    
     // Endpoint kiểm tra hoạt động
     @GetMapping("/check")
     public ResponseEntity<Map<String, String>> check() {
@@ -47,6 +47,4 @@ public class AdminApiController {
     public ResponseEntity<List<Hang>> getAllHang() {
         return ResponseEntity.ok(hangService.findAllHang());
     }
-
-
 } 
