@@ -1,11 +1,11 @@
 package com.example.datn.controller.ThuocTinhController;
 
 import com.example.datn.entity.ThuocTinh.NutBam;
-import com.example.datn.repository.ThuocTinhRepo.NutBamRepo;
 import com.example.datn.service.ThuocTinhService.NutBamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,58 +14,74 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/nut-bam")
 @RequiredArgsConstructor
+@RequestMapping("/admin")
 public class NutBamController {
-    private final NutBamRepo nutBamRepo;
     private final NutBamService nutBamService;
 
-    @ModelAttribute("listNutBam")
-    public List<NutBam> listNutBam() {
-        return nutBamRepo.findAll();
-    }
-
-    @GetMapping("/index")
-    public String timKiem(
-            @RequestParam(value = "name", defaultValue = "") String name,
-            @RequestParam(value = "status", defaultValue = "") Boolean status,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
-            Model model
-    ){
-        Page<NutBam> searchPage = nutBamService.search(name.trim(), status, PageRequest.of(page, size));
-        if (searchPage.isEmpty() && page < 0) {
-            searchPage = nutBamService.search(name.trim(), status, PageRequest.of(0, size));
-        }
-        model.addAttribute("list", searchPage);
+    @GetMapping("/nut-bam/index")
+    public String index(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "status", required = false) Boolean status,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<NutBam> list = nutBamService.search(name, status, pageable);
+        model.addAttribute("list", list);
         model.addAttribute("name", name);
-        model.addAttribute("status", status != null ? status : "");
+        model.addAttribute("status", status);
         return "admin/thuoc_tinh/nut_bam";
     }
 
-    @GetMapping("/find-by-id")
+    @GetMapping("/nut-bam/list")
+    public String list(Model model) {
+        List<NutBam> nutBams = nutBamService.findAll();
+        model.addAttribute("nutBams", nutBams);
+        return "admin/thuoc_tinh/nut_bam/list";
+    }
+
+    @GetMapping("/api/nut-bam/list")
     @ResponseBody
-    public NutBam findById(@RequestParam("id") Integer id) {
-        return nutBamService.findById(id);
+    public ResponseEntity<List<NutBam>> getAll() {
+        List<NutBam> nutBams = nutBamService.findAll();
+        return ResponseEntity.ok(nutBams);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> themMoi(@RequestParam(value = "name", required = true) String name) {
-        if (name == null || name.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("Tên không được để trống");
-        }
-        return nutBamService.add(name.trim());
+    @GetMapping("/nut-bam/search")
+    public String search(
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "trangThai", required = false) Boolean trangThai,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<NutBam> nutBams = nutBamService.search(query, trangThai, pageable);
+        model.addAttribute("nutBams", nutBams);
+        return "admin/thuoc_tinh/nut_bam/list";
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<?> capNhat(
-            @RequestParam(value = "id", required = true) Integer id,
-            @RequestParam(value = "name", required = true) String name) {
-        return nutBamService.update(id, name.trim());
+    @PostMapping("/nut-bam/them")
+    public String them(@ModelAttribute NutBam nutBam) {
+        nutBamService.save(nutBam);
+        return "redirect:/admin/nut-bam/index";
     }
 
-    @PostMapping("/change-status")
-    public ResponseEntity<?> thayDoiTrangThai(@RequestParam(value = "id", required = true) Integer id) {
-        return nutBamService.changeStatus(id);
+    @PostMapping("/nut-bam/sua")
+    public String sua(@ModelAttribute NutBam nutBam) {
+        nutBamService.save(nutBam);
+        return "redirect:/admin/nut-bam/index";
+    }
+
+    @PostMapping("/nut-bam/xoa/{id}")
+    public String xoa(@PathVariable("id") Long id) {
+        nutBamService.delete(id);
+        return "redirect:/admin/nut-bam/index";
+    }
+
+    @PostMapping("/nut-bam/thay-doi-trang-thai/{id}")
+    public String thayDoiTrangThai(@PathVariable("id") Long id) {
+        nutBamService.thayDoiTrangThai(id);
+        return "redirect:/admin/nut-bam/index";
     }
 }

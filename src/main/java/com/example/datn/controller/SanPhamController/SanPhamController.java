@@ -1,4 +1,4 @@
-package com.example.datn.controller;
+package com.example.datn.controller.SanPhamController;
 
 import com.example.datn.entity.SanPham.SanPham;
 import com.example.datn.entity.ThuocTinh.KieuQuat;
@@ -30,7 +30,7 @@ public class SanPhamController {
     public String getAllSanPham(
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "size", required = false, defaultValue = "5") int size,
-            @RequestParam(value = "search", required = false) String search, // Thêm search
+            @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "kieuQuat", required = false) Long kieuQuatId,
             @RequestParam(value = "trangThai", required = false) Boolean trangThai,
             Model model

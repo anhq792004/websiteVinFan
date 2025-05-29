@@ -61,7 +61,7 @@ $(document).ready(function () {
                             timer: 1000,
                             timerProgressBar: true
                         }).then(() => {
-                            location.reload();
+                            window.location.href = "/sale/index";
                         });
                     },
                     error: function () {
@@ -73,21 +73,21 @@ $(document).ready(function () {
     });
 });
 
-$(".btn-add-sanPham").click(function () {
+$(".btn-add-khachHang").click(function () {
     const hoaDonId = $(this).data("id-hd");
     const sanPhamId = $(this).data("id-sp");
-    const gia = $(this).data("gia");
-    const soLuong = 1;
+    const ten = $(this).data("ten");
+    const sdt = $(this).data("sdt");
 
     $.ajax({
-        url: '/sale/addSP',
+        url: '/sale/addKH',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
             idHD: hoaDonId,
             idSP: sanPhamId,
-            gia: gia,
-            soLuong: soLuong
+            ten: ten,
+            sdt: sdt
         }),
         success: function (response) {
             Swal.fire({
@@ -157,6 +157,19 @@ $(".btn-xoa-sanPham").click(function () {
 $(".quantity-btn").click(function () {
     const idSP = $(this).closest("form").data("idsp");  // lấy từ data-idsp
     const idHD = $(this).closest("form").data("idhd");  // lấy từ data-idhd
+    const soLuongHienTai = parseInt($(this).closest('form').find('.quantity-input').val()) || 0;
+    
+    // Tìm sản phẩm tương ứng trong bảng sản phẩm (nếu đang hiển thị)
+    const productRow = $(`#modalThemSanPham tr:has(button[data-id-sp="${idSP}"])`);
+    if (productRow.length) {
+        const soLuongElement = productRow.find('td:eq(5)');
+        const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
+        
+        // Giảm số lượng hiển thị trong bảng (chỉ trên UI)
+        if (soLuongTrongKho > 0) {
+            soLuongElement.text(soLuongTrongKho - 1);
+        }
+    }
 
     $.ajax({
         url: '/sale/tangSoLuong',
@@ -176,6 +189,13 @@ $(".quantity-btn").click(function () {
             }).then(() => location.reload());
         },
         error: function (xhr) {
+            // Khôi phục số lượng hiển thị trong trường hợp lỗi
+            if (productRow.length) {
+                const soLuongElement = productRow.find('td:eq(5)');
+                const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
+                soLuongElement.text(soLuongTrongKho + 1);
+            }
+            
             Swal.fire({
                 toast: true,
                 icon: 'error',
@@ -183,8 +203,7 @@ $(".quantity-btn").click(function () {
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 1000
-            })
-                .then(() => location.reload());
+            }).then(() => location.reload());
         }
     });
 });
@@ -192,6 +211,17 @@ $(".quantity-btn").click(function () {
 $(".quantity-btn-1").click(function () {
     const idSP = $(this).closest("form").data("idsp");  // lấy từ data-idsp
     const idHD = $(this).closest("form").data("idhd");  // lấy từ data-idhd
+    const soLuongHienTai = parseInt($(this).closest('form').find('.quantity-input').val()) || 0;
+    
+    // Tìm sản phẩm tương ứng trong bảng sản phẩm (nếu đang hiển thị)
+    const productRow = $(`#modalThemSanPham tr:has(button[data-id-sp="${idSP}"])`);
+    if (productRow.length) {
+        const soLuongElement = productRow.find('td:eq(5)');
+        const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
+        
+        // Tăng số lượng hiển thị trong bảng (chỉ trên UI) khi giảm số lượng trong giỏ
+        soLuongElement.text(soLuongTrongKho + 1);
+    }
 
     $.ajax({
         url: '/sale/giamSoLuong',
@@ -208,10 +238,16 @@ $(".quantity-btn-1").click(function () {
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 1000
-            })
-                .then(() => location.reload());
+            }).then(() => location.reload());
         },
         error: function (xhr) {
+            // Khôi phục số lượng hiển thị trong trường hợp lỗi
+            if (productRow.length) {
+                const soLuongElement = productRow.find('td:eq(5)');
+                const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
+                soLuongElement.text(soLuongTrongKho - 1);
+            }
+            
             Swal.fire({
                 toast: true,
                 icon: 'error',
@@ -219,8 +255,7 @@ $(".quantity-btn-1").click(function () {
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 1000
-            })
-                .then(() => location.reload());
+            }).then(() => location.reload());
         }
     });
 });
@@ -275,23 +310,83 @@ $(document).ready(function () {
 $(document).ready(function () {
     $('#btnThanhToan').click(function () {
         const idHD = $(this).data('id'); // lấy giá trị id hóa đơn từ nút
+        
+        // Lấy giá trị tổng tiền sau giảm giá
+        const tongTienSauGiam = parseFloat($('#tongTienSauGiam').attr('data-value') || $('#tienThanhToan').attr('data-value')) || 0;
+        
+        // Lấy phương thức thanh toán được chọn
+        const phuongThucThanhToan = $('input[name="phuongThucThanhToan"]:checked').val();
+        
+        // Nếu là thanh toán tiền mặt, kiểm tra số tiền khách trả
+        if (phuongThucThanhToan === 'TIEN_MAT') {
+            // Lấy số tiền khách trả
+            const tienKhachTra = parseFloat($('#tienKhachTra').val() || 0);
+            
+            // Kiểm tra xem khách đã trả đủ tiền chưa
+            if (tienKhachTra < tongTienSauGiam) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Chưa đủ tiền',
+                    text: 'Số tiền khách trả chưa đủ để thanh toán!',
+                    confirmButtonText: 'Đồng ý'
+                });
+                return;
+            }
+        }
 
         $.ajax({
             url: '/sale/thanh-toan',
             type: 'POST',
-            data: {idHD: idHD}, // gửi dữ liệu lên server
+            data: {
+                idHD: idHD,
+                phuongThucThanhToan: phuongThucThanhToan
+            },
             success: function (response) {
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: response,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 1000,
-                    timerProgressBar: true
-                }).then(() => {
-                    window.location.href = '/sale/index';
-                });
+                // Kiểm tra nếu phản hồi là QR code Momo
+                if (response.startsWith('MOMO_QR_CODE:')) {
+                    const qrCodeUrl = response.substring('MOMO_QR_CODE:'.length);
+                    showMomoQRCode(qrCodeUrl, idHD);
+                } 
+                // Kiểm tra nếu phản hồi là chuyển hướng đến trang thanh toán Momo
+                else if (response.startsWith('MOMO_REDIRECT:')) {
+                    const payUrl = response.substring('MOMO_REDIRECT:'.length);
+                    // Hiển thị thông báo
+                    Swal.fire({
+                        title: 'Chuyển hướng đến Momo',
+                        text: 'Bạn sẽ được chuyển đến trang thanh toán Momo...',
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonText: 'Đồng ý',
+                        cancelButtonText: 'Hủy'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Lưu ID hóa đơn vào sessionStorage để kiểm tra khi quay lại
+                            sessionStorage.setItem('pending_momo_order', idHD);
+                            
+                            // Mở cửa sổ thanh toán Momo
+                            window.open(payUrl, '_blank');
+                            
+                            // Hiển thị dialog kiểm tra thanh toán
+                            monitorMomoPayment(idHD);
+                        } else {
+                            // Hủy thanh toán
+                            cancelMomoPayment(idHD);
+                        }
+                    });
+                } else {
+                    // Xử lý thành công bình thường
+                    Swal.fire({
+                        toast: true,
+                        icon: 'success',
+                        title: response,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 1000,
+                        timerProgressBar: true
+                    }).then(() => {
+                        window.location.href = '/sale/index';
+                    });
+                }
             },
             error: function (xhr) {
                 Swal.fire({
@@ -307,3 +402,812 @@ $(document).ready(function () {
         });
     });
 });
+
+// Hàm hiển thị QR code thanh toán Momo
+function showMomoQRCode(qrCodeUrl, hoaDonId) {
+    Swal.fire({
+        title: 'Thanh toán qua Momo',
+        html: `
+            <div class="text-center">
+                <p>Vui lòng quét mã QR bằng ứng dụng Momo để hoàn tất thanh toán</p>
+                <div class="mb-3">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeUrl)}" 
+                         alt="Momo QR Code" class="img-fluid"/>
+                </div>
+                <div class="bg-light p-2 mb-3 rounded">
+                    <p class="mb-1"><strong>Hướng dẫn:</strong></p>
+                    <p class="mb-1">1. Mở ứng dụng Momo trên điện thoại</p>
+                    <p class="mb-1">2. Chọn "Quét mã QR"</p>
+                    <p class="mb-1">3. Quét mã QR trên màn hình</p>
+                    <p class="mb-1">4. Xác nhận thanh toán trên ứng dụng</p>
+                    <p class="mb-0">5. Chờ hệ thống tự động xác nhận (môi trường test)</p>
+                </div>
+                <p class="text-info" id="momoCountdown">Đang xử lý thanh toán tự động sau <strong>5</strong> giây...</p>
+                <div class="small text-muted">Mã đơn hàng: ${qrCodeUrl.split('id=')[1].split('&')[0]}</div>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Đã thanh toán',
+        cancelButtonText: 'Hủy',
+        reverseButtons: true,
+        allowOutsideClick: false,
+        didOpen: () => {
+            // Trong môi trường test, tự động xác nhận sau 5 giây
+            let countDown = 5;
+            const countdownElement = document.getElementById('momoCountdown');
+            const countdownInterval = setInterval(() => {
+                countDown--;
+                if (countdownElement) {
+                    countdownElement.innerHTML = `Đang xử lý thanh toán tự động sau <strong>${countDown}</strong> giây...`;
+                }
+                
+                if (countDown <= 0) {
+                    clearInterval(countdownInterval);
+                    Swal.close();
+                    // Tự động xác nhận thanh toán
+                    confirmMomoPayment(hoaDonId);
+                }
+            }, 1000);
+            
+            // Lưu interval vào Swal để có thể xóa nếu người dùng đóng modal
+            Swal.getPopup().countdownInterval = countdownInterval;
+        },
+        willClose: () => {
+            // Xóa interval khi modal đóng
+            clearInterval(Swal.getPopup().countdownInterval);
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Người dùng bấm nút xác nhận
+            confirmMomoPayment(hoaDonId);
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            // Người dùng bấm nút hủy
+            cancelMomoPayment(hoaDonId);
+        }
+    });
+}
+
+// Xác nhận thanh toán Momo đã hoàn tất
+function confirmMomoPayment(hoaDonId) {
+    $.ajax({
+        url: '/sale/confirm-momo-payment',
+        type: 'POST',
+        data: { idHD: hoaDonId },
+        success: function(response) {
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Thanh toán Momo thành công!',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true
+            }).then(() => {
+                window.location.href = '/sale/index';
+            });
+        },
+        error: function(xhr) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi xác nhận thanh toán',
+                text: xhr.responseText || 'Không thể xác nhận thanh toán. Vui lòng thử lại.',
+                confirmButtonText: 'Đồng ý'
+            });
+        }
+    });
+}
+
+// Hủy thanh toán Momo
+function cancelMomoPayment(hoaDonId) {
+    $.ajax({
+        url: '/sale/cancel-momo-payment',
+        type: 'POST',
+        data: { idHD: hoaDonId },
+        success: function(response) {
+            Swal.fire({
+                toast: true,
+                icon: 'info',
+                title: 'Đã hủy thanh toán Momo',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true
+            });
+        },
+        error: function(xhr) {
+            console.error('Lỗi khi hủy thanh toán:', xhr);
+        }
+    });
+}
+
+//tính tiền thừa
+document.addEventListener("DOMContentLoaded", function () {
+    const inputTienKhachTra = document.getElementById('tienKhachTra');
+    const pTienThanhToan = document.getElementById('tienThanhToan');
+    const pTienThua = document.getElementById('tienThua');
+    const btnThanhToan = document.getElementById('btnThanhToan');
+    
+    // Định dạng tiền tệ cho tất cả các giá trị tiền hàng khi trang tải
+    formatCurrency();
+
+    if (!pTienThanhToan) {
+        console.error("Không tìm thấy phần tử 'tienThanhToan'");
+        return;
+    }
+    
+    // Mặc định nút thanh toán có màu xám
+    if (btnThanhToan) {
+        btnThanhToan.classList.remove('btn-success');
+        btnThanhToan.classList.add('btn-outline-warning');
+    }
+
+    inputTienKhachTra.addEventListener('input', function () {
+        const tienKhachTra = parseFloat(inputTienKhachTra.value) || 0;
+        const tongTienSauGiam = parseFloat($('#tongTienSauGiam').attr('data-value') || $('#tienThanhToan').attr('data-value')) || 0;
+        const tienThua = tienKhachTra - tongTienSauGiam;
+
+        // Format tiền thừa (có thể âm)
+        const tienThuaFormatted = formatNumberToVND(tienThua);
+        pTienThua.innerText = tienThuaFormatted;
+
+        // Đổi màu nếu âm
+        if (tienThua < 0) {
+            pTienThua.classList.add("text-danger");
+            
+            // Hiển thị thông báo nhỏ nếu tiền không đủ
+            if (!document.getElementById('warningMessage')) {
+                const warningMsg = document.createElement('small');
+                warningMsg.id = 'warningMessage';
+                warningMsg.className = 'text-danger d-block mt-1';
+                warningMsg.innerText = 'Số tiền khách trả chưa đủ';
+                pTienThua.parentNode.appendChild(warningMsg);
+            }
+            
+            // Nút thanh toán có màu xám
+            if (btnThanhToan) {
+                btnThanhToan.classList.remove('btn-success');
+                btnThanhToan.classList.add('btn-outline-warning');
+            }
+        } else {
+            pTienThua.classList.remove("text-danger");
+            
+            // Xóa thông báo cảnh báo nếu có
+            const warningMsg = document.getElementById('warningMessage');
+            if (warningMsg) {
+                warningMsg.remove();
+            }
+            
+            // Nút thanh toán có màu xanh nếu đủ tiền
+            if (btnThanhToan) {
+                btnThanhToan.classList.remove('btn-outline-warning');
+                btnThanhToan.classList.add('btn-success');
+            }
+        }
+    });
+});
+
+// Hàm định dạng số thành VND
+function formatNumberToVND(number) {
+    return number.toLocaleString('vi-VN') + ' VND';
+}
+
+// Hàm định dạng tất cả các giá trị tiền tệ trên trang
+function formatCurrency() {
+    console.log("Formatting currency values...");
+    
+    // Định dạng tiền hàng
+    const tienThanhToan = document.getElementById('tienThanhToan');
+    if (tienThanhToan) {
+        const value = parseFloat(tienThanhToan.getAttribute('data-value')) || 0;
+        tienThanhToan.textContent = formatNumberToVND(value);
+        console.log("Tiền thanh toán:", value, formatNumberToVND(value));
+    }
+    
+    // Định dạng tổng tiền sau giảm
+    const tongTienSauGiam = document.getElementById('tongTienSauGiam');
+    if (tongTienSauGiam) {
+        const tongTien = parseFloat(document.getElementById('tienThanhToan')?.getAttribute('data-value')) || 0;
+        const giamGia = parseFloat(document.getElementById('giaTriGiamGia')?.getAttribute('data-value')) || 0;
+        const value = tongTien - giamGia;
+        tongTienSauGiam.textContent = formatNumberToVND(value);
+        tongTienSauGiam.setAttribute('data-value', value);
+        console.log("Tổng tiền sau giảm:", value, formatNumberToVND(value));
+    }
+}
+
+// button ẩn form
+document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.getElementById('toggleForm');
+    const form = document.getElementById('shippingForm');
+    const btn = document.getElementById('btnDiaChi');
+
+    toggle.addEventListener('change', function () {
+        if (toggle.checked) {
+            form.style.visibility = 'visible';
+            btn.style.visibility = 'visible';
+        } else {
+            form.style.visibility = 'hidden';
+            btn.style.visibility = 'hidden';
+        }
+    });
+});
+
+// Thêm code xử lý cho nút thêm sản phẩm
+$(document).ready(function() {
+    console.log("Document ready - checking btn-add-sanPham elements");
+    const addButtons = $('.btn-add-sanPham');
+    console.log("Found " + addButtons.length + " add product buttons");
+    
+    // Xóa tất cả event handlers cũ để tránh trùng lặp
+    $('.btn-add-sanPham').off('click');
+    
+    // Thêm event listener mới
+    $('.btn-add-sanPham').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        console.log("Add product button clicked");
+        const hoaDonId = $(this).data("id-hd");
+        const sanPhamId = $(this).data("id-sp");
+        const gia = $(this).data("gia");
+        const rowElement = $(this).closest('tr');
+        const soLuongElement = rowElement.find('td:eq(5)');
+        const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
+        
+        console.log("Data: ", { hoaDonId, sanPhamId, gia, soLuongTrongKho });
+        
+        // Vô hiệu hóa nút để tránh nhấn nhiều lần
+        const button = $(this);
+        button.prop('disabled', true);
+        
+        // Giảm số lượng hiển thị trong bảng (chỉ trên UI)
+        if (soLuongTrongKho > 0) {
+            soLuongElement.text(soLuongTrongKho - 1);
+        }
+        
+        $.ajax({
+            url: '/sale/addSP',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                idHD: hoaDonId,
+                idSP: sanPhamId,
+                gia: gia,
+                soLuong: 1
+            }),
+            success: function (response) {
+                console.log("Success: ", response);
+                // Kiểm tra nếu số lượng sản phẩm trong giỏ vượt quá số lượng trong kho
+                // Chúng ta sẽ hiển thị thông báo cảnh báo, nhưng vẫn cho phép thêm vào giỏ
+                let warningMessage = "";
+                const itemInCart = $('#product-list').find(`[data-idsp="${sanPhamId}"]`).closest('form');
+                if (itemInCart.length > 0) {
+                    const soLuongTrongGio = parseInt(itemInCart.find('.quantity-input').val()) || 0;
+                    if (soLuongTrongGio >= soLuongTrongKho) {
+                        warningMessage = `Cảnh báo: Số lượng sản phẩm trong giỏ (${soLuongTrongGio}) đã vượt quá số lượng trong kho (${soLuongTrongKho}). Vẫn có thể mua nhưng sẽ kiểm tra lại khi thanh toán.`;
+                    }
+                }
+                
+                Swal.fire({
+                    toast: true,
+                    icon: warningMessage ? 'warning' : 'success',
+                    title: warningMessage || response,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: warningMessage ? 3000 : 500,
+                    timerProgressBar: true
+                }).then(() => {
+                    location.reload();
+                });
+            },
+            error: function (xhr) {
+                console.error("Error: ", xhr);
+                // Kích hoạt lại nút trong trường hợp lỗi
+                button.prop('disabled', false);
+                
+                // Khôi phục số lượng hiển thị trong trường hợp lỗi
+                soLuongElement.text(soLuongTrongKho);
+                
+                Swal.fire({
+                    toast: true,
+                    icon: 'error',
+                    title: xhr.responseText,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true
+                });
+            }
+        });
+    });
+    
+    // Chạy format currency khi trang tải xong
+    formatCurrency();
+});
+
+// Khởi tạo biến cho phiếu giảm giá
+let selectedPhieuGiamGia = null;
+
+// Tải danh sách phiếu giảm giá khi mở modal
+$(document).on('show.bs.modal', '#modalPhieuGiamGia', function () {
+    loadPhieuGiamGia();
+});
+
+// Xử lý khi modal bị đóng để đảm bảo không có vấn đề với backdrop
+$(document).on('hidden.bs.modal', '#modalPhieuGiamGia', function () {
+    // Đảm bảo backdrop được xóa
+    $('.modal-backdrop').remove();
+    $('body').removeClass('modal-open').css('overflow', '');
+    $('body').css('padding-right', '');
+});
+
+// Hàm tải danh sách phiếu giảm giá từ API
+function loadPhieuGiamGia() {
+    $.ajax({
+        url: '/sale/api/phieu-giam-gia/active',
+        type: 'GET',
+        success: function (data) {
+            renderPhieuGiamGia(data);
+        },
+        error: function (xhr) {
+            console.error('Lỗi khi tải phiếu giảm giá:', xhr);
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: 'Không thể tải danh sách phiếu giảm giá',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+    });
+}
+
+// Hàm hiển thị danh sách phiếu giảm giá
+function renderPhieuGiamGia(data) {
+    const tbody = $('#phieuGiamGiaList');
+    tbody.empty();
+
+    if (data && data.length > 0) {
+        data.forEach(function (item, index) {
+            const row = $('<tr>');
+            row.append($('<td>').text(index + 1));
+            row.append($('<td>').text(item.ma));
+            row.append($('<td>').text(item.ten));
+            
+            // Hiển thị giá trị giảm theo loại (% hoặc tiền mặt)
+            const giaTriGiam = item.loaiGiamGia ? 
+                item.giaTriGiam + ' %' : 
+                formatNumberToVND(item.giaTriGiam);
+            row.append($('<td>').text(giaTriGiam));
+            
+            row.append($('<td>').text(item.loaiGiamGia ? 'Phần trăm' : 'Tiền mặt'));
+            
+            const btnApDung = $('<button>')
+                .addClass('btn btn-outline-success btn-sm')
+                .text('Áp dụng')
+                .attr('data-id', item.id)
+                .attr('data-loai', item.loaiGiamGia)
+                .attr('data-giatri', item.giaTriGiam)
+                .attr('data-ten', item.ten);
+            
+            row.append($('<td>').append(btnApDung));
+            tbody.append(row);
+        });
+    } else {
+        tbody.append('<tr><td colspan="6" class="text-center">Không có phiếu giảm giá nào</td></tr>');
+    }
+}
+
+// Sự kiện khi click vào nút áp dụng phiếu giảm giá
+$(document).on('click', '#phieuGiamGiaList button', function() {
+    const idPGG = $(this).data('id');
+    const loaiGiamGia = $(this).data('loai'); // true: phần trăm, false: tiền mặt
+    const giaTriGiam = $(this).data('giatri');
+    const tenPGG = $(this).data('ten');
+    const idHD = $('#btnThanhToan').data('id');
+    
+    // Lưu thông tin phiếu giảm giá đã chọn
+    selectedPhieuGiamGia = {
+        id: idPGG,
+        loaiGiamGia: loaiGiamGia,
+        giaTriGiam: giaTriGiam,
+        ten: tenPGG
+    };
+    
+    // Áp dụng giảm giá vào hóa đơn
+    applyDiscount(idHD, idPGG);
+    
+    // Đóng modal đúng cách
+    const modalElement = document.getElementById('modalPhieuGiamGia');
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    if (modal) {
+        modal.hide();
+    }
+    
+    // Xóa backdrop nếu còn
+    $('.modal-backdrop').remove();
+    $('body').removeClass('modal-open').css('overflow', '');
+    $('body').css('padding-right', '');
+});
+
+// Áp dụng phiếu giảm giá vào hóa đơn
+function applyDiscount(idHD, idPGG) {
+    $.ajax({
+        url: '/sale/apply-discount',
+        type: 'POST',
+        data: {
+            idHD: idHD,
+            idPGG: idPGG
+        },
+        success: function(response) {
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Áp dụng phiếu giảm giá thành công',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            
+            // Cập nhật UI
+            updateDiscountDisplay();
+        },
+        error: function(xhr) {
+            console.error("Lỗi khi áp dụng phiếu giảm giá:", xhr);
+            
+            // Đảm bảo modal được đóng và backdrop được xóa
+            const modalElement = document.getElementById('modalPhieuGiamGia');
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            }
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open').css('overflow', '');
+            $('body').css('padding-right', '');
+            
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: xhr.responseText || 'Lỗi khi áp dụng phiếu giảm giá',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000
+            });
+            
+            // Reset phiếu giảm giá đã chọn
+            selectedPhieuGiamGia = null;
+        }
+    });
+}
+
+// Cập nhật hiển thị giảm giá và tổng tiền
+function updateDiscountDisplay() {
+    if (!selectedPhieuGiamGia) return;
+    
+    const tongTien = parseFloat($('#tienThanhToan').attr('data-value')) || 0;
+    let giaTriGiamGia = 0;
+    
+    // Tính giá trị giảm
+    if (selectedPhieuGiamGia.loaiGiamGia) {
+        // Loại phần trăm
+        giaTriGiamGia = (tongTien * selectedPhieuGiamGia.giaTriGiam) / 100;
+    } else {
+        // Loại tiền mặt
+        giaTriGiamGia = parseFloat(selectedPhieuGiamGia.giaTriGiam);
+    }
+    
+    // Đảm bảo giá trị giảm không lớn hơn tổng tiền
+    giaTriGiamGia = Math.min(giaTriGiamGia, tongTien);
+    
+    // Cập nhật UI hiển thị giá trị giảm
+    $('#giaTriGiamGia').text(formatNumberToVND(giaTriGiamGia));
+    $('#giaTriGiamGia').attr('data-value', giaTriGiamGia);
+    
+    // Tính tổng tiền sau giảm và cập nhật hiển thị
+    const tongTienSauGiam = tongTien - giaTriGiamGia;
+    $('#tongTienSauGiam').text(formatNumberToVND(tongTienSauGiam));
+    $('#tongTienSauGiam').attr('data-value', tongTienSauGiam);
+    
+    console.log("Tổng tiền:", tongTien, "Giảm giá:", giaTriGiamGia, "Tổng sau giảm:", tongTienSauGiam);
+}
+
+// button ẩn form
+document.addEventListener('DOMContentLoaded', function () {
+    const toggle = document.getElementById('toggleForm');
+    const form = document.getElementById('shippingForm');
+    const btn = document.getElementById('btnDiaChi');
+
+    toggle.addEventListener('change', function () {
+        if (toggle.checked) {
+            form.style.visibility = 'visible';
+            btn.style.visibility = 'visible';
+        } else {
+            form.style.visibility = 'hidden';
+            btn.style.visibility = 'hidden';
+        }
+    });
+});
+
+// Chạy format currency khi document ready
+$(document).ready(function() {
+    // Định dạng tiền tệ ban đầu
+    formatCurrency();
+    
+    // Khởi tạo tổng tiền sau giảm
+    const tongTien = parseFloat($('#tienThanhToan').attr('data-value')) || 0;
+    $('#tongTienSauGiam').text(formatNumberToVND(tongTien));
+    $('#tongTienSauGiam').attr('data-value', tongTien);
+    
+    console.log("Đã khởi tạo định dạng tiền tệ cho trang");
+});
+
+// Chức năng chọn địa chỉ từ danh sách tỉnh thành Việt Nam
+document.addEventListener("DOMContentLoaded", function () {
+    let citis = document.getElementById("city");
+    let districts = document.getElementById("district");
+    let wards = document.getElementById("ward");
+
+    // Đảm bảo các phần tử tồn tại trước khi thực hiện
+    if (citis && districts && wards) {
+        axios.get("https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json")
+            .then(function (response) {
+                let data = response.data;
+                renderCity(data);
+            })
+            .catch(function (error) {
+                console.error("Lỗi tải dữ liệu tỉnh thành:", error);
+            });
+
+        function renderCity(data) {
+            for (const x of data) {
+                citis.options[citis.options.length] = new Option(x.Name, x.Id);
+            }
+
+            citis.onchange = function () {
+                districts.length = 1;
+                wards.length = 1;
+
+                let selectedCity = data.find(n => n.Id === citis.value);
+                if (selectedCity) {
+                    for (const k of selectedCity.Districts) {
+                        districts.options[districts.options.length] = new Option(k.Name, k.Id);
+                    }
+                }
+            };
+
+            districts.onchange = function () {
+                wards.length = 1;
+
+                let selectedCity = data.find(n => n.Id === citis.value);
+                if (selectedCity) {
+                    let selectedDistrict = selectedCity.Districts.find(n => n.Id === districts.value);
+                    if (selectedDistrict) {
+                        for (const w of selectedDistrict.Wards) {
+                            wards.options[wards.options.length] = new Option(w.Name, w.Id);
+                        }
+                    }
+                }
+            };
+        }
+    }
+});
+
+// Tải lại dữ liệu sản phẩm khi mở modal
+$(document).ready(function() {
+    // Xử lý khi modal sản phẩm được mở
+    $('#modalThemSanPham').on('show.bs.modal', function (e) {
+        // Lấy ID hóa đơn hiện tại
+        const idHD = $('#btnThanhToan').data('id');
+        
+        // Sử dụng AJAX để tải dữ liệu sản phẩm mới nhất
+        $.ajax({
+            url: '/sale/api/san-pham',
+            type: 'GET',
+            data: { idHD: idHD },
+            success: function(data) {
+                // Xóa dữ liệu cũ trong bảng
+                const tableBody = $('#modalThemSanPham table tbody');
+                tableBody.empty();
+                
+                // Thêm dữ liệu mới vào bảng
+                data.forEach(function(sp, index) {
+                    // Kiểm tra dữ liệu trước khi truy cập
+                    const tenSanPham = sp.sanPham && sp.sanPham.ten ? sp.sanPham.ten : 'Không có tên';
+                    const tenMauSac = sp.mauSac && sp.mauSac.ten ? sp.mauSac.ten : '';
+                    const tenKichThuoc = sp.kichThuoc && sp.kichThuoc.ten ? sp.kichThuoc.ten : '';
+                    const soLuong = sp.soLuong || 0;
+                    const gia = sp.gia || 0;
+                    
+                    let row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${tenSanPham}</td>
+                            <td>${formatNumberToVND(gia)}</td>
+                            <td>${tenMauSac}</td>
+                            <td>${tenKichThuoc}</td>
+                            <td>${soLuong}</td>
+                            <td>
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-success btn-add-sanPham"
+                                    data-id-hd="${idHD}"
+                                    data-id-sp="${sp.id}"
+                                    data-gia="${gia}">
+                                    Thêm
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.append(row);
+                });
+                
+                // Khởi tạo lại sự kiện cho các nút thêm sản phẩm
+                initAddProductButtons();
+            },
+            error: function(xhr) {
+                console.error('Lỗi khi tải dữ liệu sản phẩm:', xhr);
+                Swal.fire({
+                    toast: true,
+                    icon: 'error',
+                    title: 'Không thể tải danh sách sản phẩm',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            }
+        });
+    });
+});
+
+// Hàm khởi tạo sự kiện cho các nút thêm sản phẩm
+function initAddProductButtons() {
+    // Xóa tất cả event handlers cũ để tránh trùng lặp
+    $('.btn-add-sanPham').off('click');
+    
+    // Thêm event listener mới
+    $('.btn-add-sanPham').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        console.log("Add product button clicked");
+        const hoaDonId = $(this).data("id-hd");
+        const sanPhamId = $(this).data("id-sp");
+        const gia = $(this).data("gia");
+        const rowElement = $(this).closest('tr');
+        const soLuongElement = rowElement.find('td:eq(5)');
+        const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
+        
+        console.log("Data: ", { hoaDonId, sanPhamId, gia, soLuongTrongKho });
+        
+        // Vô hiệu hóa nút để tránh nhấn nhiều lần
+        const button = $(this);
+        button.prop('disabled', true);
+        
+        // Giảm số lượng hiển thị trong bảng (chỉ trên UI)
+        if (soLuongTrongKho > 0) {
+            soLuongElement.text(soLuongTrongKho - 1);
+        }
+        
+        $.ajax({
+            url: '/sale/addSP',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                idHD: hoaDonId,
+                idSP: sanPhamId,
+                gia: gia,
+                soLuong: 1
+            }),
+            success: function (response) {
+                console.log("Success: ", response);
+                // Kiểm tra nếu số lượng sản phẩm trong giỏ vượt quá số lượng trong kho
+                // Chúng ta sẽ hiển thị thông báo cảnh báo, nhưng vẫn cho phép thêm vào giỏ
+                let warningMessage = "";
+                const itemInCart = $('#product-list').find(`[data-idsp="${sanPhamId}"]`).closest('form');
+                if (itemInCart.length > 0) {
+                    const soLuongTrongGio = parseInt(itemInCart.find('.quantity-input').val()) || 0;
+                    if (soLuongTrongGio >= soLuongTrongKho) {
+                        warningMessage = `Cảnh báo: Số lượng sản phẩm trong giỏ (${soLuongTrongGio}) đã vượt quá số lượng trong kho (${soLuongTrongKho}). Vẫn có thể mua nhưng sẽ kiểm tra lại khi thanh toán.`;
+                    }
+                }
+                
+                Swal.fire({
+                    toast: true,
+                    icon: warningMessage ? 'warning' : 'success',
+                    title: warningMessage || response,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: warningMessage ? 3000 : 500,
+                    timerProgressBar: true
+                }).then(() => {
+                    location.reload();
+                });
+            },
+            error: function (xhr) {
+                console.error("Error: ", xhr);
+                // Kích hoạt lại nút trong trường hợp lỗi
+                button.prop('disabled', false);
+                
+                // Khôi phục số lượng hiển thị trong trường hợp lỗi
+                soLuongElement.text(soLuongTrongKho);
+                
+                Swal.fire({
+                    toast: true,
+                    icon: 'error',
+                    title: xhr.responseText,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true
+                });
+            }
+        });
+    });
+}
+
+// Thêm hàm giám sát quá trình thanh toán Momo
+function monitorMomoPayment(hoaDonId) {
+    Swal.fire({
+        title: 'Đang chờ thanh toán',
+        html: `
+            <p>Bạn đã được chuyển đến trang thanh toán Momo.</p>
+            <p>Sau khi hoàn tất thanh toán, vui lòng quay lại đây và nhấn "Đã thanh toán".</p>
+            <div class="mt-3">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <p class="mt-2" id="countdown">Tự động kiểm tra sau <strong>15</strong> giây...</p>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Đã thanh toán',
+        cancelButtonText: 'Hủy',
+        allowOutsideClick: false,
+        didOpen: () => {
+            // Đếm ngược 15 giây rồi tự động kiểm tra
+            let countDown = 15;
+            const countdownElement = document.getElementById('countdown');
+            const countdownInterval = setInterval(() => {
+                countDown--;
+                if (countdownElement) {
+                    countdownElement.innerHTML = `Tự động kiểm tra sau <strong>${countDown}</strong> giây...`;
+                }
+                
+                if (countDown <= 0) {
+                    clearInterval(countdownInterval);
+                    // Tự động kiểm tra thanh toán
+                    checkMomoPaymentStatus(hoaDonId, Swal.getPopup().countdownInterval);
+                }
+            }, 1000);
+            
+            // Lưu interval vào Swal để có thể xóa nếu người dùng đóng modal
+            Swal.getPopup().countdownInterval = countdownInterval;
+        },
+        willClose: () => {
+            // Xóa interval khi modal đóng
+            clearInterval(Swal.getPopup().countdownInterval);
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Người dùng bấm nút đã thanh toán
+            confirmMomoPayment(hoaDonId);
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            // Người dùng bấm nút hủy
+            cancelMomoPayment(hoaDonId);
+        }
+    });
+}
+
+// Kiểm tra trạng thái thanh toán Momo
+function checkMomoPaymentStatus(hoaDonId) {
+    // Trong môi trường thực tế, gọi API để kiểm tra trạng thái
+    // Trong môi trường test, giả định thanh toán thành công
+    confirmMomoPayment(hoaDonId);
+    
+    // Xóa ID hóa đơn khỏi sessionStorage
+    sessionStorage.removeItem('pending_momo_order');
+}
+

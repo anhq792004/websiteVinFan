@@ -148,12 +148,12 @@
                                 <td th:text="${item.ma}"></td>
                                 <td th:text="${item.tenNguoiNhan}"></td>
                                 <td th:text="${item.sdtNguoiNhan}"></td>
-                                <td th:class="${item.loaiHoaDon ? 'text-danger' : 'text-primary'}"
-                                    th:text="${item.loaiHoaDon ? 'Tại quầy' : 'Online'}">
+                                <td th:class="${item.loaiHoaDon != null and item.loaiHoaDon ? 'text-danger' : 'text-primary'}"
+                                    th:text="${item.loaiHoaDon != null and item.loaiHoaDon ? 'Tại quầy' : 'Online'}">
                                 </td>
                                 <td th:text="${#temporals.format(item.ngayTao, 'dd-MM-yyyy')}"></td>
-                                <td class="giaVND" th:text="${item.tongTienSauGiamGia}"></td>
-                                <td class="giaVND" th:text="${item.phiVanChuyen}"></td>
+                                <td class="giaVND" th:text="${item.tongTienSauGiamGia != null ? #numbers.formatDecimal(item.tongTienSauGiamGia, 0, 'COMMA', 0, 'POINT') + ' VND' : (item.tongTien != null ? #numbers.formatDecimal(item.tongTien, 0, 'COMMA', 0, 'POINT') + ' VND' : '0 VND')}"></td>
+                                <td class="giaVND" th:text="${item.phiVanChuyen != null ? #numbers.formatDecimal(item.phiVanChuyen, 0, 'COMMA', 0, 'POINT') + ' VND' : '0 VND'}"></td>
                                 <td th:switch="${item.trangThai}">
                                     <span th:case="0" class="text-success-emphasis">Đang treo</span>
                                     <span th:case="1" class="text-secondary-emphasis">Đang chờ xác nhận</span>

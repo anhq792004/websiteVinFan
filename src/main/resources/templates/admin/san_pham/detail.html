@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{/admin/fragments/head :: head}"></head>
-<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/sanPham.css}">
+<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/app.css}">
+<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/app-dark.css}">
+<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/iconly.css}">
+<link rel="stylesheet" th:href="@{/admin/assets/extensions/toastify-js/src/toastify.css}">
+<link rel="stylesheet" th:href="@{/admin/assets/extensions/sweetalert2/sweetalert2.min.css}">
 <body>
 <!-- Site wrapper -->
 <div class="wrapper">
@@ -13,172 +17,305 @@
     <!-- Main-->
     <div id="main">
         <header th:replace="/admin/fragments/header :: header"></header>
+        
         <div class="page-content">
-            <!--        dữ liệu thực hiện trong secsion-->
-            <section class="row">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title">Sản phẩm</h5>
-                            <a th:href="@{/admin/san-pham/list}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left"></i> Quay lại danh sách
-                            </a>
+            <div class="page-heading">
+                <div class="page-title mb-4">
+                    <div class="row">
+                        <div class="col-12 col-md-6 order-md-1 order-last">
+                            <h3>Chi tiết sản phẩm</h3>
+                        </div>
+                        <div class="col-12 col-md-6 order-md-2 order-first">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a th:href="@{/admin}">Trang chủ</a></li>
+                                    <li class="breadcrumb-item"><a th:href="@{/admin/san-pham}">Sản phẩm</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Chi tiết</li>
+                                </ol>
+                            </nav>
                         </div>
                     </div>
+                </div>
+
+                <!-- Thông tin chung -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Thông tin chung</h5>
+                        <a th:href="@{/admin/san-pham/edit/{id}(id=${sanPham.id})}" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Sửa
+                        </a>
+                    </div>
                     <div class="card-body">
-                        <!-- Thông tin chung -->
-                        <div class="row mb-4">
+                        <div class="row">
                             <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0">Thông tin cơ bản</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <table class="table table-borderless">
-                                            <tr>
-                                                <th style="width: 30%">Mã sản phẩm:</th>
-                                                <td><span th:text="${sanPham.ma}" class="fw-bold"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tên sản phẩm:</th>
-                                                <td><span th:text="${sanPham.ten}"></span></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Kiểu quạt:</th>
-                                                <td><span
-                                                        th:text="${sanPham.kieuQuat != null} ? ${sanPham.kieuQuat.ten} : 'N/A'"></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Ngày tạo:</th>
-                                                <td><span
-                                                        th:text="${#temporals.format(sanPham.ngayTao, 'dd-MM-yyyy')}"></span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Trạng thái:</th>
-                                                <td>
-                                                    <span th:if="${sanPham.trangThai}" class="badge bg-success">Đang kinh doanh</span>
-                                                    <span th:unless="${sanPham.trangThai}" class="badge bg-danger">Ngừng kinh doanh</span>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <th style="width: 30%">Mã sản phẩm:</th>
+                                        <td><span th:text="${sanPham.ma}" class="fw-bold"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tên sản phẩm:</th>
+                                        <td><span th:text="${sanPham.ten}"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Kiểu quạt:</th>
+                                        <td><span th:text="${sanPham.kieuQuat != null ? sanPham.kieuQuat.ten : 'N/A'}"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ngày tạo:</th>
+                                        <td><span th:text="${#temporals.format(sanPham.ngayTao, 'dd-MM-yyyy')}"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Trạng thái:</th>
+                                        <td>
+                                            <span th:if="${sanPham.trangThai}" class="badge bg-success">Đang kinh doanh</span>
+                                            <span th:unless="${sanPham.trangThai}" class="badge bg-danger">Ngừng kinh doanh</span>
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
                             <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0">Mô tả sản phẩm</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <p th:text="${sanPham.moTa ?: 'Không có mô tả'}" class="mb-0"></p>
-                                    </div>
-                                </div>
+                                <h6 class="mb-3">Mô tả sản phẩm:</h6>
+                                <p th:text="${sanPham.moTa ?: 'Không có mô tả'}" class="text-muted"></p>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- Hình ảnh sản phẩm -->
-                        <div class="card mb-4">
-                            <div class="card-header bg-light">
-                                <h6 class="mb-0">Hình ảnh sản phẩm</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row"
-                                     th:if="${sanPham.sanPhamChiTiet != null && !sanPham.sanPhamChiTiet.isEmpty()}">
-                                    <div class="col-md-3 mb-3" th:each="spct : ${sanPham.sanPhamChiTiet}"
-                                         th:if="${spct.hinhAnh != null}">
-                                        <div class="card">
-                                            <img th:src="${spct.hinhAnh.duongDan}" class="card-img-top"
-                                                 alt="Product Image" style="height: 200px; object-fit: cover;">
-                                            <div class="card-body p-2 text-center">
-                                                <small class="text-muted"
-                                                       th:text="${spct.mauSac != null ? spct.mauSac.ten : ''}"></small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12"
-                                         th:if="${sanPham.sanPhamChiTiet.size() == 0 || sanPham.sanPhamChiTiet.![hinhAnh].isEmpty()}">
-                                        <div class="alert alert-info">Không có hình ảnh nào được tải lên</div>
-                                    </div>
-                                </div>
-                                <div class="row"
-                                     th:unless="${sanPham.sanPhamChiTiet != null && !sanPham.sanPhamChiTiet.isEmpty()}">
-                                    <div class="col-12">
-                                        <div class="alert alert-info">Không có hình ảnh nào được tải lên</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Chi tiết sản phẩm -->
-                        <!-- Cập nhật phần hiển thị chi tiết sản phẩm -->
-                        <div class="card mb-4">
-                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                                <h6 class="mb-0">Chi tiết sản phẩm</h6>
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#addProductSpctModal">
-                                    Thêm sản phẩm chi tiết
+                <!-- Danh sách sản phẩm chi tiết -->
+                <section class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title">Danh sách sản phẩm chi tiết</h5>
+                                <button class="btn btn-primary" id="addProductSpctBtn">
+                                    <i class="bi bi-plus-circle"></i> Thêm mới
                                 </button>
                             </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped">
-                                        <thead class="table-light">
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered mb-0">
+                                    <thead>
                                         <tr>
-                                            <th style="width: 5%">STT</th>
+                                            <th class="text-center" style="width: 5%">STT</th>
+                                            <th style="width: 10%">Hình ảnh</th>
                                             <th style="width: 10%">Màu sắc</th>
-                                            <th style="width: 10%">Chất liệu cánh</th>
-                                            <th style="width: 10%">Chất liệu khung</th>
-                                            <th style="width: 10%">Đường kính cánh</th>
                                             <th style="width: 10%">Công suất</th>
                                             <th style="width: 10%">Hãng</th>
-                                            <th style="width: 10%">Chế độ gió</th>
-                                            <th style="width: 8%">Số lượng</th>
-                                            <th style="width: 10%">Giá bán</th>
-                                            <th style="width: 12%">Hành động</th>
+                                            <th style="width: 10%">Số lượng</th>
+                                            <th style="width: 15%">Giá bán</th>
+                                            <th style="width: 10%">Trạng thái</th>
+                                            <th style="width: 10%">Thao tác</th>
                                         </tr>
-                                        </thead>
-                                        <tbody>
+                                    </thead>
+                                    <tbody>
                                         <tr th:if="${sanPham.sanPhamChiTiet != null && !sanPham.sanPhamChiTiet.isEmpty()}"
                                             th:each="spct, iterStat : ${sanPham.sanPhamChiTiet}">
-                                            <td th:text="${iterStat.count}"></td>
+                                            <td class="text-center" th:text="${iterStat.count}"></td>
+                                            <td class="text-center">
+                                                <img th:if="${spct.hinhAnh != null}"
+                                                     th:src="${spct.hinhAnh.hinhAnh}"
+                                                     class="img-thumbnail" style="max-height: 50px" alt="Product Image">
+                                                <img th:unless="${spct.hinhAnh != null}"
+                                                     src="/admin/assets/images/no-image.png"
+                                                     class="img-thumbnail" style="max-height: 50px" alt="No Image">
+                                            </td>
                                             <td th:text="${spct.mauSac != null ? spct.mauSac.ten : 'N/A'}"></td>
-                                            <td th:text="${spct.chatLieuCanh != null ? spct.chatLieuCanh.ten : 'N/A'}"></td>
-                                            <td th:text="${spct.chatLieuKhung != null ? spct.chatLieuKhung.ten : 'N/A'}"></td>
-                                            <td th:text="${spct.duongKinhCanh != null ? spct.duongKinhCanh.ten : 'N/A'}"></td>
                                             <td th:text="${spct.congSuat != null ? spct.congSuat.ten : 'N/A'}"></td>
                                             <td th:text="${spct.hang != null ? spct.hang.ten : 'N/A'}"></td>
-                                            <td th:text="${spct.cheDoGio != null ? spct.cheDoGio.ten : 'N/A'}"></td>
-                                            <td th:text="${spct.soLuong}"></td>
-                                            <td th:text="${#numbers.formatDecimal(spct.gia, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></td>
-                                            <td>
-
-                                                <button type="button"
-                                                        class="btn btn-sm btn-outline-warning edit-variant-btn"
-                                                        data-bs-toggle="modal" data-bs-target="#editProductSpctModal"
-                                                        th:data-id="${spct.id}">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </button>
-
+                                            <td class="text-center" th:text="${spct.soLuong}"></td>
+                                            <td class="text-end" th:text="${#numbers.formatDecimal(spct.gia, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                                            <td class="text-center">
+                                                <span th:if="${spct.trangThai}" class="badge bg-success">Còn hàng</span>
+                                                <span th:unless="${spct.trangThai}" class="badge bg-danger">Hết hàng</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <a class="btn btn-sm btn-warning edit-variant-btn" th:data-id="${spct.id}">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a class="btn btn-sm btn-danger delete-variant-btn" th:data-id="${spct.id}">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
                                             </td>
                                         </tr>
                                         <tr th:unless="${sanPham.sanPhamChiTiet != null && !sanPham.sanPhamChiTiet.isEmpty()}">
-                                            <td colspan="11" class="text-center">Không có biến thể sản phẩm nào</td>
+                                            <td colspan="9" class="text-center">Chưa có sản phẩm chi tiết nào</td>
                                         </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+                    </div>
+                </section>
+            </div>
 
-
-                        <div th:replace="~{/admin/fragments/product/addProductSpct :: addProductSpct}"></div>
-                        <div th:replace="~{/admin/fragments/product/editProductSpct :: editProductSpct}"></div>
-                        <div>
-                            <script th:replace="/admin/fragments/script :: script"></script>
+            <!-- Modal Thêm mới -->
+            <div class="modal fade" id="addProductSpctModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Thêm sản phẩm chi tiết</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <script th:src="@{/admin/assets/js/sanPham.js}"></script>
-                        <script th:src="@{/admin/assets/js/sanPhamDetail.js}"></script>
+                        <div class="modal-body">
+                            <form id="addProductSpctForm" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Màu sắc</label>
+                                        <select class="form-select" id="mauSac" name="mauSacId" required>
+                                            <option value="">-- Chọn màu sắc --</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Công suất</label>
+                                        <select class="form-select" id="congSuat" name="congSuatId" required>
+                                            <option value="">-- Chọn công suất --</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Hãng</label>
+                                        <select class="form-select" id="hang" name="hangId" required>
+                                            <option value="">-- Chọn hãng --</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Nút bấm</label>
+                                        <select class="form-select" id="nutBam" name="nutBamId" required>
+                                            <option value="">-- Chọn nút bấm --</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Số lượng</label>
+                                        <input type="number" class="form-control" id="soLuong" name="soLuong" required min="0">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Giá bán</label>
+                                        <input type="number" class="form-control" id="gia" name="gia" required min="0">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Cân nặng (gram)</label>
+                                        <input type="number" class="form-control" id="canNang" name="canNang" required min="0">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Trạng thái</label>
+                                        <select class="form-select" id="trangThai" name="trangThai">
+                                            <option value="true">Còn hàng</option>
+                                            <option value="false">Hết hàng</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label">Hình ảnh</label>
+                                        <input type="file" class="form-control" id="hinhAnh" name="hinhAnh" accept="image/*">
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label">Mô tả</label>
+                                        <textarea class="form-control" id="moTa" name="moTa" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                            <button type="button" class="btn btn-primary" id="saveProductSpctBtn">Lưu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Sửa -->
+            <div class="modal fade" id="editProductSpctModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Sửa sản phẩm chi tiết</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editProductSpctForm" enctype="multipart/form-data">
+                                <input type="hidden" id="editSpctId">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Màu sắc</label>
+                                        <select class="form-select" id="editMauSac" name="mauSacId" required>
+                                            <option value="">-- Chọn màu sắc --</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Công suất</label>
+                                        <select class="form-select" id="editCongSuat" name="congSuatId" required>
+                                            <option value="">-- Chọn công suất --</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Hãng</label>
+                                        <select class="form-select" id="editHang" name="hangId" required>
+                                            <option value="">-- Chọn hãng --</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Nút bấm</label>
+                                        <select class="form-select" id="editNutBam" name="nutBamId" required>
+                                            <option value="">-- Chọn nút bấm --</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Số lượng</label>
+                                        <input type="number" class="form-control" id="editSoLuong" name="soLuong" required min="0">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Giá bán</label>
+                                        <input type="number" class="form-control" id="editGia" name="gia" required min="0">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Cân nặng (gram)</label>
+                                        <input type="number" class="form-control" id="editCanNang" name="canNang" required min="0">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Trạng thái</label>
+                                        <select class="form-select" id="editTrangThai" name="trangThai">
+                                            <option value="true">Còn hàng</option>
+                                            <option value="false">Hết hàng</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label">Hình ảnh</label>
+                                        <input type="file" class="form-control" id="editHinhAnh" name="hinhAnh" accept="image/*">
+                                        <div id="editPreviewImage" class="mt-2">
+                                            <img src="" style="max-height: 100px; display: none;" class="img-thumbnail">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label">Mô tả</label>
+                                        <textarea class="form-control" id="editMoTa" name="moTa" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                            <button type="button" class="btn btn-primary" id="saveEditSpct">Lưu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer-->
+        <div>
+            <footer th:replace="/admin/fragments/footer :: footer"></footer>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/admin/assets/static/js/components/dark.js}"></script>
+<script th:src="@{/admin/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/admin/assets/compiled/js/app.js}"></script>
+<script th:src="@{/admin/js/san-pham-chi-tiet.js}"></script>
 </body>
 </html>

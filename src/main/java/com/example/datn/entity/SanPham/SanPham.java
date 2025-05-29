@@ -1,6 +1,7 @@
 package com.example.datn.entity.SanPham;
 
 import com.example.datn.entity.ThuocTinh.KieuQuat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,19 +23,18 @@ public class SanPham {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "ma")
+    @Column(name = "ma", unique = true)
     String ma;
 
     @Column(name = "ten")
     String ten;
 
-    @Column(name = "mo_ta")
+    @Column(name = "mo_ta", columnDefinition = "TEXT")
     String moTa;
 
     @Column(name = "ngay_tao")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDateTime ngayTao;
-
 
     @Column(name = "trang_thai")
     Boolean trangThai;
@@ -43,7 +43,7 @@ public class SanPham {
     @JoinColumn(name = "id_kieu_quat")
     KieuQuat kieuQuat;
 
-    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sanPham", cascade = CascadeType.ALL)
+    @JsonManagedReference
     List<SanPhamChiTiet> sanPhamChiTiet;
-
 }

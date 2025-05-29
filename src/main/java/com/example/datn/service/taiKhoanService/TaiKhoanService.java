@@ -43,7 +43,7 @@ public class TaiKhoanService {
         taiKhoan.setNgayTao(LocalDateTime.now().format(formatter));
 
         // Mặc định vai trò là USER
-        taiKhoan.setVaiTro("USER");
+//        taiKhoan.setVaiTro("USER");
 
         // Trạng thái hoạt động
         taiKhoan.setTrangThai(true);

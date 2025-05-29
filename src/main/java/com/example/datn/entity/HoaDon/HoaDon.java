@@ -2,7 +2,7 @@ package com.example.datn.entity.HoaDon;
 
 import com.example.datn.entity.DiaChi;
 import com.example.datn.entity.KhachHang;
-import com.example.datn.entity.NhanVien;
+import com.example.datn.entity.NhanVien.NhanVien;
 import com.example.datn.entity.PhieuGiamGia;
 import jakarta.persistence.*;
 import lombok.*;
@@ -64,7 +64,7 @@ public class HoaDon {
     String ghiChu;
 
     @Column(name = "loai_hoa_don")
-    boolean loaiHoaDon;
+    Boolean loaiHoaDon = true;
 
     @Column(name = "ngay_tao")
     LocalDateTime ngayTao;
@@ -77,4 +77,7 @@ public class HoaDon {
 
     @Column(name = "trang_thai")
     Integer trangThai;
+
+    @Column(name = "phuong_thuc_thanh_toan")
+    String phuongThucThanhToan;
 }
