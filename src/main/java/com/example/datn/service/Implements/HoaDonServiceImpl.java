@@ -9,6 +9,7 @@ import com.example.datn.dto.response.LichSuThanhToanResponse;
 import com.example.datn.entity.HoaDon.HoaDon;
 import com.example.datn.entity.HoaDon.HoaDonChiTiet;
 import com.example.datn.entity.HoaDon.LichSuHoaDon;
+import com.example.datn.entity.HoaDon.PhuongThucThanhToan;
 import com.example.datn.entity.KhachHang;
 import com.example.datn.entity.SanPham.SanPhamChiTiet;
 import com.example.datn.repository.HoaDonRepo.HoaDonChiTietRepo;
@@ -78,7 +79,15 @@ public class HoaDonServiceImpl implements HoaDonService {
 
     @Override
     public LichSuThanhToanResponse getLSTTByHoaDonId(Long idHoaDon) {
-        return hoaDonRepo.findThanhToanHoaDonId(idHoaDon);
+        LichSuThanhToanResponse response = hoaDonRepo.findThanhToanHoaDonId(idHoaDon);
+        if (response != null && response.getHinhThucThanhToan() != null) {
+            try {
+                PhuongThucThanhToan phuongThuc = PhuongThucThanhToan.valueOf(response.getHinhThucThanhToan());
+                response.setHinhThucThanhToan(phuongThuc.getDisplayName());
+            } catch (IllegalArgumentException e) {
+            }
+        }
+        return response;
     }
 
     @Override
