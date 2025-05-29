@@ -17,7 +17,7 @@ public class LoginController {
 
     @GetMapping("/dashboard")
     public String dashboard() {
-        return "admin/user/dashboard";
+        return "admin/phieu_giam_gia/index";
     }
 
     @GetMapping("/")
