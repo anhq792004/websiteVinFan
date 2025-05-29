@@ -42,9 +42,9 @@ public interface HoaDonRepo extends JpaRepository<HoaDon,Long> {
     Long findKhachHangIdByHoaDonId(@Param("hoaDonId") Long hoaDonId);
 
     @Query("SELECT new com.example.datn.dto.response.LichSuThanhToanResponse(" +
-            "hd.tongTienSauGiamGia , hd.ngayTao, hd.loaiHoaDon,hd.hinhThucThanhToan, hd.trangThai) " +
+            "hd.tongTienSauGiamGia, hd.ngayTao, COALESCE(hd.loaiHoaDon, TRUE), hd.hinhThucThanhToan, hd.trangThai) " +
             "FROM HoaDon hd " +
-            "where hd.id =:hoaDonId")
+            "where hd.id = :hoaDonId")
     LichSuThanhToanResponse findThanhToanHoaDonId(@Param("hoaDonId") long id);
 
 

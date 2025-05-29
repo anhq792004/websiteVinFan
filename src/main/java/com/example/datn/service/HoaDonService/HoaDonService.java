@@ -66,4 +66,7 @@ public interface HoaDonService {
 
     //trang thai hoa don
     TrangThaiHoaDonRequest getTrangThaiHoaDon();
+    
+    // Phương thức lưu hóa đơn
+    void saveHoaDon(HoaDon hoaDon);
 }
