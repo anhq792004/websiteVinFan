@@ -8,76 +8,77 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editProductSpctModalLabel">Chỉnh sửa biến thể sản phẩm</h5>
+                    <h5 class="modal-title" id="editProductSpctModalLabel">Sửa sản phẩm chi tiết</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editVariantForm">
-                        <input type="hidden" id="editVariantId" name="id">
-                        <input type="hidden" name="sanPham.id" th:value="${sanPham.id}">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
+                    <form id="editProductSpctForm" enctype="multipart/form-data">
+                        <input type="hidden" id="editSpctId" name="id">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
                                 <label for="editMauSac" class="form-label">Màu sắc</label>
-                                <select class="form-select" id="editMauSac" name="mauSac.id" required>
-                                    <option value="">-- Chọn màu sắc --</option>
-                                    <!-- Options will be loaded dynamically -->
+                                <select class="form-select" id="editMauSac" name="mauSacId" required>
+                                    <option value="">Chọn màu sắc</option>
+                                    <option th:each="ms : ${mauSacs}" 
+                                            th:value="${ms.id}" 
+                                            th:text="${ms.ten}">
+                                    </option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label for="editChatLieuCanh" class="form-label">Chất liệu cánh</label>
-                                <select class="form-select" id="editChatLieuCanh" name="chatLieuCanh.id">
-                                    <option value="">-- Chọn chất liệu cánh --</option>
-                                    <!-- Options will be loaded dynamically -->
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="editChatLieuKhung" class="form-label">Chất liệu khung</label>
-                                <select class="form-select" id="editChatLieuKhung" name="chatLieuKhung.id">
-                                    <option value="">-- Chọn chất liệu khung --</option>
-                                    <!-- Options will be loaded dynamically -->
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="editDuongKinhCanh" class="form-label">Đường kính cánh</label>
-                                <select class="form-select" id="editDuongKinhCanh" name="duongKinhCanh.id">
-                                    <option value="">-- Chọn đường kính cánh --</option>
-                                    <!-- Options will be loaded dynamically -->
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-6 mb-3">
                                 <label for="editCongSuat" class="form-label">Công suất</label>
-                                <select class="form-select" id="editCongSuat" name="congSuat.id">
-                                    <option value="">-- Chọn công suất --</option>
-                                    <!-- Options will be loaded dynamically -->
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="editHang" class="form-label">Hãng</label>
-                                <select class="form-select" id="editHang" name="hang.id">
-                                    <option value="">-- Chọn hãng --</option>
-                                    <!-- Options will be loaded dynamically -->
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="editCheDoGio" class="form-label">Chế độ gió</label>
-                                <select class="form-select" id="editCheDoGio" name="cheDoGio.id">
-                                    <option value="">-- Chọn chế độ gió --</option>
-                                    <!-- Options will be loaded dynamically -->
+                                <select class="form-select" id="editCongSuat" name="congSuatId" required>
+                                    <option value="">Chọn công suất</option>
+                                    <option th:each="cs : ${congSuats}" 
+                                            th:value="${cs.id}" 
+                                            th:text="${cs.ten}">
+                                    </option>
                                 </select>
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="editGia" class="form-label">Giá bán (VNĐ)</label>
-                                <input type="number" class="form-control" id="editGia" name="gia" min="0" required>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editHang" class="form-label">Hãng</label>
+                                <select class="form-select" id="editHang" name="hangId" required>
+                                    <option value="">Chọn hãng</option>
+                                    <option th:each="h : ${hangs}" 
+                                            th:value="${h.id}" 
+                                            th:text="${h.ten}">
+                                    </option>
+                                </select>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 mb-3">
+                                <label for="editNutBam" class="form-label">Nút bấm</label>
+                                <select class="form-select" id="editNutBam" name="nutBamId" required>
+                                    <option value="">Chọn nút bấm</option>
+                                    <option th:each="nb : ${nutBams}" 
+                                            th:value="${nb.id}" 
+                                            th:text="${nb.ten}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
                                 <label for="editSoLuong" class="form-label">Số lượng</label>
-                                <input type="number" class="form-control" id="editSoLuong" name="soLuong" min="0" required>
+                                <input type="number" class="form-control" id="editSoLuong" name="soLuong" required min="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editGia" class="form-label">Giá bán</label>
+                                <input type="number" class="form-control" id="editGia" name="gia" required min="0">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editCanNang" class="form-label">Cân nặng (kg)</label>
+                                <input type="number" class="form-control" id="editCanNang" name="canNang" required min="0" step="0.1">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editTrangThai" class="form-label">Trạng thái</label>
+                                <select class="form-select" id="editTrangThai" name="trangThai">
+                                    <option value="true">Còn hàng</option>
+                                    <option value="false">Hết hàng</option>
+                                </select>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -85,14 +86,17 @@
                             <textarea class="form-control" id="editMoTa" name="moTa" rows="3"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="editHinhAnh" class="form-label">Hình ảnh mới (để trống nếu không thay đổi)</label>
-                            <input type="file" class="form-control" id="editHinhAnh" name="hinhAnh">
+                            <label for="editHinhAnh" class="form-label">Hình ảnh</label>
+                            <input type="file" class="form-control" id="editHinhAnh" name="hinhAnh" accept="image/*">
+                            <div id="editPreviewImage" class="mt-2">
+                                <img src="" alt="Preview" style="max-height: 200px; display: none;" class="img-thumbnail">
+                            </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary" id="updateVariantBtn">Cập nhật</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="saveEditSpct">Lưu thay đổi</button>
                 </div>
             </div>
         </div>
