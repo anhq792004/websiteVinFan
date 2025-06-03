@@ -24,10 +24,6 @@ public class KhachHang {
     @JoinColumn(name = "id_tai_khoan")
     TaiKhoan taiKhoan;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_dia_chi")
-    DiaChi diaChi;
-
     @Column(name = "ma")
     String ma;
 

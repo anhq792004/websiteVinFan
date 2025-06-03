@@ -36,9 +36,9 @@ public class BanHangServiceImpl implements BanHangService {
         int count = (int) listHoaDon.stream()
                 .filter(sl -> sl.getTrangThai() == hoaDonService.getTrangThaiHoaDon().getHoaDonCho())
                 .count();
-        if (count >= 10) {
+        if (count >= 6) {
             // Thông báo khi số lượng hóa đơn chờ vượt quá 10
-            throw new IllegalStateException("Số lượng hóa đơn chờ tối qua là 10");
+            throw new IllegalStateException("Số lượng hóa đơn chờ tối qua là 6");
         }
         hoaDon.setMa(hoaDonService.generateOrderCode());
         hoaDon.setTrangThai(hoaDonService.getTrangThaiHoaDon().getHoaDonCho());

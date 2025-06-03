@@ -153,9 +153,9 @@ $(document).ready(function () {
 
 // diaChi
 document.addEventListener("DOMContentLoaded", function () {
-    let citis = document.getElementById("city");
-    let districts = document.getElementById("district");
-    let wards = document.getElementById("ward");
+    const citis = document.getElementById("city");
+    const districts = document.getElementById("district");
+    const wards = document.getElementById("ward");
 
     axios.get("https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json")
         .then(function (response) {

@@ -156,7 +156,6 @@ public class MomoServiceImpl implements MomoService {
                         
                         // Cập nhật trạng thái đơn hàng
                         hoaDon.setPhuongThucThanhToan("MOMO");
-                        hoaDon.setHinhThucThanhToan("Momo");
                         hoaDonService.saveHoaDon(hoaDon);
                         
                         // Lưu thông tin giao dịch
