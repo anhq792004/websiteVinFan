@@ -363,11 +363,11 @@ $(document).ready(function () {
                             // Lưu ID hóa đơn vào sessionStorage để kiểm tra khi quay lại
                             sessionStorage.setItem('pending_momo_order', idHD);
                             
-                            // Mở cửa sổ thanh toán Momo
-                            window.open(payUrl, '_blank');
+                            // Lưu URL hiện tại để quay lại sau khi thanh toán
+                            sessionStorage.setItem('return_url', window.location.href);
                             
-                            // Hiển thị dialog kiểm tra thanh toán
-                            monitorMomoPayment(idHD);
+                            // Chuyển hướng đến trang thanh toán Momo trong cùng tab thay vì mở tab mới
+                            window.location.href = payUrl;
                         } else {
                             // Hủy thanh toán
                             cancelMomoPayment(idHD);
@@ -403,6 +403,134 @@ $(document).ready(function () {
     });
 });
 
+// Thêm hàm giám sát quá trình thanh toán Momo
+function monitorMomoPayment(hoaDonId) {
+    Swal.fire({
+        title: 'Đang chờ thanh toán',
+        html: `
+            <p>Bạn đã được chuyển đến trang thanh toán Momo.</p>
+            <p>Vui lòng hoàn tất thanh toán trên ứng dụng Momo hoặc trình duyệt.</p>
+            <div class="mt-3">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        `,
+        showCancelButton: true,
+        showConfirmButton: false,
+        cancelButtonText: 'Hủy',
+        allowOutsideClick: false,
+        didOpen: () => {
+            // Bắt đầu kiểm tra trạng thái thanh toán
+            startPaymentStatusCheck(hoaDonId);
+        }
+    }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.cancel) {
+            // Người dùng bấm nút hủy
+            cancelMomoPayment(hoaDonId);
+        }
+    });
+}
+
+// Kiểm tra trạng thái thanh toán Momo
+function checkMomoPaymentStatus(hoaDonId) {
+    // Gọi API để kiểm tra trạng thái thanh toán
+    $.ajax({
+        url: '/sale/check-momo-payment-status',
+        type: 'GET',
+        data: { idHD: hoaDonId },
+        success: function(response) {
+            console.log("Kiểm tra trạng thái thanh toán:", response);
+            
+            if (response.success) {
+                // Nếu thanh toán thành công
+                Swal.close(); // Đóng dialog hiện tại
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Thanh toán Momo thành công!',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true
+                }).then(() => {
+                    window.location.href = '/sale/index';
+                });
+                
+                // Xóa ID hóa đơn khỏi sessionStorage
+                sessionStorage.removeItem('pending_momo_order');
+                // Dừng kiểm tra trạng thái
+                clearInterval(window.paymentCheckInterval);
+            } else if (response.status === 3) {
+                // Nếu giao dịch đã bị hủy
+                Swal.close(); // Đóng dialog hiện tại
+                Swal.fire({
+                    toast: true,
+                    icon: 'info',
+                    title: 'Thanh toán đã bị hủy',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true
+                });
+                
+                // Xóa ID hóa đơn khỏi sessionStorage
+                sessionStorage.removeItem('pending_momo_order');
+                // Dừng kiểm tra trạng thái
+                clearInterval(window.paymentCheckInterval);
+            } else if (response.status === 2) {
+                // Nếu giao dịch bị từ chối/lỗi
+                clearInterval(window.paymentCheckInterval);
+                Swal.close(); // Đóng dialog hiện tại
+                
+                // Hiển thị thông báo lỗi và hỏi người dùng có muốn thử lại không
+                Swal.fire({
+                    title: 'Thanh toán bị từ chối',
+                    text: 'Giao dịch bị từ chối. Bạn có thể áp dụng mã giảm giá trước khi thử lại.',
+                    icon: 'warning',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Thử lại thanh toán',
+                    denyButtonText: 'Áp dụng mã giảm giá',
+                    cancelButtonText: 'Hủy thanh toán'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Thử lại thanh toán
+                        retryMomoPayment(hoaDonId);
+                    } else if (result.isDenied) {
+                        // Mở modal phiếu giảm giá
+                        openDiscountModal(hoaDonId);
+                    } else {
+                        // Hủy thanh toán
+                        cancelMomoPayment(hoaDonId);
+                    }
+                });
+            }
+        },
+        error: function(xhr) {
+            console.error('Lỗi khi kiểm tra trạng thái thanh toán:', xhr);
+        }
+    });
+}
+
+// Bắt đầu kiểm tra trạng thái thanh toán định kỳ
+function startPaymentStatusCheck(hoaDonId) {
+    // Dừng interval cũ nếu có
+    if (window.paymentCheckInterval) {
+        clearInterval(window.paymentCheckInterval);
+    }
+    
+    // Kiểm tra ngay lập tức
+    checkMomoPaymentStatus(hoaDonId);
+    
+    // Thiết lập kiểm tra định kỳ mỗi 3 giây
+    window.paymentCheckInterval = setInterval(function() {
+        checkMomoPaymentStatus(hoaDonId);
+    }, 3000);
+}
+
 // Hàm hiển thị QR code thanh toán Momo
 function showMomoQRCode(qrCodeUrl, hoaDonId) {
     Swal.fire({
@@ -420,50 +548,25 @@ function showMomoQRCode(qrCodeUrl, hoaDonId) {
                     <p class="mb-1">2. Chọn "Quét mã QR"</p>
                     <p class="mb-1">3. Quét mã QR trên màn hình</p>
                     <p class="mb-1">4. Xác nhận thanh toán trên ứng dụng</p>
-                    <p class="mb-0">5. Chờ hệ thống tự động xác nhận (môi trường test)</p>
                 </div>
-                <p class="text-info" id="momoCountdown">Đang xử lý thanh toán tự động sau <strong>5</strong> giây...</p>
                 <div class="small text-muted">Mã đơn hàng: ${qrCodeUrl.split('id=')[1].split('&')[0]}</div>
             </div>
         `,
         showCancelButton: true,
-        confirmButtonText: 'Đã thanh toán',
+        showConfirmButton: false,
         cancelButtonText: 'Hủy',
-        reverseButtons: true,
         allowOutsideClick: false,
         didOpen: () => {
-            // Trong môi trường test, tự động xác nhận sau 5 giây
-            let countDown = 5;
-            const countdownElement = document.getElementById('momoCountdown');
-            const countdownInterval = setInterval(() => {
-                countDown--;
-                if (countdownElement) {
-                    countdownElement.innerHTML = `Đang xử lý thanh toán tự động sau <strong>${countDown}</strong> giây...`;
-                }
-                
-                if (countDown <= 0) {
-                    clearInterval(countdownInterval);
-                    Swal.close();
-                    // Tự động xác nhận thanh toán
-                    confirmMomoPayment(hoaDonId);
-                }
-            }, 1000);
-            
-            // Lưu interval vào Swal để có thể xóa nếu người dùng đóng modal
-            Swal.getPopup().countdownInterval = countdownInterval;
-        },
-        willClose: () => {
-            // Xóa interval khi modal đóng
-            clearInterval(Swal.getPopup().countdownInterval);
+            // Bắt đầu kiểm tra trạng thái thanh toán
+            startPaymentStatusCheck(hoaDonId);
         }
     }).then((result) => {
-        if (result.isConfirmed) {
-            // Người dùng bấm nút xác nhận
-            confirmMomoPayment(hoaDonId);
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
+        if (result.dismiss === Swal.DismissReason.cancel) {
             // Người dùng bấm nút hủy
             cancelMomoPayment(hoaDonId);
         }
+        // Dừng kiểm tra trạng thái khi dialog đóng
+        clearInterval(window.paymentCheckInterval);
     });
 }
 
@@ -516,6 +619,76 @@ function cancelMomoPayment(hoaDonId) {
         },
         error: function(xhr) {
             console.error('Lỗi khi hủy thanh toán:', xhr);
+        }
+    });
+}
+
+// Hàm thử lại thanh toán Momo
+function retryMomoPayment(hoaDonId) {
+    $.ajax({
+        url: '/sale/thanh-toan',
+        type: 'POST',
+        data: {
+            idHD: hoaDonId,
+            phuongThucThanhToan: 'MOMO'
+        },
+        success: function (response) {
+            // Kiểm tra nếu phản hồi là QR code Momo
+            if (response.startsWith('MOMO_QR_CODE:')) {
+                const qrCodeUrl = response.substring('MOMO_QR_CODE:'.length);
+                showMomoQRCode(qrCodeUrl, hoaDonId);
+            } 
+            // Kiểm tra nếu phản hồi là chuyển hướng đến trang thanh toán Momo
+            else if (response.startsWith('MOMO_REDIRECT:')) {
+                const payUrl = response.substring('MOMO_REDIRECT:'.length);
+                // Hiển thị thông báo
+                Swal.fire({
+                    title: 'Chuyển hướng đến Momo',
+                    text: 'Bạn sẽ được chuyển đến trang thanh toán Momo...',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Đồng ý',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Lưu ID hóa đơn vào sessionStorage để kiểm tra khi quay lại
+                        sessionStorage.setItem('pending_momo_order', hoaDonId);
+                        
+                        // Mở cửa sổ thanh toán Momo
+                        window.open(payUrl, '_blank');
+                        
+                        // Hiển thị dialog kiểm tra thanh toán
+                        monitorMomoPayment(hoaDonId);
+                    } else {
+                        // Hủy thanh toán
+                        cancelMomoPayment(hoaDonId);
+                    }
+                });
+            } else {
+                // Xử lý thành công bình thường
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: response,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true
+                }).then(() => {
+                    window.location.href = '/sale/index';
+                });
+            }
+        },
+        error: function (xhr) {
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: xhr.responseText,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
         }
     });
 }
@@ -929,19 +1102,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Chạy format currency khi document ready
-$(document).ready(function() {
-    // Định dạng tiền tệ ban đầu
-    formatCurrency();
-    
-    // Khởi tạo tổng tiền sau giảm
-    const tongTien = parseFloat($('#tienThanhToan').attr('data-value')) || 0;
-    $('#tongTienSauGiam').text(formatNumberToVND(tongTien));
-    $('#tongTienSauGiam').attr('data-value', tongTien);
-    
-    console.log("Đã khởi tạo định dạng tiền tệ cho trang");
-});
-
 // Chức năng chọn địa chỉ từ danh sách tỉnh thành Việt Nam
 document.addEventListener("DOMContentLoaded", function () {
     let citis = document.getElementById("city");
@@ -1146,68 +1306,116 @@ function initAddProductButtons() {
     });
 }
 
-// Thêm hàm giám sát quá trình thanh toán Momo
-function monitorMomoPayment(hoaDonId) {
-    Swal.fire({
-        title: 'Đang chờ thanh toán',
-        html: `
-            <p>Bạn đã được chuyển đến trang thanh toán Momo.</p>
-            <p>Sau khi hoàn tất thanh toán, vui lòng quay lại đây và nhấn "Đã thanh toán".</p>
-            <div class="mt-3">
-                <div class="d-flex justify-content-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-                <p class="mt-2" id="countdown">Tự động kiểm tra sau <strong>15</strong> giây...</p>
-            </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: 'Đã thanh toán',
-        cancelButtonText: 'Hủy',
-        allowOutsideClick: false,
-        didOpen: () => {
-            // Đếm ngược 15 giây rồi tự động kiểm tra
-            let countDown = 15;
-            const countdownElement = document.getElementById('countdown');
-            const countdownInterval = setInterval(() => {
-                countDown--;
-                if (countdownElement) {
-                    countdownElement.innerHTML = `Tự động kiểm tra sau <strong>${countDown}</strong> giây...`;
+// Hàm mở modal phiếu giảm giá
+function openDiscountModal(hoaDonId) {
+    // Lưu ID hóa đơn để sử dụng trong modal
+    window.currentHoaDonId = hoaDonId;
+    
+    // Tải danh sách phiếu giảm giá
+    loadPhieuGiamGia();
+    
+    // Mở modal phiếu giảm giá
+    const modalElement = document.getElementById('modalPhieuGiamGia');
+    if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+        
+        // Thêm event listener cho sự kiện đóng modal
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            // Khi modal đóng, hiển thị dialog hỏi có muốn thử lại thanh toán không
+            Swal.fire({
+                title: 'Thử lại thanh toán?',
+                text: 'Bạn có muốn thử lại thanh toán với Momo không?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Thử lại',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Thử lại thanh toán
+                    retryMomoPayment(hoaDonId);
+                } else {
+                    // Hủy thanh toán
+                    cancelMomoPayment(hoaDonId);
                 }
-                
-                if (countDown <= 0) {
-                    clearInterval(countdownInterval);
-                    // Tự động kiểm tra thanh toán
-                    checkMomoPaymentStatus(hoaDonId, Swal.getPopup().countdownInterval);
-                }
-            }, 1000);
+            });
             
-            // Lưu interval vào Swal để có thể xóa nếu người dùng đóng modal
-            Swal.getPopup().countdownInterval = countdownInterval;
-        },
-        willClose: () => {
-            // Xóa interval khi modal đóng
-            clearInterval(Swal.getPopup().countdownInterval);
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Người dùng bấm nút đã thanh toán
-            confirmMomoPayment(hoaDonId);
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-            // Người dùng bấm nút hủy
-            cancelMomoPayment(hoaDonId);
-        }
-    });
+            // Xóa event listener sau khi đã xử lý
+            modalElement.removeEventListener('hidden.bs.modal', arguments.callee);
+        }, { once: true });
+    } else {
+        console.error("Không tìm thấy modal phiếu giảm giá");
+        // Nếu không tìm thấy modal, hiển thị dialog thử lại ngay
+        Swal.fire({
+            title: 'Thử lại thanh toán?',
+            text: 'Không thể mở modal phiếu giảm giá. Bạn có muốn thử lại thanh toán với Momo không?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Thử lại',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Thử lại thanh toán
+                retryMomoPayment(hoaDonId);
+            } else {
+                // Hủy thanh toán
+                cancelMomoPayment(hoaDonId);
+            }
+        });
+    }
 }
 
-// Kiểm tra trạng thái thanh toán Momo
-function checkMomoPaymentStatus(hoaDonId) {
-    // Trong môi trường thực tế, gọi API để kiểm tra trạng thái
-    // Trong môi trường test, giả định thanh toán thành công
-    confirmMomoPayment(hoaDonId);
+$(document).ready(function() {
+    // Định dạng tiền tệ ban đầu
+    formatCurrency();
     
-    // Xóa ID hóa đơn khỏi sessionStorage
-    sessionStorage.removeItem('pending_momo_order');
+    // Khởi tạo tổng tiền sau giảm
+    const tongTien = parseFloat($('#tienThanhToan').attr('data-value')) || 0;
+    $('#tongTienSauGiam').text(formatNumberToVND(tongTien));
+    $('#tongTienSauGiam').attr('data-value', tongTien);
+    
+    console.log("Đã khởi tạo định dạng tiền tệ cho trang");
+    
+    // Kiểm tra thông báo thanh toán từ flash attribute
+    checkPaymentStatus();
+});
+
+// Kiểm tra thông báo thanh toán từ flash attribute
+function checkPaymentStatus() {
+    // Kiểm tra nếu có thông báo thanh toán từ server
+    const paymentStatus = $('meta[name="payment-status"]').attr('content');
+    const paymentMessage = $('meta[name="payment-message"]').attr('content');
+    
+    if (paymentStatus && paymentMessage) {
+        let icon = 'info';
+        
+        if (paymentStatus === 'success') {
+            icon = 'success';
+        } else if (paymentStatus === 'failed') {
+            icon = 'error';
+        } else if (paymentStatus === 'error') {
+            icon = 'error';
+        }
+        
+        // Hiển thị thông báo
+        Swal.fire({
+            toast: true,
+            icon: icon,
+            title: paymentMessage,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    }
+    
+    // Kiểm tra pendingMomoOrder trong sessionStorage
+    const pendingOrderId = sessionStorage.getItem('pending_momo_order');
+    if (pendingOrderId) {
+        // Kiểm tra trạng thái thanh toán nếu có pending order
+        checkMomoPaymentStatus(pendingOrderId);
+        // Xóa pending order khỏi sessionStorage
+        sessionStorage.removeItem('pending_momo_order');
+    }
 }
 

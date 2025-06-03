@@ -57,9 +57,6 @@ public class HoaDon {
     @Column(name = "phi_van_chuyen")
     BigDecimal phiVanChuyen;
 
-    @Column(name = "hinh_thuc_thanh_toan")
-    String hinhThucThanhToan;
-
     @Column(name = "ghi_chu")
     String ghiChu;
 

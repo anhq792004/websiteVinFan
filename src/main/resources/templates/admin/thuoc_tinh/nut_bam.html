@@ -28,7 +28,7 @@
             <section class="row">
                 <div class="card">
                     <div class="card-header">
-                        <form method="get" action="/nut-bam/index"
+                        <form method="get" action="/admin/nut-bam/index"
                               th:object="${listNutBam}" style="padding-bottom: 20px">
                             <div class="row">
                                 <div class="col-5">
@@ -105,7 +105,7 @@
                             <!-- Nút Previous -->
                             <li th:class="${list.number == 0} ? 'disabled page-item' : 'page-item'">
                                 <a class="page-link"
-                                   th:href="@{/nut-bam/index(name=${name}, status=${status}, page=${list.number - 1}, size=${list.size})}">
+                                   th:href="@{/admin/nut-bam/index(name=${name}, status=${status}, page=${list.number - 1}, size=${list.size})}">
                                     <i class="bi bi-chevron-left"></i>
                                 </a>
                             </li>
@@ -113,7 +113,7 @@
                             <!-- Hiển thị trang đầu tiên nếu currentPage > 2 -->
                             <li th:if="${list.number > 2}" class="page-item">
                                 <a class="page-link"
-                                   th:href="@{/nut-bam/index(name=${name}, status=${status}, page=0, size=${list.size})}">1</a>
+                                   th:href="@{/admin/nut-bam/index(name=${name}, status=${status}, page=0, size=${list.size})}">1</a>
                             </li>
 
                             <!-- Dấu ... nếu currentPage > 3 -->
@@ -126,7 +126,7 @@
                               (list.number + 2 < list.totalPages - 1 ? list.number + 2 : list.totalPages - 1))}"
                                 th:class="${list.number == i} ? 'active page-item' : 'page-item'">
                                 <a class="page-link"
-                                   th:href="@{/nut-bam/index(name=${name}, status=${status}, page=${i}, size=${list.size})}"
+                                   th:href="@{/admin/nut-bam/index(name=${name}, status=${status}, page=${i}, size=${list.size})}"
                                    th:text="${i + 1}"></a>
                             </li>
 
@@ -138,14 +138,14 @@
                             <!-- Hiển thị trang cuối nếu currentPage < totalPages - 2 -->
                             <li th:if="${list.number < list.totalPages - 2}" class="page-item">
                                 <a class="page-link"
-                                   th:href="@{/nut-bam/index(name=${name}, status=${status}, page=${list.totalPages - 1}, size=${list.size})}"
+                                   th:href="@{/admin/nut-bam/index(name=${name}, status=${status}, page=${list.totalPages - 1}, size=${list.size})}"
                                    th:text="${list.totalPages}"></a>
                             </li>
 
                             <!-- Nút Next -->
                             <li th:class="${list.number + 1 >= list.totalPages} ? 'disabled page-item' : 'page-item'">
                                 <a class="page-link"
-                                   th:href="@{/nut-bam/index(name=${name}, status=${status}, page=${list.number + 1}, size=${list.size})}">
+                                   th:href="@{/admin/nut-bam/index(name=${name}, status=${status}, page=${list.number + 1}, size=${list.size})}">
                                     <i class="bi bi-chevron-right"></i>
                                 </a>
                             </li>

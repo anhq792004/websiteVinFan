@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Map;
 import java.util.Optional;
@@ -61,7 +62,7 @@ public class PaymentController {
      * Endpoint khi người dùng được redirect từ Momo về
      */
     @GetMapping("/momo-return")
-    public String momoReturn(@RequestParam Map<String, String> params) {
+    public String momoReturn(@RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
         logger.info("User returned from Momo payment: {}", params);
         
         try {
@@ -77,18 +78,37 @@ public class PaymentController {
                     if (transaction != null) {
                         // Cập nhật trạng thái giao dịch
                         momoService.confirmTransaction(transaction.getHoaDon().getId());
-                        return "redirect:/sale/index?payment=success";
+                        redirectAttributes.addFlashAttribute("paymentStatus", "success");
+                        redirectAttributes.addFlashAttribute("paymentMessage", "Thanh toán thành công!");
+                        return "redirect:/sale/index";
                     }
                 } else {
                     // Giao dịch thất bại
-                    return "redirect:/sale/index?payment=failed&reason=" + params.getOrDefault("message", "unknown");
+                    String message = params.getOrDefault("message", "Giao dịch thất bại");
+                    redirectAttributes.addFlashAttribute("paymentStatus", "failed");
+                    redirectAttributes.addFlashAttribute("paymentMessage", message);
+                    
+                    // Nếu có orderId, lấy ID hóa đơn để redirect về trang chi tiết hóa đơn đó
+                    if (orderId != null && !orderId.isEmpty()) {
+                        MomoTransaction transaction = momoService.getTransactionByOrderId(orderId);
+                        if (transaction != null) {
+                            Long hoaDonId = transaction.getHoaDon().getId();
+                            return "redirect:/sale/hdct?idHD=" + hoaDonId;
+                        }
+                    }
+                    
+                    return "redirect:/sale/index";
                 }
             }
             
-            return "redirect:/sale/index?payment=unknown";
+            redirectAttributes.addFlashAttribute("paymentStatus", "unknown");
+            redirectAttributes.addFlashAttribute("paymentMessage", "Không thể xác định kết quả thanh toán");
+            return "redirect:/sale/index";
         } catch (Exception e) {
             logger.error("Error handling Momo return: {}", e.getMessage());
-            return "redirect:/sale/index?payment=error";
+            redirectAttributes.addFlashAttribute("paymentStatus", "error");
+            redirectAttributes.addFlashAttribute("paymentMessage", "Lỗi xử lý thanh toán: " + e.getMessage());
+            return "redirect:/sale/index";
         }
     }
 } 

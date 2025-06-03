@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:insert="~{/admin/fragments/head :: head}"></head>
+<head th:insert="~{/admin/fragments/head :: head}">
+    <!-- Thêm meta tags cho thông báo thanh toán -->
+    <meta name="payment-status" th:content="${paymentStatus}" th:if="${paymentStatus != null}">
+    <meta name="payment-message" th:content="${paymentMessage}" th:if="${paymentMessage != null}">
+</head>
 <link rel="stylesheet" th:href="@{/admin/assets/compiled/css/sale.css}">
 <body>
 <!-- Site wrapper -->
@@ -53,8 +57,13 @@
                             </div>
                         </div>
                     </div>
+                    <div th:if="${idHD == null}"
+                         class="d-flex flex-column justify-content-center align-items-center" style="height: 200px;">
+                        <img src="https://shop.nebulacare.in/Content/Images/nodata.jpg"
+                             style="max-width: 1000px; max-height: 200px;">
+                    </div>
                     <!--                sản phẩm-->
-                    <div class="card-body">
+                    <div class="card-body" th:if="${idHD != null}">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5>
                                 <span class="red-dot"></span>Sản phẩm
@@ -71,12 +80,14 @@
                             <div class="d-flex align-items-center justify-content-between border-bottom p-2"
                                  th:each="item: ${listHDCT}">
                                 <div class="align-items-center d-flex">
-                                    <img th:if="${item.sanPhamChiTiet.hinhAnh != null}" 
+                                    <img th:if="${item.sanPhamChiTiet.hinhAnh != null}"
                                          th:src="${item.sanPhamChiTiet.hinhAnh.duongDan}"
-                                         class="product-img" alt="Sản phẩm" style="width: 60px; height: 60px; object-fit: cover;">
+                                         class="product-img" alt="Sản phẩm"
+                                         style="width: 60px; height: 60px; object-fit: cover;">
                                     <img th:if="${item.sanPhamChiTiet.hinhAnh == null}"
                                          src="https://i.pinimg.com/736x/4c/83/36/4c83365869bfd6d9c19c554e8e7a0ad1.jpg"
-                                         class="product-img" alt="Sản phẩm" style="width: 60px; height: 60px; object-fit: cover;">
+                                         class="product-img" alt="Sản phẩm"
+                                         style="width: 60px; height: 60px; object-fit: cover;">
 
                                     <div class="product-details ms-3">
                                         <h5 class="mb-2" th:text="${item.sanPhamChiTiet.sanPham.ten}"></h5>
@@ -106,7 +117,7 @@
                                             </div>
                                         </form>
                                     </div>
-                                    <div class="product-total" 
+                                    <div class="product-total"
                                          th:text="${#numbers.formatDecimal(item.thanhTien, 0, 'COMMA', 0, 'POINT')} + ' VND'"
                                          th:attr="data-value=${item.thanhTien}"></div>
 
@@ -121,7 +132,7 @@
                         </div>
                     </div>
                     <!--                khách hàng-->
-                    <div class="card-header">
+                    <div class="card-header" th:if="${idHD != null}">
                         <div class="row">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5>Khách hàng</h5>
@@ -137,14 +148,15 @@
                         </div>
                         <hr>
                         <div class="row">
-                            <div class="mb-3 col-md-6" >
+                            <div class="mb-3 col-md-6">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <div class="d-flex gap-3">
                                         <strong>Tên khách hàng:</strong>
                                         <span th:text="${khachHang?.ten ?: 'Khách Lẻ'}"></span>
                                     </div>
                                     <div th:if="${khachHang != null}" style="visibility: hidden;">
-                                        <button class="btn btn-outline-warning btn-sm" id="btnDiaChi">Chọn địa chỉ</button>
+                                        <button class="btn btn-outline-warning btn-sm" id="btnDiaChi">Chọn địa chỉ
+                                        </button>
                                     </div>
                                 </div>
                                 <div id="shippingForm" style="visibility: hidden;">
@@ -165,19 +177,19 @@
                                             <select class="form-control" placeholder="" id="city" name="tinhThanhPho">
                                                 <option value="" selected>Chọn tỉnh thành</option>
                                             </select>
-                                            <label for="city">Tỉnh/Thành phố</label>
+                                            <!--                                            <label for="city">Tỉnh/Thành phố</label>-->
                                         </div>
                                         <div class="col floating-group">
                                             <select class="form-control" placeholder="" id="district" name="quanHuyen">
                                                 <option value="" selected>Chọn quận huyện</option>
                                             </select>
-                                            <label for="district">Quận/Huyện</label>
+                                            <!--                                            <label for="district">Quận/Huyện</label>-->
                                         </div>
                                         <div class="col floating-group">
                                             <select class="form-control" placeholder="" id="ward" name="xaPhuong">
                                                 <option value="" selected>Chọn phường xã</option>
                                             </select>
-                                            <label for="ward">Xã/Phường</label>
+                                            <!--                                            <label for="ward">Xã/Phường</label>-->
                                         </div>
                                     </div>
                                     <div class="gap-3 d-flex justify-content-between">
@@ -221,7 +233,7 @@
                                         <p>Giảm giá: </p>
                                         <div class="d-flex align-items-center">
                                             <p id="giaTriGiamGia" data-value="0">0 VND</p>
-                                            <button type="button" class="btn btn-sm btn-outline-primary ms-2" 
+                                            <button type="button" class="btn btn-sm btn-outline-primary ms-2"
                                                     data-bs-toggle="modal" data-bs-target="#modalPhieuGiamGia"
                                                     th:disabled="${idHD == null}">
                                                 <i class="bi bi-ticket-perforated"></i>
@@ -230,10 +242,11 @@
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <p>Tổng số tiền: </p>
-                                        <p class="fw-bold text-danger" id="tongTienSauGiam" 
+                                        <p class="fw-bold text-danger" id="tongTienSauGiam"
                                            th:attr="data-value=${hoaDon != null ? hoaDon.tongTien : 0}">
-                                           <span th:if="${hoaDon != null}" th:text="${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} + ' VND'"></span>
-                                           <span th:if="${hoaDon == null}">0 VND</span>
+                                            <span th:if="${hoaDon != null}"
+                                                  th:text="${#numbers.formatDecimal(hoaDon.tongTien, 0, 'COMMA', 0, 'POINT')} + ' VND'"></span>
+                                            <span th:if="${hoaDon == null}">0 VND</span>
                                         </p>
                                     </div>
                                     <!-- Tiền khách thanh toán -->
@@ -251,20 +264,20 @@
                                         <p>Tiền thừa:</p>
                                         <p class="fw-bold text-danger" id="tienThua">0</p>
                                     </div>
-                                    
+
                                     <!-- Phương thức thanh toán -->
                                     <div class="d-flex justify-content-between align-items-center mt-3">
                                         <p>Phương thức thanh toán:</p>
                                         <div class="d-flex gap-3">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="phuongThucThanhToan" 
+                                                <input class="form-check-input" type="radio" name="phuongThucThanhToan"
                                                        id="phuongThucTienMat" value="TIEN_MAT" checked>
                                                 <label class="form-check-label" for="phuongThucTienMat">
                                                     Tiền mặt
                                                 </label>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="phuongThucThanhToan" 
+                                                <input class="form-check-input" type="radio" name="phuongThucThanhToan"
                                                        id="phuongThucMomo" value="MOMO">
                                                 <label class="form-check-label" for="phuongThucMomo">
                                                     Momo
@@ -306,42 +319,44 @@
                     <input type="text" class="form-control" id="inputSearch" placeholder="Tìm kiếm sản phẩm">
                 </div>
                 <!-- Debug info -->
-                <div class="alert alert-info mt-2">
-                    <p>Số lượng sản phẩm: <span th:text="${findSPCTByIdSanPham != null ? findSPCTByIdSanPham.size() : 'không có dữ liệu'}"></span></p>
+                <!--                <div class="alert alert-info mt-2">-->
+                <!--                    <p>Số lượng sản phẩm: <span th:text="${findSPCTByIdSanPham != null ? findSPCTByIdSanPham.size() : 'không có dữ liệu'}"></span></p>-->
+                <!--                </div>-->
+                <div style="max-height: 60vh; overflow-y: auto;">
+                    <table class="table table-striped dataTable-table">
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Màu</th>
+                            <th>Công suất</th>
+                            <th>Số lượng</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item, iter : ${findSPCTByIdSanPham}">
+                            <td th:text="${iter.count}"></td>
+                            <td th:text="${item.sanPham != null ? item.sanPham.ten : 'N/A'}"></td>
+                            <td th:text="${#numbers.formatDecimal(item.gia, 0, 'COMMA', 0, 'POINT')} + ' VND'"
+                                th:attr="data-value=${item.gia}"></td>
+                            <td th:text="${item.mauSac != null ? item.mauSac.ten : 'N/A'}"></td>
+                            <td th:text="${item.congSuat != null ? item.congSuat.ten : 'N/A'}"></td>
+                            <td th:text="${item.soLuong}"></td>
+                            <td>
+                                <button type="button"
+                                        class="btn btn-outline-success btn-add-sanPham"
+                                        th:data-id-hd="${idHD}"
+                                        th:data-id-sp="${item.id}"
+                                        th:data-gia="${item.gia}">
+                                    Thêm
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <table class="table table-striped dataTable-table">
-                    <thead>
-                    <tr>
-                        <th>STT</th>
-                        <th>Tên sản phẩm</th>
-                        <th>Giá</th>
-                        <th>Màu</th>
-                        <th>Công suất</th>
-                        <th>Số lượng</th>
-                        <th>Thao tác</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="item, iter : ${findSPCTByIdSanPham}">
-                        <td th:text="${iter.count}"></td>
-                        <td th:text="${item.sanPham != null ? item.sanPham.ten : 'N/A'}"></td>
-                        <td th:text="${#numbers.formatDecimal(item.gia, 0, 'COMMA', 0, 'POINT')} + ' VND'"
-                            th:attr="data-value=${item.gia}"></td>
-                        <td th:text="${item.mauSac != null ? item.mauSac.ten : 'N/A'}"></td>
-                        <td th:text="${item.congSuat != null ? item.congSuat.ten : 'N/A'}"></td>
-                        <td th:text="${item.soLuong}"></td>
-                        <td>
-                            <button type="button"
-                                    class="btn btn-outline-success btn-add-sanPham"
-                                    th:data-id-hd="${idHD}"
-                                    th:data-id-sp="${item.id}"
-                                    th:data-gia="${item.gia}">
-                                Thêm
-                            </button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
