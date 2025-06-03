@@ -84,4 +84,22 @@ public class NutBamController {
         nutBamService.thayDoiTrangThai(id);
         return "redirect:/admin/nut-bam/index";
     }
+    
+    @PostMapping("/nut-bam/add")
+    @ResponseBody
+    public ResponseEntity<?> add(@RequestParam("name") String name) {
+        return nutBamService.add(name);
+    }
+    
+    @PostMapping("/nut-bam/update")
+    @ResponseBody
+    public ResponseEntity<?> update(@RequestParam("id") Integer id, @RequestParam("name") String name) {
+        return nutBamService.update(id, name);
+    }
+    
+    @PostMapping("/nut-bam/change-status")
+    @ResponseBody
+    public ResponseEntity<?> changeStatus(@RequestParam("id") Integer id) {
+        return nutBamService.changeStatus(id);
+    }
 }

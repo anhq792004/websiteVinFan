@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{/admin/fragments/head :: head}"></head>
+<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/css/khachHang.css}">
+
 <body>
 <!-- Site wrapper -->
 <div class="wrapper">
@@ -20,87 +22,69 @@
                             <form th:action="@{/khach-hang/them}" th:object="${khachHang}" method="post">
                                 <div class="container">
                                     <div class="row justify-content-around">
-                                        <div class="col-md-4">
-                                            <h4>Thông tin khách hàng</h4>
-                                            <hr>
-                                            <div class="mb-3"> Ảnh</div>
-                                            <input type="image">
-                                            <div class="mb-3">
-                                                <label for="ten" class="form-label"><span class="text-danger">*</span>Họ Và Tên </label>
-                                                <input type="text" class="form-control" id="ten" required>
-                                                <!--                  <div class="text-danger" th:if="${#fields.hasErrors('ten')}" th:errors="*{ten}"></div>-->
+                                        <div class="col-md-5 gap-3">
+                                            <div class="col floating-group">
+                                                <input type="text" class="form-control" placeholder="" aria-label="name"
+                                                       id="name">
+                                                <label for="name">Tên khách hàng</label>
+                                            </div>
+                                            <div class="col floating-group">
+                                                <input type="text" class="form-control" placeholder=""
+                                                       aria-label="email"
+                                                       id="email">
+                                                <label for="email">Email</label>
+                                            </div>
+                                            <div class="col floating-group">
+                                                <input type="text" class="form-control" placeholder=""
+                                                       aria-label="soDienThoai"
+                                                       id="soDienThoai">
+                                                <label for="soDienThoai">Số điện thoại</label>
+                                            </div>
+                                            <div class="col floating-group">
+                                                <input type="date" class="form-control" placeholder=""
+                                                       aria-label="ngaySinh"
+                                                       id="ngaySinh">
+                                                <label for="ngaySinh">mm/dd/yyyy</label>
+                                            </div>
+                                            <div class="col">
+                                                <label class="form-label">Giới Tính:</label>
+                                                <div class="g-5">
+                                                    <input type="radio" value="true" name="gioiTinh">Nam
+                                                    <input type="radio" value="false" name="gioiTinh">Nữ
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <!--                <div class="mb-3">-->
-                                        <!--                  <label for="ma" class="form-label">Mã Nhân Viên</label>-->
-                                        <!--                  <input type="text" class="form-control" id="ma"  required>-->
-                                        <!--&lt;!&ndash;                  <div class="text-danger" th:if="${#fields.hasErrors('ma')}" th:errors="*{ma}"></div>&ndash;&gt;-->
-                                        <!--                </div>-->
-                                        <div class="col-md-8">
-                                            <h4>Thông tin chi tiết</h4>
-                                            <hr>
-                                            <div class="row justify-content-around">
-                                                <div class="col-md-6">
-                                                    <label for="cccd" class="form-label"><span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control" id="cccd"  required>
-                                                    <!--                  <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>-->
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label  class="form-label"><span class="text-danger">*</span>Giới Tính:</label> <br>
-                                                    <input type="radio" value="true" name="gioiTinh" >Nam
-                                                    <input type="radio" value="false" name="gioiTinh">Nữ
-                                                    </select>
-                                                    <!--                  <div class="text-danger" th:if="${#fields.hasErrors('gioiTinh')}" th:errors="*{gioiTinh}"></div>-->
-                                                </div>
-                                            </div>
-                                            <div class="row justify-content-around">
-                                                <div class="col-md-6">
-                                                    <label for="email" class="form-label"><span class="text-danger">*</span>Email</label>
-                                                    <input type="email" class="form-control" id="email"  required>
-                                                    <!--                  <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>-->
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label for="ngaySinh" class="form-label"><span class="text-danger">*</span>Ngày Sinh</label>
-                                                    <input type="date" class="form-control" id="ngaySinh" required>
-                                                    <!--                  <div class="text-danger" th:if="${#fields.hasErrors('ngaySinh')}" th:errors="*{ngaySinh}"></div>-->
-                                                </div>
-                                            </div>
+                                        <div class="col-md-7">
                                             <div class=" row align-items-start">
                                                 <div class="col">
-                                                    <label for="city" class="form-label"><span class="text-danger">*</span>Tỉnh/Thành phố </label>
+                                                    <label for="city" class="form-label"><span
+                                                            class="text-danger">*</span>Tỉnh/Thành phố </label>
                                                     <select class="form-select" id="city" name="tinhThanhPho" required>
-                                                        <option value="" selected>-- Chọn Tỉnh/Thành phố --</option>
+                                                        <option value="" selected>Chọn Tỉnh/Thành phố</option>
                                                     </select>
-                                                    <!--                  <div class="text-danger" th:if="${#fields.hasErrors('chucVu')}" th:errors="*{chucVu}"></div>-->
                                                 </div>
                                                 <div class="col">
-                                                    <label for="district" class="form-label"><span class="text-danger">*</span>Quận/Huyện </label>
+                                                    <label for="district" class="form-label"><span
+                                                            class="text-danger">*</span>Quận/Huyện </label>
                                                     <select class="form-select" id="district" name="diaChi" required>
-                                                        <option value="" selected>-- Chọn Quận/Huyện --</option>
-                                                        <!-- Danh sách Quận/Huyện sẽ được cập nhật động dựa trên Tỉnh/Thành phố -->
+                                                        <option value="" selected>Chọn Quận/Huyện</option>
                                                     </select>
                                                 </div>
 
                                                 <div class="col">
-                                                    <label for="ward" class="form-label">Xã/Phường <span class="text-danger">*</span></label>
+                                                    <label for="ward" class="form-label">Xã/Phường <span
+                                                            class="text-danger">*</span></label>
                                                     <select class="form-select" id="ward" name="diaChi" required>
-                                                        <option value="" selected>-- Chọn Xã/Phường --</option>
-                                                        <!-- Danh sách Quận/Huyện sẽ được cập nhật động dựa trên Tỉnh/Thành phố -->
+                                                        <option value="" selected>Chọn Xã/Phường</option>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="row justify-content-around">
-                                                <div class="col-md-6 ">
-                                                    <label for="sdt" class="form-label"><span class="text-danger">*</span> Số Điện Thoại</label>
-                                                    <input type="tel" class="form-control" id="sdt" required>
-
-                                                </div>
-                                                <div class="col-md-6 ">
-                                                    <label for="dcct" class="form-label"><span class="text-danger">*</span> Địa Chỉ Cụ Thể</label>
-                                                    <input type="tel" class="form-control" id="dcct" required>
-
-                                                </div>
+                                            <div class="col floating-group mt-3">
+                                                <input type="text" class="form-control" placeholder=""
+                                                       aria-label="diaChiCuThe"
+                                                       id="diaChiCuThe">
+                                                <label for="diaChiCuThe">Địa chỉ cụ thể</label>
                                             </div>
 
                                             <div class="mt-3">
@@ -114,23 +98,25 @@
                                         </div>
                                     </div>
                                 </div>
+                            </form>
                         </div>
-                        </form>
                     </div>
                 </div>
                 <div class="card-body"></div>
+            </section>
         </div>
-        </section>
+    </div>
+
+    <!-- Footer-->
+    <div>
+        <footer th:replace="/admin/fragments/footer :: footer"></footer>
     </div>
 </div>
-<!-- Footer-->
-<div>
-    <footer th:replace="/admin/fragments/footer :: footer"></footer>
-</div>
-</div>
+
 <div>
     <script th:replace="/admin/fragments/script :: script"></script>
     <script th:src="@{/admin/assets/compiled/js/KhachHang/khachHang.js}"></script>
 </div>
+
 </body>
 </html>

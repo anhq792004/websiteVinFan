@@ -16,6 +16,9 @@ public class DiaChi {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_khach_hang")
+    KhachHang khachHang;
 
     @Column(name = "xa")
     String xa;
