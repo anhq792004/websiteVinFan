@@ -21,7 +21,7 @@
                         <div class="dataTable-top">
                             <form method="get" action="/khach-hang/index">
                                 <div class="row">
-                                    <div class="col-4">
+                                    <div class="col-6">
                                         <input type="text" id="searchInput" class="form-control" name="search"
                                                placeholder="Tìm kiếm khách hàng..." th:value="${search}">
                                     </div>
@@ -32,7 +32,7 @@
                                             <option value="false">...</option>
                                         </select>
                                     </div>
-                                    <div class="col-2 d-flex">
+                                    <div class="col-3 d-flex">
                                         <div>
                                             <button class="btn btn-outline-primary" type="submit"
                                                     style="width: 70px; margin-right: 10px">
@@ -51,51 +51,38 @@
                         </div>
                         <div class="dataTable-container mt-3">
                             <div class="d-flex justify-content-between mb-3">
-                                <h5 class="card-title">Danh sách khách hàng (<span
-                                        th:text="${khachHangPage.totalElements}"></span> Khách Hàng)</h5>
-                                <a th:href="@{/khach-hang/view-them}" class="btn btn-primary" role="button" aria-label="Thêm khách hàng">
+                                <h5 class="card-title">Danh sách khách hàng </h5>
+                                <a th:href="@{/khach-hang/view-them}" class="btn btn-primary" role="button"
+                                   aria-label="Thêm khách hàng">
                                     <i class="bi bi-plus-circle"></i> Thêm khách hàng
                                 </a>
                             </div>
                             <table class="table table-striped dataTable-table">
                                 <thead>
                                 <tr>
-                                    <th style="width: 5%;">STT</th>
-<!--                                    <th style="width: 5%;">Ảnh</th>-->
-                                    <th style="width: 5%;">Mã</th>
-                                    <th style="width: 5%;">Họ và tên</th>
-<!--                                    <th style="width: 5%;">Email</th>-->
-<!--                                    <th style="width: 5%;">Ngày sinh</th>-->
-<!--                                    <th style="width: 5%;">Giới tính</th>-->
-<!--                                    <th style="width: 5%;">Trạng thái</th>-->
-                                    <th style="width: 5%;">Hành động</th>
+                                    <th>STT</th>
+                                    <th>Mã</th>
+                                    <th>Họ và tên</th>
+                                    <th>Hành động</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="khachHang, iterStat : ${khachHangPage.content}">
+                                <tr th:each="khachHang, iterStat : ${listKH}">
                                     <td th:text="${iterStat.count}"></td>
-                                    <td>
-                                        <!--                                        <img th:src="@{'/path/to/images/' + ${nhanVien.anh}}" alt="Ảnh nhân viên" width="50" height="50"-->
-                                        <!--                                             th:unless="${nhanVien.anh == null}" />-->
-<!--                                        <span th:if="${khachHang.anh == null}">Không có ảnh</span>-->
-                                    </td>
                                     <td th:text="${khachHang.ma}"></td>
                                     <td th:text="${khachHang.ten}"></td>
-<!--                                    <td th:text="${khachHang.email}"></td>-->
-<!--                                    <td th:text="${khachHang.ngaySinh}"></td>-->
-<!--                                    <td th:text="${khachHang.gioiTinh ? 'Nam' : 'Nữ'}"></td>-->
-                                    <!--                                    <td th:text="${khachHang.trangThai ? 'Đang làm việc' : 'Đã nghỉ việc'}"></td>-->
                                     <td>
-                                        <a th:href="@{/nhan-vien/detail/{id}(id=${khachHang.id})}" class="btn btn-sm btn-info">Chi tiết</a>
+                                        <a th:href="@{/khach-hang/detail(id=${khachHang.id})}"
+                                           class="btn btn-sm btn-info">Chi tiết</a>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
-<!--                             Pagination-->
-                            <div th:if="${khachHangPage.totalPages > 1}">
+                            <!--                             Pagination-->
+                            <div th:if="${listKH.totalPages > 1}">
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination">
-                                        <li th:each="i : ${#numbers.sequence(0, khachHangPage.totalPages - 1)}"
+                                        <li th:each="i : ${#numbers.sequence(0, listKH.totalPages - 1)}"
                                             th:class="${i == currentPage} ? 'page-item active' : 'page-item'">
                                             <a class="page-link"
                                                th:href="@{/nhan-vien/index(page=${i}, search=${search}, trangThai=${trangThai})}"
