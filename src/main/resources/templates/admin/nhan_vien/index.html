@@ -19,7 +19,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="dataTable-top">
-                            <form method="get" action="/nhan-vien/index">
+                            <form method="get" action="/admin/nhan-vien/index">
                                 <div class="row">
                                     <div class="col-4">
                                         <input type="text" id="searchInput" class="form-control" name="search"
@@ -60,7 +60,7 @@
                             <div class="d-flex justify-content-between mb-3">
                                 <h5 class="card-title">Danh sách nhân viên (<span
                                         th:text="${nhanVienPage.totalElements}"></span> Nhân viên)</h5>
-                                <a th:href="@{/nhan-vien/view-them}" class="btn btn-primary" role="button" aria-label="Thêm nhân viên">
+                                <a th:href="@{/admin/nhan-vien/view-them}" class="btn btn-primary" role="button" aria-label="Thêm nhân viên">
                                     <i class="bi bi-plus-circle"></i> Thêm nhân viên
                                 </a>
                             </div>
@@ -108,7 +108,7 @@
                                         <li th:each="i : ${#numbers.sequence(0, nhanVienPage.totalPages - 1)}"
                                             th:class="${i == currentPage} ? 'page-item active' : 'page-item'">
                                             <a class="page-link"
-                                               th:href="@{/nhan-vien/index(page=${i}, search=${search}, chucVu=${chucVu}, trangThai=${trangThai})}"
+                                               th:href="@{/admin/nhan-vien/index(page=${i}, search=${search}, chucVu=${chucVu}, trangThai=${trangThai})}"
                                                th:text="${i + 1}"></a>
                                         </li>
                                     </ul>

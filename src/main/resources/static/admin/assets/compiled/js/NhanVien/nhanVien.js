@@ -6,7 +6,7 @@ if (typeof jQuery === "undefined") {
         // Load chức vụ
         function loadChucVu() {
             $.ajax({
-                url: "/nhan-vien/api/chuc-vu",
+                url: "/admin/nhan-vien/api/chuc-vu",
                 type: "GET",
                 success: function (data) {
                     let options = '<option value="">-- Chọn chức vụ --</option>';
@@ -62,7 +62,7 @@ if (typeof jQuery === "undefined") {
             formData.matKhau = formData.matKhau || "defaultPassword123";
 
             $.ajax({
-                url: "/nhan-vien/them",
+                url: "/admin/nhan-vien/them",
                 type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(formData),
