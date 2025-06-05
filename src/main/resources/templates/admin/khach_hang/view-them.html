@@ -19,7 +19,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="container mt-4">
-                            <form th:action="@{/khach-hang/them}" th:object="${khachHang}" method="post">
+                            <form id="addKHForm">
                                 <div class="container">
                                     <div class="row justify-content-around">
                                         <div class="col-md-5 gap-3">
@@ -47,11 +47,12 @@
                                                 <label for="ngaySinh">mm/dd/yyyy</label>
                                             </div>
                                             <div class="col">
-                                                <label class="form-label">Giới Tính:</label>
-                                                <div class="g-5">
-                                                    <input type="radio" value="true" name="gioiTinh">Nam
-                                                    <input type="radio" value="false" name="gioiTinh">Nữ
-                                                </div>
+                                                <label for="gioiTinh" class="form-label">Giới tính</label>
+                                                <select class="form-select" id="gioiTinh" name="gioiTinh" required>
+                                                    <option value="Nam">Nam</option>
+                                                    <option value="Nữ">Nữ</option>
+                                                    <option value="Khác">Khác</option>
+                                                </select>
                                             </div>
                                         </div>
 
@@ -59,7 +60,7 @@
                                             <div class=" row align-items-start">
                                                 <div class="col">
                                                     <label for="city" class="form-label"><span
-                                                            class="text-danger">*</span>Tỉnh/Thành phố </label>
+                                                            class="text-danger">*</span>Tỉnh/Thành phố</label>
                                                     <select class="form-select" id="city" name="tinhThanhPho" required>
                                                         <option value="" selected>Chọn Tỉnh/Thành phố</option>
                                                     </select>
@@ -116,6 +117,7 @@
 <div>
     <script th:replace="/admin/fragments/script :: script"></script>
     <script th:src="@{/admin/assets/compiled/js/KhachHang/khachHang.js}"></script>
+    <script th:src="@{/admin/assets/compiled/js/components.js}"></script>
 </div>
 
 </body>
