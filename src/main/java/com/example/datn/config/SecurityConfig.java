@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.sql.DataSource;
@@ -23,6 +24,7 @@ import java.util.Map;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -31,7 +33,6 @@ public class SecurityConfig {
         http
                 // Tạm thời vô hiệu hóa CSRF để loại trừ vấn đề token
                 .csrf(csrf -> csrf.disable())
-
                 .authorizeHttpRequests(authorize -> authorize
                         // Tài nguyên tĩnh và trang công khai
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/admin/assets/**", "/", "/home",
@@ -39,13 +40,14 @@ public class SecurityConfig {
                                 "/login",
                                 "/forgot-password",
                                 "/request-reset",
-                                "/reset-password").permitAll()
+                                "/reset-password",
+                                "/access-denied").permitAll()
 
-                        // Cách 1: Tạm thời cho phép truy cập vào tất cả các đường dẫn admin để kiểm tra
-                        .requestMatchers("/admin/**").permitAll()
+                        // PHÂN QUYỀN HÓA ĐƠN - CHỈ ADMIN MỚI TRUY CẬP ĐƯỢC
+                        .requestMatchers("admin/**").hasRole("ADMIN")
 
-                        // Cách 2 (dùng sau khi đã kiểm tra thành công):
-                        // .requestMatchers("/admin/**").hasAnyRole("ADMIN", "USER")
+                        // Các trang admin khác - Admin và Employee đều truy cập được
+                        .requestMatchers("phieu-giam-gia/**","khach-hang/**").hasAnyRole("ADMIN", "EMPLOYE")
 
                         .anyRequest().authenticated()
                 )
@@ -58,9 +60,19 @@ public class SecurityConfig {
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
+                )
+                // Xử lý khi không có quyền truy cập
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler(accessDeniedHandler())
                 );
-
         return http.build();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return (request, response, accessDeniedException) -> {
+            response.sendRedirect("/access-denied");
+        };
     }
 
     @Bean
@@ -82,7 +94,6 @@ public class SecurityConfig {
         Map<String, PasswordEncoder> encoders = new HashMap<>();
         encoders.put("bcrypt", new BCryptPasswordEncoder());
         encoders.put("noop", NoOpPasswordEncoder.getInstance());
-
         return new DelegatingPasswordEncoder("bcrypt", encoders);
     }
 }
