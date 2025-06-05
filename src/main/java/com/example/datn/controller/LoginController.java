@@ -24,4 +24,13 @@ public class LoginController {
     public String home() {
         return "admin/user/home";
     }
+
+    @Controller
+    public class AccessDeniedController {
+
+        @GetMapping("/access-denied")
+        public String accessDenied() {
+            return "admin/error/access-denied"; // Trả về template access-denied.html
+        }
+    }
 }
