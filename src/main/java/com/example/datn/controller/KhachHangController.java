@@ -2,7 +2,9 @@ package com.example.datn.controller;
 
 
 import com.example.datn.dto.request.AddKhachHangRequest;
+import com.example.datn.entity.DiaChi;
 import com.example.datn.entity.KhachHang;
+import com.example.datn.service.DiaChiService;
 import com.example.datn.service.KhachHangService.KhachHangService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,11 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/khach-hang")
 public class KhachHangController {
     private final KhachHangService khachHangService;
+    private final DiaChiService diaChiService;
 
     @GetMapping("/index")
     public String getAllKhachHang(
@@ -41,7 +46,12 @@ public class KhachHangController {
     }
 
     @GetMapping("/detail")
-    public String detail(@RequestParam Long id) {
+    public String detail(@RequestParam Long id, Model model) {
+        KhachHang khachHang = khachHangService.findById(id);
+        model.addAttribute("khachHang", khachHang);
+
+        List<DiaChi> listDiaChi = diaChiService.getDiaChiByIdKhachHang(id);
+        model.addAttribute("listDiaChi",listDiaChi);
 
         return "admin/khach_hang/detail";
     }

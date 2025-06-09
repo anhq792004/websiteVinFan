@@ -28,6 +28,7 @@ public class DiaChi {
 
     @Column(name = "tinh")
     String tinh;
+
     @Column(name = "so_nha_ngo_duong")
     String soNhaNgoDuong;
 

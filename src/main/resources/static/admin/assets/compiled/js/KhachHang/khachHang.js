@@ -33,7 +33,7 @@ $(document).ready(function() {
                     timer: 500,
                     timerProgressBar: true
                 }).then(() => {
-                    location.reload();
+                    window.location.href = '/khach-hang/index';
                 });
             },
             error: function (xhr) {

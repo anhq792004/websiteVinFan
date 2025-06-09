@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 public interface KhachHangService {
     Page<KhachHang> findAll(String keyword, Boolean trang_thai, Pageable pageable);
 
+    KhachHang findById(Long id);
+
     KhachHang addKH(AddKhachHangRequest request);
 
     String generateCode();
