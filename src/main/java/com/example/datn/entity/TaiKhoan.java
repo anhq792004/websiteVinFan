@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "tai_khoan")
@@ -20,7 +21,7 @@ public class TaiKhoan {
 
     @OneToOne
     @JoinColumn(name = "id_chuc_vu")
-    private ChucVu chucVu;
+    ChucVu chucVu;
 
     @Column(name = "ma")
     String ma;
@@ -35,9 +36,8 @@ public class TaiKhoan {
     String resetToken;
 
     @Column(name = "ngay_tao")
-    String ngayTao;
+    Date ngayTao;
 
     @Column(name = "trang_thai")
     Boolean trangThai;
-
 }

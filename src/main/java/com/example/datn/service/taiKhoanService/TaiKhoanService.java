@@ -51,7 +51,7 @@ public class TaiKhoanService {
 
         // Thời gian tạo tài khoản
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        taiKhoan.setNgayTao(LocalDateTime.now().format(formatter));
+        taiKhoan.setNgayTao(new Date());
 
         // Tìm chức vụ theo tên vị trí "User"
         ChucVu chucVuUser = chucVuRepository.findByViTri("User")

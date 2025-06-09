@@ -4640,9 +4640,6 @@
                 const r = document.querySelector(".sidebar-wrapper");
                 new PerfectScrollbar(r, {wheelPropagation: !1})
             }
-            setTimeout(() => {
-                this.forceElementVisibility(document.querySelector(".sidebar-item.active"))
-            }, 300)
         }
 
         onResize() {

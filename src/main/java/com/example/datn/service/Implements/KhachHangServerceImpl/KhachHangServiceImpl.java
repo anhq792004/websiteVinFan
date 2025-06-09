@@ -1,10 +1,14 @@
 package com.example.datn.service.Implements.KhachHangServerceImpl;
 
 import com.example.datn.dto.request.AddKhachHangRequest;
+import com.example.datn.entity.ChucVu;
 import com.example.datn.entity.DiaChi;
 import com.example.datn.entity.KhachHang;
+import com.example.datn.entity.TaiKhoan;
+import com.example.datn.repository.ChucVuRepo;
 import com.example.datn.repository.DiaChiRepo;
 import com.example.datn.repository.KhachHangRepo.KhachHangRepo;
+import com.example.datn.repository.TaiKhoanRepo;
 import com.example.datn.service.KhachHangService.KhachHangService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +25,10 @@ public class KhachHangServiceImpl implements KhachHangService {
 
     private final DiaChiRepo diaChiRepo;
 
+    private final ChucVuRepo chucVuRepo;
+
+    private final TaiKhoanRepo taiKhoanRepo;
+
 
     @Override
     public Page<KhachHang> findAll(String keyword, Boolean trang_thai, Pageable pageable) {
@@ -31,9 +39,27 @@ public class KhachHangServiceImpl implements KhachHangService {
     }
 
     @Override
+    public KhachHang findById(Long id) {
+        return khachHangRepo.findById(id).orElse(null);
+    }
+
+    @Override
     public KhachHang addKH(AddKhachHangRequest request) {
+        TaiKhoan taiKhoan = new TaiKhoan();
+        ChucVu chucVu = chucVuRepo.findByViTri("User") // Tìm ChucVu có viTri = "User"
+                .orElseGet(() -> {
+                    ChucVu newChucVu = new ChucVu();
+                    newChucVu.setViTri("User");
+                    return chucVuRepo.save(newChucVu); // Tạo mới nếu không tìm thấy
+                });
+        taiKhoan.setChucVu(chucVu); // Gán ChucVu vào TaiKhoan
+        taiKhoan.setEmail(request.getEmail());
+        taiKhoan.setNgayTao(new Date());
+        taiKhoanRepo.save(taiKhoan); // Lưu TaiKhoan
+
         KhachHang khachHang = new KhachHang();
         khachHang.setMa(generateCode());
+        khachHang.setTaiKhoan(taiKhoan);
         khachHang.setTen(request.getTen());
         khachHang.setGioiTinh(request.getGioiTinh());
         khachHang.setNgayTao(new Date());
