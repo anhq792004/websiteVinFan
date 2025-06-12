@@ -1,13 +1,14 @@
 package com.example.datn.controller;
 
 
+import com.example.datn.dto.request.AddKhachHangRequest;
 import com.example.datn.entity.DiaChi;
 import com.example.datn.entity.KhachHang;
-import com.example.datn.repository.DiaChiRepo;
+import com.example.datn.service.DiaChiService;
 import com.example.datn.service.KhachHangService.KhachHangService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,49 +21,50 @@ import java.util.List;
 @RequestMapping("/khach-hang")
 public class KhachHangController {
     private final KhachHangService khachHangService;
-    private final DiaChiRepo diaChiRepo;
-    @ModelAttribute("listDiaChi")
-    List<DiaChi> getListDiaChi(){ return  diaChiRepo.findAll();}
+    private final DiaChiService diaChiService;
+
     @GetMapping("/index")
     public String getAllKhachHang(
-            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-            @RequestParam(value = "size", required = false, defaultValue = "5") int size,
-            @RequestParam(value = "search", required = false) String search,
-            @RequestParam(name = "trangThai", required = false) Boolean trangThai,
-            Model model)
-    {
-        Page<KhachHang> khachHangPage=khachHangService.findAllKhachHang(page, size, search, trangThai);
-        System.out.println("Số lượng khách hàng: " + khachHangPage.getTotalElements());
-        System.out.println("Tổng số trang: " + khachHangPage.getTotalPages());
-        model.addAttribute("khachHangPage", khachHangPage);
-        model.addAttribute("currentPage",page);
-        model.addAttribute("totalPage",khachHangPage.getTotalPages());
-        model.addAttribute("search",search);
-        model.addAttribute("trangThai",trangThai);
-        if (!khachHangPage.getContent().isEmpty()){
-            System.out.println("Khách hàng đầu tiên: "+khachHangPage.getContent().get(0));
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size,
+            @RequestParam(value = "search", defaultValue = "") String search,
+            @RequestParam(name = "trangThai", defaultValue = "") Boolean trangThai,
+            Model model) {
+        if (page < 0) {
+            page = 0;
         }
+        PageRequest pageable = PageRequest.of(page, size);
+        Page<KhachHang> listKH = khachHangService.findAll(search, trangThai, pageable);
+        model.addAttribute("listKH", listKH);
         return "admin/khach_hang/index";
     }
+
     @GetMapping("/view-them")
-    public String showThemKhachHangForm(Model model){
-        model.addAttribute("khachHang",new KhachHang());
+    public String showThemKhachHangForm(Model model) {
+        model.addAttribute("khachHang", new KhachHang());
         return "admin/khach_hang/view-them";
     }
-    @PostMapping("/them")
-    public String addKhachHang(@ModelAttribute("khachHang")KhachHang khachHang,Model model){
-        khachHangService.saveKhachHang(khachHang);
-        return "redirect:/admin/khach_hang/index";
+
+    @GetMapping("/detail")
+    public String detail(@RequestParam Long id, Model model) {
+        KhachHang khachHang = khachHangService.findById(id);
+        model.addAttribute("khachHang", khachHang);
+
+        List<DiaChi> listDiaChi = diaChiService.getDiaChiByIdKhachHang(id);
+        model.addAttribute("listDiaChi",listDiaChi);
+
+        return "admin/khach_hang/detail";
     }
-    @PostMapping("/update")
-    @ResponseBody
-    public ResponseEntity<String> updateKhachHang(@RequestBody KhachHang khachHang){
-        khachHangService.saveKhachHang(khachHang);
-        return ResponseEntity.ok("Sửa khách hàng");
+
+    @PostMapping("/add")
+    public ResponseEntity<?> add(@RequestBody AddKhachHangRequest request) {
+        try {
+            khachHangService.addKH(request);
+            return ResponseEntity.ok().body("Thêm khách hàng thành công!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
-    @GetMapping("/detail/{id}")
-    public String detailKhachHangByID(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("khachHang",khachHangService.findKhachHangById(id));
-        return "/admin/khach_hang/detail";
-    }
+
+
 }

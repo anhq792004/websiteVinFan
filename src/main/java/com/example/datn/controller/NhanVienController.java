@@ -20,12 +20,11 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/nhan-vien")
+@RequestMapping("/admin/nhan-vien")
 public class NhanVienController {
     private final NhanVienService nhanVienService;
     private final ChucVuService chucVuService;
-    @Autowired
-    DiaChiRepo diaChiRepo;
+    private final DiaChiRepo diaChiRepo;
 
     @ModelAttribute("listDiaChi")
     List<DiaChi> getListDiaChi() {

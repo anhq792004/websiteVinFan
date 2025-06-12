@@ -2,34 +2,34 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{/admin/fragments/head :: head}">
 </head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="Ansonika">
-    <title>Template-Home</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="Ansonika">
+<title>Template-Home</title>
 
-    <!-- Favicons-->
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="img/apple-touch-icon-114x114-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="img/apple-touch-icon-144x144-precomposed.png">
+<!-- Favicons-->
+<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
+<link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
+<link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="img/apple-touch-icon-114x114-precomposed.png">
+<link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="img/apple-touch-icon-144x144-precomposed.png">
 
-    <!-- GOOGLE WEB FONT -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<!-- GOOGLE WEB FONT -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-    <!-- BASE CSS -->
-    <link rel="stylesheet" th:href="@{/admin/assets/compiled/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/admin/assets/compiled/css/style.css}">
+<!-- BASE CSS -->
+<link rel="stylesheet" th:href="@{/user/assets/compiled/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/user/assets/compiled/css/style.css}">
 
-    <!-- SPECIFIC CSS -->
-    <link rel="stylesheet" th:href="@{/admin/assets/compiled/css/home.css}">
+<!-- SPECIFIC CSS -->
+<link rel="stylesheet" th:href="@{/user/assets/compiled/css/home_1.css}">
 
-    <!-- YOUR CUSTOM CSS -->
-    <link href="css/custom.css" rel="stylesheet">
+<!-- YOUR CUSTOM CSS -->
+<link href="css/custom.css" rel="stylesheet">
 
 <body>
 
@@ -42,7 +42,7 @@
                 <div class="row small-gutters">
                     <div class="col-xl-3 col-lg-3 d-lg-flex align-items-center">
                         <div id="logo">
-                            <a href="index.html"><img src="img/logo.svg" alt="" width="100" height="35"></a>
+                            <a href="index.html"><img th:src="@{user/assets/images/logo.svg}" alt="" width="100" height="35"></a>
                         </div>
                     </div>
                     <nav class="col-xl-6 col-lg-7">
@@ -68,81 +68,6 @@
                                         <li><a href="index-3.html">Vertical Slider</a></li>
                                         <li><a href="index-4.html">GDPR Cookie Bar</a></li>
                                     </ul>
-                                </li>
-                                <li class="megamenu submenu">
-                                    <a href="javascript:void(0);" class="show-submenu-mega">Pages</a>
-                                    <div class="menu-wrapper">
-                                        <div class="row small-gutters">
-                                            <div class="col-lg-3">
-                                                <h3>Listing grid</h3>
-                                                <ul>
-                                                    <li><a href="listing-grid-1-full.html">Grid Full Width</a></li>
-                                                    <li><a href="listing-grid-2-full.html">Grid Full Width 2</a></li>
-                                                    <li><a href="listing-grid-3.html">Grid Boxed</a></li>
-                                                    <li><a href="listing-grid-4-sidebar-left.html">Grid Sidebar Left</a></li>
-                                                    <li><a href="listing-grid-5-sidebar-right.html">Grid Sidebar Right</a></li>
-                                                    <li><a href="listing-grid-6-sidebar-left.html">Grid Sidebar Left 2</a></li>
-                                                    <li><a href="listing-grid-7-sidebar-right.html">Grid Sidebar Right 2</a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <h3>Listing row &amp; Product</h3>
-                                                <ul>
-                                                    <li><a href="listing-row-1-sidebar-left.html">Row Sidebar Left</a></li>
-                                                    <li><a href="listing-row-2-sidebar-right.html">Row Sidebar Right</a></li>
-                                                    <li><a href="listing-row-3-sidebar-left.html">Row Sidebar Left 2</a></li>
-                                                    <li><a href="listing-row-4-sidebar-extended.html">Row Sidebar Extended</a></li>
-                                                    <li><a href="product-detail-1.html">Product Large Image</a></li>
-                                                    <li><a href="product-detail-2.html">Product Carousel</a></li>
-                                                    <li><a href="product-detail-3.html">Product Sticky Info</a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <h3>Other pages</h3>
-                                                <ul>
-                                                    <li><a href="cart.html">Cart Page</a></li>
-                                                    <li><a href="checkout.html">Check Out Page</a></li>
-                                                    <li><a href="confirm.html">Confirm Purchase Page</a></li>
-                                                    <li><a href="account.html">Create Account Page</a></li>
-                                                    <li><a href="track-order.html">Track Order</a></li>
-                                                    <li><a href="help.html">Help Page</a></li>
-                                                    <li><a href="help-2.html">Help Page 2</a></li>
-                                                    <li><a href="leave-review.html">Leave a Review</a></li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-lg-3 d-xl-block d-lg-block d-md-none d-sm-none d-none">
-                                                <div class="banner_menu">
-                                                    <a href="#0">
-                                                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="img/banner_menu.jpg" width="400" height="550" alt="" class="img-fluid lazy">
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- /row -->
-                                    </div>
-                                    <!-- /menu-wrapper -->
-                                </li>
-                                <li class="submenu">
-                                    <a href="javascript:void(0);" class="show-submenu">Extra Pages</a>
-                                    <ul>
-                                        <li><a href="header-2.html">Header Style 2</a></li>
-                                        <li><a href="header-3.html">Header Style 3</a></li>
-                                        <li><a href="header-4.html">Header Style 4</a></li>
-                                        <li><a href="header-5.html">Header Style 5</a></li>
-                                        <li><a href="404.html">404 Page</a></li>
-                                        <li><a href="sign-in-modal.html">Sign In Modal</a></li>
-                                        <li><a href="contacts.html">Contact Us</a></li>
-                                        <li><a href="about.html">About 1</a></li>
-                                        <li><a href="about-2.html">About 2</a></li>
-                                        <li><a href="modal-advertise.html">Modal Advertise</a></li>
-                                        <li><a href="modal-newsletter.html">Modal Newsletter</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="blog.html">Blog</a>
-                                </li>
-                                <li>
-                                    <a href="#0">Buy Template</a>
                                 </li>
                             </ul>
                         </div>
@@ -173,60 +98,6 @@
 											Categories
 										</a>
 									</span>
-                                    <div id="menu">
-                                        <ul>
-                                            <li><span><a href="#0">Collections</a></span>
-                                                <ul>
-                                                    <li><a href="listing-grid-1-full.html">Trending</a></li>
-                                                    <li><a href="listing-grid-2-full.html">Life style</a></li>
-                                                    <li><a href="listing-grid-3.html">Running</a></li>
-                                                    <li><a href="listing-grid-4-sidebar-left.html">Training</a></li>
-                                                    <li><a href="listing-grid-5-sidebar-right.html">View all Collections</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><span><a href="#">Men</a></span>
-                                                <ul>
-                                                    <li><a href="listing-grid-6-sidebar-left.html">Offers</a></li>
-                                                    <li><a href="listing-grid-7-sidebar-right.html">Shoes</a></li>
-                                                    <li><a href="listing-row-1-sidebar-left.html">Clothing</a></li>
-                                                    <li><a href="listing-row-3-sidebar-left.html">Accessories</a></li>
-                                                    <li><a href="listing-row-4-sidebar-extended.html">Equipment</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><span><a href="#">Women</a></span>
-                                                <ul>
-                                                    <li><a href="listing-grid-1-full.html">Best Sellers</a></li>
-                                                    <li><a href="listing-grid-2-full.html">Clothing</a></li>
-                                                    <li><a href="listing-grid-3.html">Accessories</a></li>
-                                                    <li><a href="listing-grid-4-sidebar-left.html">Shoes</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><span><a href="#">Boys</a></span>
-                                                <ul>
-                                                    <li><a href="listing-grid-6-sidebar-left.html">Easy On Shoes</a></li>
-                                                    <li><a href="listing-grid-7-sidebar-right.html">Clothing</a></li>
-                                                    <li><a href="listing-row-3-sidebar-left.html">Must Have</a></li>
-                                                    <li><a href="listing-row-4-sidebar-extended.html">All Boys</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><span><a href="#">Girls</a></span>
-                                                <ul>
-                                                    <li><a href="listing-grid-1-full.html">New Releases</a></li>
-                                                    <li><a href="listing-grid-2-full.html">Clothing</a></li>
-                                                    <li><a href="listing-grid-3.html">Sale</a></li>
-                                                    <li><a href="listing-grid-4-sidebar-left.html">Best Sellers</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><span><a href="#">Customize</a></span>
-                                                <ul>
-                                                    <li><a href="listing-row-1-sidebar-left.html">For Men</a></li>
-                                                    <li><a href="listing-row-2-sidebar-right.html">For Women</a></li>
-                                                    <li><a href="listing-row-4-sidebar-extended.html">For Boys</a></li>
-                                                    <li><a href="listing-grid-1-full.html">For Girls</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </div>
                                 </li>
                             </ul>
                         </nav>
@@ -338,92 +209,9 @@
                     </div>
                 </div>
             </div>
-            <img src="img/video_fix.png" alt="" class="header-video--media" data-video-src="video/intro" data-teaser-source="video/intro" data-provider="" data-video-width="1920" data-video-height="960">
+            <img th:src="@{user/assets/images/video_fix.png}" alt="" class="header-video--media" data-video-src="video/intro" data-teaser-source="video/intro" data-provider="" data-video-width="1920" data-video-height="960">
         </div>
         <!-- /header-video -->
-
-        <div class="feat">
-            <div class="container">
-                <ul>
-                    <li>
-                        <div class="box">
-                            <i class="ti-gift"></i>
-                            <div class="justify-content-center">
-                                <h3>Free Shipping</h3>
-                                <p>For all oders over $99</p>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="box">
-                            <i class="ti-wallet"></i>
-                            <div class="justify-content-center">
-                                <h3>Secure Payment</h3>
-                                <p>100% secure payment</p>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="box">
-                            <i class="ti-headphone-alt"></i>
-                            <div class="justify-content-center">
-                                <h3>24/7 Support</h3>
-                                <p>Online top support</p>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <!--/feat-->
-
-        <div class="container margin_60_35">
-            <div class="row small-gutters categories_grid">
-                <div class="col-sm-12 col-md-6">
-                    <a href="listing-grid-1-full.html">
-                        <img src="img/img_cat_home_1_placeholder.png" data-src="img/img_cat_home_1.jpg" alt="" class="img-fluid lazy">
-                        <div class="wrapper">
-                            <h2>Life Style</h2>
-                            <p>115 Products</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-sm-12 col-md-6">
-                    <div class="row small-gutters mt-md-0 mt-sm-2">
-                        <div class="col-sm-6">
-                            <a href="listing-grid-1-full.html">
-                                <img src="img/img_cat_home_2_placeholder.png" data-src="img/img_cat_home_2.jpg" alt="" class="img-fluid lazy">
-                                <div class="wrapper">
-                                    <h2>Running</h2>
-                                    <p>150 Products</p>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-sm-6">
-                            <a href="listing-grid-1-full.html">
-                                <img src="img/img_cat_home_2_placeholder.png" data-src="img/img_cat_home_3.jpg" alt="" class="img-fluid lazy">
-                                <div class="wrapper">
-                                    <h2>Football</h2>
-                                    <p>90 Products</p>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-sm-12 mt-sm-2">
-                            <a href="listing-grid-1-full.html">
-                                <img src="img/img_cat_home_4_placeholder.png" data-src="img/img_cat_home_4.jpg" alt="" class="img-fluid lazy">
-                                <div class="wrapper">
-                                    <h2>Training</h2>
-                                    <p>120 Products</p>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--/categories_grid-->
-        </div>
-        <!-- /container -->
-
         <hr class="mb-0">
 
         <div class="container margin_60_35">
@@ -654,27 +442,6 @@
         </div>
         <!-- /container -->
 
-        <div class="featured lazy" data-bg="url(img/featured_home.jpg)">
-            <div class="opacity-mask d-flex align-items-center" data-opacity-mask="rgba(0, 0, 0, 0.5)">
-                <div class="container margin_60">
-                    <div class="row justify-content-center justify-content-md-start">
-                        <div class="col-lg-6 wow" data-wow-offset="150">
-                            <h3>Armor<br>Air Color 720</h3>
-                            <p>Lightweight cushioning and durable support with a Phylon midsole</p>
-                            <div class="feat_text_block">
-                                <div class="price_box">
-                                    <span class="new_price">$90.00</span>
-                                    <span class="old_price">$170.00</span>
-                                </div>
-                                <a class="btn_1" href="listing-grid-1-full.html" role="button">Shop Now</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /featured -->
-
         <div class="bg_gray">
             <div class="container margin_30">
                 <div id="brands" class="owl-carousel owl-theme">
@@ -879,12 +646,12 @@
 <div id="toTop"></div><!-- Back to top button -->
 
 <!-- COMMON SCRIPTS -->
-<link rel="stylesheet" th:href="@{/admin/assets/compiled/js/common_scripts.min.js}">
-<link rel="stylesheet" th:href="@{/admin/assets/compiled/js/main.js}">
+<link rel="stylesheet" th:href="@{/user/assets/compiled/js/common_scripts.min.js}">
+<link rel="stylesheet" th:href="@{/user/assets/compiled/js/main.js}">
 
 <!-- SPECIFIC SCRIPTS -->
 <!--<link rel="stylesheet" th:href="@{/admin/assets/compiled/js/modernizr.js}">-->
-<link rel="stylesheet" th:href="@{/admin/assets/compiled/js/video_header.min.js}">
+<link rel="stylesheet" th:href="@{/user/assets/compiled/js/video_header.min.js}">
 <script>
     // Video Header
     HeaderVideo.init({

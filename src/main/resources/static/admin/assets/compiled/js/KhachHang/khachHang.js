@@ -1,52 +1,52 @@
-if (typeof jQuery==="undefined"){
-    console.error("jQuery is not loaded. Please include jQuery before running this script.")
-}else {
-    document.addEventListener("DOMContentLoaded", function () {
-        let citis = document.getElementById("city");
-        let districts = document.getElementById("district");
-        let wards = document.getElementById("ward");
 
-        axios.get("https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json")
-            .then(function (response) {
-                let
-                    data = response.data;
-                renderCity(data);
-            })
-            .catch(function (error) {
-                console.error("Lỗi tải dữ liệu:", error);
-            });
 
-        function renderCity(data) {
-            for (const x of data) {
-                citis.options[citis.options.length] = new Option(x.Name, x.Id);
+$(document).ready(function() {
+    $('#addKHForm').on('submit', function(event) {
+        event.preventDefault(); // Ngăn form submit mặc định
+
+        // Thu thập dữ liệu từ form
+        const formData = {
+            ten: $('#name').val(),
+            email: $('#email').val(),
+            soDienThoai: $('#soDienThoai').val(),
+            ngaySinh: $('#ngaySinh').val(),
+            gioiTinh: $('#gioiTinh').val(),
+            tinhThanhPho: $('#city').val(),
+            quanHuyen: $('#district').val(),
+            xaPhuong: $('#ward').val(),
+            soNhaNgoDuong: $('#diaChiCuThe').val()
+        };
+
+        // Gửi Ajax request
+        $.ajax({
+            url: '/khach-hang/add',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function (response) {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: response,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 500,
+                    timerProgressBar: true
+                }).then(() => {
+                    window.location.href = '/khach-hang/index';
+                });
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    toast: true,
+                    icon: 'error',
+                    title: xhr.responseText,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true
+                });
             }
-
-            citis.onchange = function () {
-                districts.length = 1;
-                wards.length = 1;
-
-                let selectedCity = data.find(n => n.Id === citis.value);
-                if (selectedCity) {
-                    for (const k of selectedCity.Districts) {
-                        districts.options[districts.options.length] = new Option(k.Name, k.Id);
-                    }
-                }
-            };
-
-            districts.onchange = function () {
-                wards.length = 1;
-
-                let selectedCity = data.find(n => n.Id === citis.value);
-                if (selectedCity) {
-                    let selectedDistrict = selectedCity.Districts.find(n => n.Id === districts.value);
-                    if (selectedDistrict) {
-                        for (const w of selectedDistrict.Wards) {
-                            wards.options[wards.options.length] = new Option(w.Name, w.Id);
-                        }
-                    }
-                }
-            };
-        }
-    }
-    );
-}
+        });
+    });
+});

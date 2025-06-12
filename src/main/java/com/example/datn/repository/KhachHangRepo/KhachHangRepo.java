@@ -1,29 +1,25 @@
 package com.example.datn.repository.KhachHangRepo;
 
 import com.example.datn.entity.KhachHang;
-import com.example.datn.entity.TaiKhoan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-import java.util.Optional;
 
-public interface KhachHangRepo extends JpaRepository<KhachHang,Long> {
+public interface KhachHangRepo extends JpaRepository<KhachHang, Long> {
+    @Query("SELECT kh FROM KhachHang kh " +
+            "WHERE (LOWER(kh.ma) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(kh.ten) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+//            "OR LOWER(kh.taiKhoan.email) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(kh.soDienThoai) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "AND (:trangThai IS NULL OR kh.trangThai = :trangThai) ")
+    Page<KhachHang> searchKhachHang(String keyword, Boolean trangThai, Pageable pageable);
 
-    Page<KhachHang> findByTenContaining(String ten,Pageable pageable);
-    Page<KhachHang> findByTrangThai(Boolean trangThai, Pageable pageable);
-    Page<KhachHang> findByTenContainingAndTrangThai(String ten, Boolean trangThai, Pageable pageable);
-    Page<KhachHang> findByTenContainingIgnoreCaseAndTrangThai(String search, Boolean trangThai, Pageable pageable);
-
-    // Tìm khách hàng theo tài khoản
-    Optional<KhachHang> findByTaiKhoan(TaiKhoan taiKhoan);
-
-    // Tìm khách hàng theo email (thông qua tài khoản)
-    Optional<KhachHang> findByTaiKhoan_Email(String email);
-
-    // Tìm khách hàng theo số điện thoại
-    Optional<KhachHang> findBySoDienThoai(String soDienThoai);
-
-    // Tìm khách hàng theo mã
-    Optional<KhachHang> findByMa(String ma);
+    @Query("SELECT kh FROM KhachHang kh " +
+            "WHERE (LOWER(kh.ma) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(kh.ten) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+//            "OR LOWER(kh.taiKhoan.email) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(kh.soDienThoai) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    Page<KhachHang> searchKhachHangKhongCoTrangThai(String keyword, Pageable pageable);
 }

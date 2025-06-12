@@ -9,6 +9,7 @@ public class HomeController {
     @GetMapping("/index")
     public String index(Model model) {
         model.addAttribute("message","helloo");
+        model.addAttribute("message","helloo");
         return "/admin/index";
     }
 }

@@ -3,6 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{/admin/fragments/head :: head}"></head>
 <body>
+<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/css/khachHang.css}">
 <!-- Site wrapper -->
 <div class="wrapper">
     <!-- Sidebar -->
@@ -18,55 +19,66 @@
             <section class="row">
                 <div class="card">
                     <div class="card-header">
-                        <form action="/nhan-vien/update" method="post" th:object="${nhanVien}">
+                        <form id="updateKHForm" th:object="${khachHang}">
                             <div class="container">
                                 <div class="row justify-content-around">
-                                    <div class="col-md-4">
-                                        Thông tin nhân viên
-                                        <hr>
-                                        <div class="mb-3">
-                                            Ảnh
-                                            <!--                      <img th:src="@{${nhanVien.anhUrl}}" alt="Ảnh nhân viên" width="100" />-->
-                                            <input type="image" name="anh" accept="image/*">
+                                    <div class="col-md-5 gap-3">
+                                        <div class="col floating-group">
+                                            <input type="text" class="form-control" placeholder="" aria-label="name"
+                                                   id="name" th:field="*{ten}">
+                                            <label for="name">Tên khách hàng</label>
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label"><span class="text-danger">*</span>Họ và tên</label>
-                                            <!--                      <input class="form-control" th:field="*{ten}" required>-->
+                                        <div class="col floating-group">
+                                            <input type="text" class="form-control" placeholder=""
+                                                   aria-label="email"
+                                                   id="email" th:field="*{taiKhoan.email}">
+                                            <label for="email">Email</label>
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label"><span class="text-danger">*</span>Email</label>
-                                            <!--                      <input class="form-control" th:field="*{email}" type="email" required>-->
+                                        <div class="col floating-group">
+                                            <input type="text" class="form-control" placeholder=""
+                                                   aria-label="soDienThoai"
+                                                   id="soDienThoai" th:field="*{soDienThoai}">
+                                            <label for="soDienThoai">Số điện thoại</label>
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label"><span class="text-danger">*</span>Số Điện Thoại</label>
-                                            <!--                      <input class="form-control" th:field="*{soDienThoai}" type="tel" required>-->
+                                        <div class="col floating-group">
+                                            <input type="date" class="form-control" placeholder=""
+                                                   aria-label="ngaySinh"
+                                                   id="ngaySinh" th:field="*{ngaySinh}">
+                                            <label for="ngaySinh">mm/dd/yyyy</label>
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label"><span class="text-danger">*</span>Ngày sinh</label>
-                                            <!--                      <input class="form-control" th:field="*{ngaySinh}" type="date" required>-->
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label"><span class="text-danger">*</span>Giới Tính</label>
-                                            <input type="radio"  name="gioiTinh" th:value="true"> Nam
-                                            <input type="radio"  name="gioiTinh" th:value="false"> Nữ
+                                        <div class="col">
+                                            <label for="gioiTinh" class="form-label">Giới tính</label>
+                                            <select class="form-select" id="gioiTinh" name="gioiTinh" required th:field="*{gioiTinh}">
+                                                <option value="Nam">Nam</option>
+                                                <option value="Nữ">Nữ</option>
+                                                <option value="Khác">Khác</option>
+                                            </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-8">
-                                        Danh sách địa chỉ
-                                        <hr>
-<!--                                                            <div th:each="diaChi : ${khachHang.diaChi}">-->
-<!--                                                              <p th:text="${diaChi.tenDiaChi}"></p>-->
-<!--                                                            </div>-->
+
+                                    <div class="col-md-7">
+                                        <div th:each="diaChi, stat : ${listDiaChi}">
+                                            <form>
+                                                <div>
+                                                    <input type="hidden" th:id="'tinhThanhPho' + ${stat.index}"
+                                                           th:value="${diaChi.tinh}"/>
+                                                    <input type="hidden" th:id="'quanHuyen' + ${stat.index}"
+                                                           th:value="${diaChi.huyen}"/>
+                                                    <input type="hidden" th:id="'xaPhuong' + ${stat.index}"
+                                                           th:value="${diaChi.xa}"/>
+
+                                                    <h6 th:id="'city' + ${stat.index}">Tỉnh: </h6>
+                                                    <h6 th:id="'district' + ${stat.index}">Quận / Huyện: </h6>
+                                                    <h6 th:id="'ward' + ${stat.index}">Xã / Phường: </h6>
+                                                    <h6 th:text="${diaChi.soNhaNgoDuong}">Chi tiết địa chỉ</h6>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-body">
-                                <button type="submit" class="btn btn-primary">Cập nhật</button>
-                                <a th:href="@{/khach-hang/index}" class="btn btn-secondary m-1">
-                                    <i class="bi bi-arrow-left"></i> Hủy
-                                </a>
-                            </div>
                         </form>
+
                     </div>
                     <div class="card-body">
                     </div>
@@ -82,6 +94,9 @@
 </div>
 <div>
     <script th:replace="/admin/fragments/script :: script"></script>
+
+
+    <script th:src="@{/admin/assets/compiled/js/diaChi.js}"></script>
 </div>
 </body>
 </html>
