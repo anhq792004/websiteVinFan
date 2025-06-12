@@ -4,21 +4,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/vinfan")
+@RequestMapping("/fanTech")
 public class giaoDienController {
 
     @GetMapping("/index")
     public String index() {
-        return "admin/web_nguoiDung/index";
+        return "user/index";
     }
 
     @GetMapping("/detail")
     public String detail() {
-        return "admin/web_nguoiDung/detail_web";
+        return "user/detail";
     }
 
     @GetMapping("/cart")
     public String cart() {
-        return "admin/web_nguoiDung/cart";
+        return "user/cart";
     }
 }
