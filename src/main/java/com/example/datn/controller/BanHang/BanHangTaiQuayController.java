@@ -1,9 +1,6 @@
 package com.example.datn.controller.BanHang;
 
-import com.example.datn.dto.request.AddKHToHDCTRequest;
-import com.example.datn.dto.request.AddSPToHDCTRequest;
-import com.example.datn.dto.request.ThanhToanRequest;
-import com.example.datn.dto.request.UpdateSoLuongRequest;
+import com.example.datn.dto.request.*;
 import com.example.datn.entity.HoaDon.HoaDon;
 import com.example.datn.entity.HoaDon.HoaDonChiTiet;
 import com.example.datn.entity.KhachHang;
@@ -188,6 +185,18 @@ public class BanHangTaiQuayController {
         banHangService.updateTongTienHoaDon(request.getIdHD());
 
         return ResponseEntity.ok("Cập nhật thành công");
+    }
+
+    @PostMapping("/update-trang-thai")
+    @ResponseBody
+    public ResponseEntity<String> updateTrangThai(LoaiHoaDonRequest request) {
+        try {
+            banHangService.updateLoaiHoaDon(request);
+            return ResponseEntity.ok("Cập nhật  thành công");
+        } catch (Exception e) {
+            e.printStackTrace(); // In ra lỗi cho bạn xem
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi cập nhật ");
+        }
     }
 
     @PostMapping("/thanh-toan")

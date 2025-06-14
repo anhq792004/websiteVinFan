@@ -145,78 +145,39 @@
                                     </button>
                                 </div>
                             </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex gap-3">
+                                    <strong>Tên khách hàng:</strong>
+                                    <span th:text="${khachHang?.ten ?: 'Khách Lẻ'}"></span>
+                                </div>
+                            </div>
+                            <div class="gap-3 d-flex justify-content-between">
+                                <div class="col floating-group">
+                                    <input type="text" class="form-control" placeholder="" aria-label="name"
+                                           id="name" th:value="${khachHang?.ten ?: ''}">
+                                    <label for="name">Tên</label>
+                                </div>
+                                <div class="col floating-group">
+                                    <input type="text" class="form-control" placeholder="" aria-label="sdt"
+                                           id="sdt" th:value="${khachHang?.soDienThoai ?: ''}">
+                                    <label for="sdt">Số điện thoại</label>
+                                </div>
+                            </div>
                         </div>
                         <hr>
                         <div class="row">
-                            <div class="mb-3 col-md-6">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <div class="d-flex gap-3">
-                                        <strong>Tên khách hàng:</strong>
-                                        <span th:text="${khachHang?.ten ?: 'Khách Lẻ'}"></span>
-                                    </div>
-                                    <div th:if="${khachHang != null}" style="visibility: hidden;">
-                                        <button class="btn btn-outline-warning btn-sm" id="btnDiaChi">Chọn địa chỉ
-                                        </button>
-                                    </div>
-                                </div>
-                                <div id="shippingForm" style="visibility: hidden;">
-                                    <div class="gap-3 d-flex justify-content-between">
-                                        <div class="col floating-group">
-                                            <input type="text" class="form-control" placeholder="" aria-label="name"
-                                                   id="name" th:value="${khachHang?.ten ?: ''}">
-                                            <label for="name">Tên</label>
-                                        </div>
-                                        <div class="col floating-group">
-                                            <input type="text" class="form-control" placeholder="" aria-label="sdt"
-                                                   id="sdt" th:value="${khachHang?.soDienThoai ?: ''}">
-                                            <label for="sdt">Số điện thoại</label>
-                                        </div>
-                                    </div>
-                                    <div class="gap-3 d-flex justify-content-between">
-                                        <div class="col floating-group">
-                                            <select class="form-control" placeholder="" id="city" name="tinhThanhPho">
-                                                <option value="" selected>Chọn tỉnh thành</option>
-                                            </select>
-                                            <!--                                            <label for="city">Tỉnh/Thành phố</label>-->
-                                        </div>
-                                        <div class="col floating-group">
-                                            <select class="form-control" placeholder="" id="district" name="quanHuyen">
-                                                <option value="" selected>Chọn quận huyện</option>
-                                            </select>
-                                            <!--                                            <label for="district">Quận/Huyện</label>-->
-                                        </div>
-                                        <div class="col floating-group">
-                                            <select class="form-control" placeholder="" id="ward" name="xaPhuong">
-                                                <option value="" selected>Chọn phường xã</option>
-                                            </select>
-                                            <!--                                            <label for="ward">Xã/Phường</label>-->
-                                        </div>
-                                    </div>
-                                    <div class="gap-3 d-flex justify-content-between">
-                                        <div class="col floating-group">
-                                            <input type="text" class="form-control" placeholder="" aria-label="diaChi"
-                                                   id="diaChi">
-                                            <label for="diaChi">Địa chỉ cụ thể</label>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <p>Phí vận chuyển: </p>
-                                        <div class="col-3 floating-group">
-                                            <input type="text" class="form-control" placeholder="" aria-label="vc"
-                                                   id="vc">
-                                            <label for="vc">Phí vận chuyển</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <!-- Giao Hàng -->
-                                <div class="form-section mb-3 d-flex align-items-center">
-                                    <div class="form-check form-switch">
-                                        <label class="form-check-label" for="toggleForm">Giao hàng</label>
-                                        <input class="form-check-input" type="checkbox" role="switch" id="toggleForm">
-                                    </div>
-                                </div>
+                                <!--                                <div class="form-section mb-3 d-flex align-items-center">-->
+                                <!--                                    <div class="form-check form-switch">-->
+                                <!--                                        <label class="form-check-label">Giao hàng</label>-->
+                                <!--                                        <input-->
+                                <!--                                                type="checkbox"-->
+                                <!--                                                class="form-check-input toggle-trang-thai"-->
+                                <!--                                                th:data-id-hd="${idHD}"-->
+                                <!--                                                th:checked="${hoaDon.loaiHoaDon == false}">-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
                                 <div class="total-section">
                                     <!-- Tiền hàng (tổng tiền thanh toán) -->
                                     <div class="d-flex justify-content-between">

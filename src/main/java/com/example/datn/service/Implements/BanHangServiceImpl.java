@@ -1,5 +1,6 @@
 package com.example.datn.service.Implements;
 
+import com.example.datn.dto.request.LoaiHoaDonRequest;
 import com.example.datn.entity.HoaDon.HoaDon;
 import com.example.datn.entity.HoaDon.HoaDonChiTiet;
 import com.example.datn.entity.HoaDon.LichSuHoaDon;
@@ -112,6 +113,23 @@ public class BanHangServiceImpl implements BanHangService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn với ID: " + idHD));
         hoaDon.setTongTien(tongTien);
         hoaDonRepo.save(hoaDon);
+    }
+
+    @Override
+    public void updateLoaiHoaDon(LoaiHoaDonRequest request) {
+        HoaDon hoaDon = hoaDonRepo.findById(request.getId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn"));
+        hoaDon.setLoaiHoaDon(request.getLoaiHoaDon());
+        hoaDon.setTrangThai(hoaDonService.getTrangThaiHoaDon().getChoXacNhan());
+        hoaDonRepo.save(hoaDon);
+
+        LichSuHoaDon lichSuHoaDon = lichSuHoaDonRepo.findByHoaDonId(hoaDon.getId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch sử hóa đơn"));
+        lichSuHoaDon.setTrangThai(hoaDonService.getTrangThaiHoaDon().getChoXacNhan());
+        lichSuHoaDon.setNgayTao(LocalDateTime.now());
+        lichSuHoaDon.setMoTa("Admin đã xác nhận đơn hàng");
+        lichSuHoaDonRepo.save(lichSuHoaDon);
+
     }
 
 }

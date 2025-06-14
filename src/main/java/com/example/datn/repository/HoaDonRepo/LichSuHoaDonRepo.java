@@ -7,9 +7,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LichSuHoaDonRepo extends JpaRepository<LichSuHoaDon,Long> {
     @Query("select l from LichSuHoaDon l where l.hoaDon.id=:idHoaDon")
     List<LichSuHoaDon> findLichSuHoaDonByIdHoaDon(@Param("idHoaDon") long idHoaDon);
+
+    Optional<LichSuHoaDon> findByHoaDonId(Long hoaDonId);
+
 }
