@@ -17,7 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,21 +43,26 @@ public class SecurityConfig {
                                 "/access-denied").permitAll()
 
                         // PHÂN QUYỀN HÓA ĐƠN - CHỈ ADMIN MỚI TRUY CẬP ĐƯỢC
-                        .requestMatchers("admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         // Các trang admin khác - Admin và Employee đều truy cập được
-                        .requestMatchers("phieu-giam-gia/**","khach-hang/**").hasAnyRole("ADMIN", "EMPLOYE")
+                        .requestMatchers("/hoa-don/**","/khach-hang/**","/sale/**").hasAnyRole("ADMIN", "EMPLOYE")
 
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/dashboard")
+                        .successHandler((request, response, authentication) -> {
+                            // Redirect đến trang success handler để xử lý session
+                            response.sendRedirect("/login-success");
+                        })
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true) // Xóa session khi logout
+                        .clearAuthentication(true)
                         .permitAll()
                 )
                 // Xử lý khi không có quyền truy cập
