@@ -153,6 +153,47 @@ $(".btn-xoa-sanPham").click(function () {
         }
     });
 });
+//update trang thai
+$(document).ready(function () {
+    $(".toggle-trang-thai").change(function () {
+        const hoaDonId = $(this).attr("data-id-hd"); // hoặc .data("id-hd")
+        const loaiHoaDon = $(this).is(":checked") ? false : true;
+
+        $.ajax({
+            url: '/sale/update-trang-thai',
+            type: 'POST',
+            data:{
+                id: hoaDonId,
+                loaiHoaDon: loaiHoaDon
+            },
+            success: function (response) {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: response,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true
+                });
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    toast: true,
+                    icon: 'error',
+                    title: xhr.responseText,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                }).then(() => location.reload());
+            }
+        });
+    });
+});
+
+
+
 
 $(".quantity-btn").click(function () {
     const idSP = $(this).closest("form").data("idsp");  // lấy từ data-idsp
@@ -788,22 +829,22 @@ function formatCurrency() {
     }
 }
 
-// button ẩn form
-document.addEventListener('DOMContentLoaded', function () {
-    const toggle = document.getElementById('toggleForm');
-    const form = document.getElementById('shippingForm');
-    const btn = document.getElementById('btnDiaChi');
-
-    toggle.addEventListener('change', function () {
-        if (toggle.checked) {
-            form.style.visibility = 'visible';
-            btn.style.visibility = 'visible';
-        } else {
-            form.style.visibility = 'hidden';
-            btn.style.visibility = 'hidden';
-        }
-    });
-});
+// // button ẩn form
+// document.addEventListener('DOMContentLoaded', function () {
+//     const toggle = document.getElementById('toggleForm');
+//     const form = document.getElementById('shippingForm');
+//     const btn = document.getElementById('btnDiaChi');
+//
+//     toggle.addEventListener('change', function () {
+//         if (toggle.checked) {
+//             form.style.visibility = 'visible';
+//             btn.style.visibility = 'visible';
+//         } else {
+//             form.style.visibility = 'hidden';
+//             btn.style.visibility = 'hidden';
+//         }
+//     });
+// });
 
 // Thêm code xử lý cho nút thêm sản phẩm
 $(document).ready(function() {
@@ -1085,22 +1126,22 @@ function updateDiscountDisplay() {
     console.log("Tổng tiền:", tongTien, "Giảm giá:", giaTriGiamGia, "Tổng sau giảm:", tongTienSauGiam);
 }
 
-// button ẩn form
-document.addEventListener('DOMContentLoaded', function () {
-    const toggle = document.getElementById('toggleForm');
-    const form = document.getElementById('shippingForm');
-    const btn = document.getElementById('btnDiaChi');
-
-    toggle.addEventListener('change', function () {
-        if (toggle.checked) {
-            form.style.visibility = 'visible';
-            btn.style.visibility = 'visible';
-        } else {
-            form.style.visibility = 'hidden';
-            btn.style.visibility = 'hidden';
-        }
-    });
-});
+// // button ẩn form
+// document.addEventListener('DOMContentLoaded', function () {
+//     const toggle = document.getElementById('toggleForm');
+//     const form = document.getElementById('shippingForm');
+//     const btn = document.getElementById('btnDiaChi');
+//
+//     toggle.addEventListener('change', function () {
+//         if (toggle.checked) {
+//             form.style.visibility = 'visible';
+//             btn.style.visibility = 'visible';
+//         } else {
+//             form.style.visibility = 'hidden';
+//             btn.style.visibility = 'hidden';
+//         }
+//     });
+// });
 
 // Chức năng chọn địa chỉ từ danh sách tỉnh thành Việt Nam
 document.addEventListener("DOMContentLoaded", function () {

@@ -5,10 +5,10 @@ $(document).ready(function () {
         btn = $(this);
         hoaDonId = $(this).closest("form").data("id"); // Lấy ID hóa đơn
 // Vô hiệu hóa nút
-        btn.prop("disabled", true);
+//         btn.prop("disabled", true);
         Swal.fire({
-            title: "Hủy hóa đơn?",
-            text: "Bạn có chắc chắn muốn hủy hóa đơn này?",
+            title: "Xác nhận hóa đơn",
+            text: "Vui lòng kiểm tra kĩ trước khi xác nhận hóa đơn",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
@@ -72,7 +72,6 @@ $(document).ready(function () {
             error: function () {
                 Swal.fire("Lỗi!", "Lỗi khi giao hóa đơn", "error");
                 btn.prop("disabled", false);
-
             }
         });
     });

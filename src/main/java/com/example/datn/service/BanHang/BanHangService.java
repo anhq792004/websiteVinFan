@@ -1,5 +1,6 @@
 package com.example.datn.service.BanHang;
 
+import com.example.datn.dto.request.LoaiHoaDonRequest;
 import com.example.datn.entity.HoaDon.HoaDon;
 import com.example.datn.entity.KhachHang;
 
@@ -15,5 +16,7 @@ public interface BanHangService {
     void thanhToan(Long idHD);
 
     void updateTongTienHoaDon(Long idHD);
+
+    void updateLoaiHoaDon(LoaiHoaDonRequest request);
 
 }
