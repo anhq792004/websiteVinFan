@@ -30,9 +30,6 @@
             width: 100%;
             margin-top: 15px;
         }
-        .alert {
-            margin-bottom: 15px;
-        }
         .remember-me {
             display: flex;
             align-items: center;
@@ -41,22 +38,37 @@
         .remember-me input {
             margin-right: 5px;
         }
+        /* Ẩn các alert mặc định vì sẽ dùng SweetAlert2 */
+        .alert {
+            display: none;
+        }
+
+        /* Đảm bảo toast hiển thị ở góc phải */
+        .toast-container {
+            z-index: 9999 !important;
+        }
+
+        .swal2-container.swal2-top-end {
+            top: 20px !important;
+            right: 20px !important;
+        }
     </style>
 </head>
 <body>
 <div class="login-form">
     <h2 class="form-title">Đăng nhập VinFan</h2>
 
-    <div th:if="${param.error}" class="alert alert-danger">
+    <!-- Các thông báo ẩn để JavaScript đọc -->
+    <div th:if="${param.error}" class="alert alert-danger" data-error="true">
         Email hoặc mật khẩu không đúng.
     </div>
 
-    <div th:if="${param.logout}" class="alert alert-success">
+    <div th:if="${param.logout}" class="alert alert-success" data-logout="true">
         Bạn đã đăng xuất thành công.
     </div>
 
     <!-- Thông báo đăng ký thành công từ thuộc tính Model -->
-    <div th:if="${registrationSuccess}" class="alert alert-success" th:text="${registrationSuccess}">
+    <div th:if="${registrationSuccess}" class="alert alert-success" data-success="true" th:text="${registrationSuccess}">
     </div>
 
     <form id="loginForm" th:action="@{/login}" method="post">
@@ -97,9 +109,17 @@
             showConfirmButton: false,
             timer: 3000,
             timerProgressBar: true,
+            width: '320px',
+            padding: '16px',
+            background: '#fff',
+            customClass: {
+                container: 'toast-container'
+            },
             didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                toast.style.marginTop = '20px';
+                toast.style.marginRight = '20px';
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
             }
         });
 
@@ -108,6 +128,55 @@
             title: title
         });
     }
+
+    // Hàm hiển thị thông báo toast với text dài hơn
+    function showToastWithText(icon, title, text) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            width: '380px',
+            padding: '16px',
+            background: '#fff',
+            customClass: {
+                container: 'toast-container'
+            },
+            didOpen: (toast) => {
+                toast.style.marginTop = '20px';
+                toast.style.marginRight = '20px';
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+
+        Toast.fire({
+            icon: icon,
+            title: title,
+            text: text
+        });
+    }
+
+    // Kiểm tra và hiển thị thông báo từ server khi trang load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Kiểm tra thông báo lỗi đăng nhập
+        if (document.querySelector('[data-error="true"]')) {
+            showToastWithText('error', 'Đăng nhập thất bại', 'Email hoặc mật khẩu không đúng');
+        }
+
+        // Kiểm tra thông báo đăng xuất thành công
+        if (document.querySelector('[data-logout="true"]')) {
+            showToast('success', 'Đăng xuất thành công');
+        }
+
+        // Kiểm tra thông báo đăng ký thành công
+        const successElement = document.querySelector('[data-success="true"]');
+        if (successElement) {
+            const successMessage = successElement.textContent.trim();
+            showToast('success', successMessage);
+        }
+    });
 
     // Bắt sự kiện submit form
     document.getElementById('loginForm').addEventListener('submit', function(event) {
@@ -120,25 +189,77 @@
 
         // Kiểm tra email
         if (email === '') {
-            showToast('error', 'Vui lòng nhập email');
+            showToast('warning', 'Vui lòng nhập email');
+            document.getElementById('username').focus();
             return;
         }
 
         // Kiểm tra định dạng email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            showToast('error', 'Email không hợp lệ');
+            showToastWithText('error', 'Email không hợp lệ', 'Vui lòng nhập đúng định dạng email');
+            document.getElementById('username').focus();
             return;
         }
 
         // Kiểm tra mật khẩu
         if (password === '') {
-            showToast('error', 'Vui lòng nhập mật khẩu');
+            showToast('warning', 'Vui lòng nhập mật khẩu');
+            document.getElementById('password').focus();
             return;
         }
 
-        // Nếu tất cả đều hợp lệ, submit form
-        this.submit();
+        // // Kiểm tra độ dài mật khẩu tối thiểu
+        // if (password.length < 6) {
+        //     showToastWithText('error', 'Mật khẩu quá ngắn', 'Mật khẩu phải có ít nhất 6 ký tự');
+        //     document.getElementById('password').focus();
+        //     return;
+        // }
+
+        // Hiển thị loading toast
+        showToast('info', 'Đang đăng nhập...');
+
+        // Nếu tất cả đều hợp lệ, submit form sau 500ms
+        setTimeout(() => {
+            this.submit();
+        }, 500);
+    });
+
+    // Thêm validation real-time cho các input
+    document.getElementById('username').addEventListener('blur', function() {
+        const email = this.value.trim();
+        if (email !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showToast('error', 'Email không đúng định dạng');
+            this.focus();
+        }
+    });
+
+    // document.getElementById('password').addEventListener('blur', function() {
+    //     const password = this.value.trim();
+    //     if (password !== '' && password.length < 6) {
+    //         showToast('warning', 'Mật khẩu cần ít nhất 6 ký tự');
+    //     }
+    // });
+
+    // Xử lý sự kiện khi nhấn Enter
+    document.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+        }
+    });
+
+    // Thêm hiệu ứng focus cho input
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.style.borderColor = '#007bff';
+            this.style.boxShadow = '0 0 0 0.2rem rgba(0, 123, 255, 0.25)';
+        });
+
+        input.addEventListener('blur', function() {
+            this.style.borderColor = '#ced4da';
+            this.style.boxShadow = 'none';
+        });
     });
 </script>
 </body>

@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TaiKhoanRepo extends JpaRepository<TaiKhoan,Long> {
     TaiKhoan findByEmail(String email);
-    TaiKhoan findByResetToken(String resetToken);
+
+    boolean existsByEmail(String email);
 }

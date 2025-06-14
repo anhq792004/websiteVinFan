@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/phieu-giam-gia")
+@RequestMapping("admin/phieu-giam-gia")
 public class PhieuGiamGiaController {
     @Autowired
     private PhieuGiamGiaRepo phieuGiamGiaRepo;

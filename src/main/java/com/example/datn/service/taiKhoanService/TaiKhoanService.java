@@ -38,46 +38,29 @@ public class TaiKhoanService {
     }
 
     public void dangKyTaiKhoan(DangKyDto dangKyDto) {
-        // Tạo tài khoản
         TaiKhoan taiKhoan = new TaiKhoan();
-
-        // Tạo mã ngẫu nhiên cho tài khoản
-        String maTaiKhoan = "TK" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-        taiKhoan.setMa(maTaiKhoan);
+        taiKhoan.setMa("TK" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         taiKhoan.setEmail(dangKyDto.getEmail());
-
-        // Mã hóa mật khẩu
         taiKhoan.setMatKhau(passwordEncoder.encode(dangKyDto.getMatKhau()));
-
-        // Thời gian tạo tài khoản
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         taiKhoan.setNgayTao(new Date());
-
-        // Tìm chức vụ theo tên vị trí "User"
-        ChucVu chucVuUser = chucVuRepository.findByViTri("User")
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy chức vụ mặc định 'User'"));
-
-        taiKhoan.setChucVu(chucVuUser);
         taiKhoan.setTrangThai(true);
 
-        // Lưu tài khoản trước
+        ChucVu chucVuUser = chucVuRepository.findByViTri("User")
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy chức vụ mặc định 'User'"));
+        taiKhoan.setChucVu(chucVuUser);
+
         TaiKhoan savedTaiKhoan = taiKhoanRepository.save(taiKhoan);
 
-        // Tạo khách hàng
+        // Chỉ tạo bản ghi khách hàng với thông tin cơ bản
         KhachHang khachHang = new KhachHang();
-        String maKhachHang = "KH" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-        khachHang.setMa(maKhachHang);
-        khachHang.setTen(dangKyDto.getTen());
-        khachHang.setGioiTinh(dangKyDto.getGioiTinh());
-        khachHang.setSoDienThoai(dangKyDto.getSoDienThoai());
-        khachHang.setNgaySinh(dangKyDto.getNgaySinh());
+        khachHang.setMa("KH" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         khachHang.setNgayTao(new Date());
         khachHang.setTrangThai(true);
         khachHang.setTaiKhoan(savedTaiKhoan);
 
-        // Lưu khách hàng
         khachHangRepository.save(khachHang);
     }
+
 
 
     /**

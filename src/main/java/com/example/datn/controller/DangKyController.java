@@ -1,6 +1,7 @@
 package com.example.datn.controller;
 
 import com.example.datn.dto.DangKyDto;
+import com.example.datn.repository.TaiKhoanRepo;
 import com.example.datn.service.taiKhoanService.TaiKhoanService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class DangKyController {
     @Autowired
     private TaiKhoanService taiKhoanService;
+    @Autowired
+    private TaiKhoanRepo taiKhoanRepo;
 
     @GetMapping("/register")
     public String showDangKyForm(Model model) {
@@ -24,34 +27,25 @@ public class DangKyController {
     }
 
     @PostMapping("/register")
-    public String dangKy(@Valid @ModelAttribute("dangKyDto") DangKyDto dangKyDto,
-                         BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+    public String xuLyDangKy(@Valid @ModelAttribute("dangKyDto") DangKyDto dangKyDto,
+                             BindingResult result,
+                             Model model) {
 
-        // Kiểm tra lỗi validation
-        if (result.hasErrors()) {
-            return "admin/user/register";
-        }
-
-        // Kiểm tra xem mật khẩu có khớp không
         if (!dangKyDto.getMatKhau().equals(dangKyDto.getXacNhanMatKhau())) {
             model.addAttribute("passwordError", "Mật khẩu xác nhận không khớp");
-            return "admin/user/register";
+            return "register";
         }
 
-        // Kiểm tra xem email đã tồn tại chưa
-        if (taiKhoanService.emailDaTonTai(dangKyDto.getEmail())) {
-            model.addAttribute("emailError", "Email đã được đăng ký");
-            return "admin/user/register";
+        if (taiKhoanRepo.existsByEmail(dangKyDto.getEmail())) {
+            model.addAttribute("emailError", "Email đã tồn tại");
+            return "register";
         }
 
-        // Tạo tài khoản mới
+        if (result.hasErrors()) {
+            return "register";
+        }
+
         taiKhoanService.dangKyTaiKhoan(dangKyDto);
-
-        // Truyền thông báo thành công qua RedirectAttributes
-        redirectAttributes.addFlashAttribute("registrationSuccess",
-                "Đăng ký tài khoản thành công! Vui lòng đăng nhập.");
-
-        // Chuyển hướng đến trang đăng nhập
-        return "redirect:/login";
+        return "redirect:/login?success";
     }
 }
