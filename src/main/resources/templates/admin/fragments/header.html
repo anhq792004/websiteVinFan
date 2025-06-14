@@ -1,7 +1,78 @@
 <div class="header mb-3" th:fragment="header" xmlns:th="http://www.thymeleaf.org">
+    <div class="d-flex justify-content-between align-items-center">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
 
-    <a href="#" class="burger-btn d-block d-xl-none">
-        <i class="bi bi-justify fs-3">
-        </i>
-    </a>
+        <!-- Debug info (có thể xóa sau khi test xong) -->
+        <!--
+        <div class="debug-info" style="font-size: 12px; color: #666;">
+            <span>Debug: isLoggedIn = </span><span th:text="${isLoggedIn}">false</span>
+            <span> | currentUser = </span><span th:text="${currentUser != null ? currentUser.email : 'null'}">null</span>
+        </div>
+        -->
+
+        <!-- Thông tin người dùng -->
+        <div class="user-info d-flex align-items-center" th:if="${isLoggedIn and currentUser != null}">
+            <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center"
+                        type="button"
+                        id="userDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    <i class="fas fa-user-circle me-2"></i>
+                    <span th:text="${currentUser.email}">Email người dùng</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li>
+                        <h6 class="dropdown-header">
+                            <i class="fas fa-user me-2"></i>
+                            <span th:text="${currentUser.ma != null ? currentUser.ma : 'Chưa có mã'}">Mã TK</span>
+                        </h6>
+                    </li>
+                    <li>
+                        <span class="dropdown-item-text">
+                            <i class="fas fa-envelope me-2"></i>
+                            <span th:text="${currentUser.email}">Email</span>
+                        </span>
+                    </li>
+                    <li th:if="${currentUser.chucVu != null}">
+                        <span class="dropdown-item-text">
+                            <i class="fas fa-id-badge me-2"></i>
+                            <span th:text="${currentUser.chucVu.viTri != null ? currentUser.chucVu.viTri : 'Chưa có chức vụ'}">Chức vụ</span>
+                        </span>
+                    </li>
+                    <li th:if="${currentUser.chucVu != null && currentUser.chucVu.moTa != null}">
+                        <span class="dropdown-item-text text-muted small">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <span th:text="${currentUser.chucVu.moTa}">Mô tả</span>
+                        </span>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item" href="/profile">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Thông tin cá nhân
+                        </a>
+                    </li>
+                    <li>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="dropdown-item" style="border: none; background: none; width: 100%; text-align: left;">
+                                <i class="fas fa-sign-out-alt me-2"></i>
+                                Đăng xuất
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Nút đăng nhập khi chưa đăng nhập -->
+        <div class="login-btn" th:if="${!isLoggedIn or currentUser == null}">
+            <a href="/login" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt me-2"></i>
+                Đăng nhập
+            </a>
+        </div>
+    </div>
 </div>
