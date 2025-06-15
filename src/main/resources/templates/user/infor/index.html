@@ -39,24 +39,50 @@
     <!-- /header -->
 
     <main>
-        <div class="header-video">
-            <div id="hero_video">
-                <div class="opacity-mask d-flex align-items-center" data-opacity-mask="rgba(0, 0, 0, 0.5)">
-                    <div class="container">
-                        <div class="row justify-content-center justify-content-md-start">
-                            <div class="col-lg-6">
-                                <div class="slide-text white">
-                                    <h3>Armor Air<br>Max 720 Sage Low</h3>
-                                    <p>Limited items available at this price</p>
-                                    <a class="btn_1" href="#0" role="button">Shop Now</a>
-                                </div>
+        <div class="card-header">
+            <form id="updateKHForm">
+                <div class="container">
+                    <div class="row justify-content-around">
+                        <div class="col-md-5 gap-3">
+                            <div class="col floating-group">
+                                <input type="text" class="form-control" placeholder="" aria-label="name"
+                                       id="name" >
+                                <label for="name">Tên khách hàng</label>
+                            </div>
+                            <div class="col floating-group">
+                                <input type="text" class="form-control" placeholder=""
+                                       aria-label="email"
+                                       id="email" th:value="${currentUser.email}">
+                                <label for="email">Email</label>
+                            </div>
+                            <div class="col floating-group">
+                                <input type="text" class="form-control" placeholder=""
+                                       aria-label="soDienThoai"
+                                       id="soDienThoai" >
+                                <label for="soDienThoai" >Số điện thoại</label>
+                            </div>
+                            <div class="col floating-group">
+                                <input type="date" class="form-control" placeholder=""
+                                       aria-label="ngaySinh"
+                                       id="ngaySinh">
+                                <label for="ngaySinh">mm/dd/yyyy</label>
+                            </div>
+                            <div class="col">
+                                <label for="gioiTinh" class="form-label">Giới tính</label>
+                                <select class="form-select" id="gioiTinh" name="gioiTinh" required >
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
                             </div>
                         </div>
+
                     </div>
                 </div>
-            </div>
-            <img th:src="@{user/assets/images/video_fix.png}" alt="" class="header-video--media" data-video-src="video/intro" data-teaser-source="video/intro" data-provider="" data-video-width="1920" data-video-height="960">
+            </form>
+
         </div>
+
         <!-- /header-video -->
     </main>
     <!-- /main -->
