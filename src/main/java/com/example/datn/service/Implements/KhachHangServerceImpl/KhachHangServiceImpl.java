@@ -85,4 +85,19 @@ public class KhachHangServiceImpl implements KhachHangService {
         return String.format("KH%03d", count + 1); // VD: HD001, HD002
     }
 
+    @Override
+    public KhachHang findByTaiKhoan(TaiKhoan taiKhoan) {
+        return khachHangRepo.findByTaiKhoan(taiKhoan);
+    }
+
+    @Override
+    public KhachHang save(KhachHang khachHang) {
+        return khachHangRepo.save(khachHang);
+    }
+
+    @Override
+    public long count() {
+        return khachHangRepo.count();
+    }
+
 }

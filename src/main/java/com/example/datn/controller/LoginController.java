@@ -37,29 +37,24 @@ public class LoginController {
             try {
                 TaiKhoan taiKhoan = taiKhoanRepo.findByEmail(principal.getName());
                 if (taiKhoan != null) {
-                    // Lưu thông tin user vào session
-                    session.setAttribute("loggedUser", taiKhoan);
+                    // ✅ Đồng bộ tên thuộc tính session
+                    session.setAttribute("currentUser", taiKhoan); // ← dùng đúng tên này để khớp với ProfileController
                     session.setAttribute("isLoggedIn", true);
 
                     String viTri = taiKhoan.getChucVu() != null ? taiKhoan.getChucVu().getViTri() : "";
 
-                    // Debug log
                     System.out.println("Login success: " + taiKhoan.getEmail() + ", Role: " + viTri);
 
-                    // Chuyển hướng theo chức vụ
                     if ("ADMIN".equalsIgnoreCase(viTri) || "EMPLOYE".equalsIgnoreCase(viTri)) {
-                        return "redirect:/sale/index"; // trang cho admin/employee
+                        return "redirect:/sale/index";
                     } else {
-                        return "redirect:/fanTech/index";  // trang cho người dùng thường
+                        return "redirect:/fanTech/index";
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
-        // Mặc định fallback
         return "redirect:/login?error";
     }
-
 }
