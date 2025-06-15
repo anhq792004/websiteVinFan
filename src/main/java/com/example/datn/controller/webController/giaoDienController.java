@@ -21,4 +21,9 @@ public class giaoDienController {
     public String cart() {
         return "user/cart";
     }
+
+    @GetMapping("/infor")
+    public String infor() {
+        return "user/infor/index";
+    }
 }

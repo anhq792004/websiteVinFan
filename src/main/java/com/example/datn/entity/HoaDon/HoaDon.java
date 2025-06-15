@@ -61,7 +61,7 @@ public class HoaDon {
     String ghiChu;
 
     @Column(name = "loai_hoa_don")
-    Boolean loaiHoaDon = true;
+    Boolean loaiHoaDon;
 
     @Column(name = "ngay_tao")
     LocalDateTime ngayTao;

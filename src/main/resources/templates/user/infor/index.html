@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{/admin/fragments/head :: head}">
+</head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="Ansonika">
+<title>Template-Home</title>
+
+<!-- Favicons-->
+<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
+<link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
+<link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="img/apple-touch-icon-114x114-precomposed.png">
+<link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="img/apple-touch-icon-144x144-precomposed.png">
+
+<!-- GOOGLE WEB FONT -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<!-- BASE CSS -->
+<link rel="stylesheet" th:href="@{/user/assets/compiled/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/user/assets/compiled/css/style.css}">
+
+<!-- SPECIFIC CSS -->
+<link rel="stylesheet" th:href="@{/user/assets/compiled/css/home_1.css}">
+
+<!-- YOUR CUSTOM CSS -->
+<link href="css/custom.css" rel="stylesheet">
+
+<body>
+
+<div id="page">
+    <header th:replace="/user/fragments/header :: header"></header>
+
+    <!-- /header -->
+
+    <main>
+        <div class="card-header">
+            <form id="updateKHForm">
+                <div class="container">
+                    <div class="row justify-content-around">
+                        <div class="col-md-5 gap-3">
+                            <div class="col floating-group">
+                                <input type="text" class="form-control" placeholder="" aria-label="name"
+                                       id="name" >
+                                <label for="name">Tên khách hàng</label>
+                            </div>
+                            <div class="col floating-group">
+                                <input type="text" class="form-control" placeholder=""
+                                       aria-label="email"
+                                       id="email" th:value="${currentUser.email}">
+                                <label for="email">Email</label>
+                            </div>
+                            <div class="col floating-group">
+                                <input type="text" class="form-control" placeholder=""
+                                       aria-label="soDienThoai"
+                                       id="soDienThoai" >
+                                <label for="soDienThoai" >Số điện thoại</label>
+                            </div>
+                            <div class="col floating-group">
+                                <input type="date" class="form-control" placeholder=""
+                                       aria-label="ngaySinh"
+                                       id="ngaySinh">
+                                <label for="ngaySinh">mm/dd/yyyy</label>
+                            </div>
+                            <div class="col">
+                                <label for="gioiTinh" class="form-label">Giới tính</label>
+                                <select class="form-select" id="gioiTinh" name="gioiTinh" required >
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+        <!-- /header-video -->
+    </main>
+    <!-- /main -->
+
+    <footer th:replace="/user/fragments/footer :: footer"></footer>
+
+    <!--/footer-->
+</div>
+<!-- page -->
+
+<div id="toTop"></div><!-- Back to top button -->
+
+<!-- COMMON SCRIPTS -->
+<link rel="stylesheet" th:href="@{/user/assets/compiled/js/common_scripts.min.js}">
+<link rel="stylesheet" th:href="@{/user/assets/compiled/js/main.js}">
+
+<!-- SPECIFIC SCRIPTS -->
+<!--<link rel="stylesheet" th:href="@{/admin/assets/compiled/js/modernizr.js}">-->
+<link rel="stylesheet" th:href="@{/user/assets/compiled/js/video_header.min.js}">
+
+<script src="js/isotope.min.js"></script>
+</body>
+</html>
