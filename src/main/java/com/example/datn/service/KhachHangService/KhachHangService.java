@@ -2,6 +2,7 @@ package com.example.datn.service.KhachHangService;
 
 import com.example.datn.dto.request.AddKhachHangRequest;
 import com.example.datn.entity.KhachHang;
+import com.example.datn.entity.TaiKhoan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,4 +15,23 @@ public interface KhachHangService {
     KhachHang addKH(AddKhachHangRequest request);
 
     String generateCode();
+
+    /**
+     * Tìm khách hàng theo tài khoản
+     */
+    KhachHang findByTaiKhoan(TaiKhoan taiKhoan);
+
+    /**
+     * Lưu thông tin khách hàng
+     */
+    KhachHang save(KhachHang khachHang);
+
+    /**
+     * Đếm số lượng khách hàng
+     */
+    long count();
+
+
+
+
 }
