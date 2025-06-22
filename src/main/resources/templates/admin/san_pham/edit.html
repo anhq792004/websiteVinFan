@@ -44,6 +44,11 @@
                                     <label for="editFanType" class="form-label" style="color: #222; font-weight: 600;">Kiểu quạt <span class="text-danger">*</span></label>
                                     <select class="form-select" id="editFanType" name="kieuQuat.id" required>
                                         <option value="">-- Chọn kiểu quạt --</option>
+                                        <option th:each="kq : ${kieuQuat}" 
+                                                th:value="${kq.id}" 
+                                                th:text="${kq.ten}"
+                                                th:selected="${sanPham.kieuQuat != null && sanPham.kieuQuat.id == kq.id}">
+                                        </option>
                                     </select>
                                     <div class="invalid-feedback">Vui lòng chọn kiểu quạt</div>
                                 </div>
@@ -101,16 +106,7 @@
 </div>
 <script th:src="@{/admin/assets/compiled/js/sanPhamForm.js}"></script>
 <script>
-    // Thiết lập giá trị cho kiểu quạt sau khi tải
     $(document).ready(function() {
-        // Thiết lập giá trị cho kiểu quạt
-        const kieuQuatId = "[[${sanPham.kieuQuat != null ? sanPham.kieuQuat.id : ''}]]";
-        if (kieuQuatId) {
-            setTimeout(function() {
-                $("#editFanType").val(kieuQuatId);
-            }, 1000); // Đảm bảo danh sách đã được tải xong
-        }
-        
         // Preview hình ảnh khi chọn
         document.getElementById('editProductImage').addEventListener('change', function() {
             const fileInput = this;

@@ -1,9 +1,15 @@
 package com.example.datn.controller.SanPhamController;
 
 import com.example.datn.entity.SanPham.SanPham;
+import com.example.datn.entity.SanPham.SanPhamChiTiet;
 import com.example.datn.entity.ThuocTinh.KieuQuat;
 import com.example.datn.service.ThuocTinhService.KieuQuatService;
+import com.example.datn.service.ThuocTinhService.MauSacService;
+import com.example.datn.service.ThuocTinhService.CongSuatService;
+import com.example.datn.service.ThuocTinhService.HangService;
+import com.example.datn.service.ThuocTinhService.NutBamService;
 import com.example.datn.service.SanPhamSerivce.SanPhamService;
+import com.example.datn.service.SanPhamSerivce.SanPhamChiTietService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -24,6 +30,11 @@ import java.util.Optional;
 public class SanPhamController {
     private final SanPhamService sanPhamService;
     private final KieuQuatService kieuQuatService;
+    private final SanPhamChiTietService sanPhamChiTietService;
+    private final MauSacService mauSacService;
+    private final CongSuatService congSuatService;
+    private final HangService hangService;
+    private final NutBamService nutBamService;
 
 
     @GetMapping("/list")
@@ -153,5 +164,41 @@ public class SanPhamController {
     public ResponseEntity<List<KieuQuat>> getKieuQuat() {
         List<KieuQuat> kieuQuatList = kieuQuatService.findAllKieuQuat();
         return ResponseEntity.ok(kieuQuatList);
+    }
+
+    // Thêm biến thể sản phẩm
+    @GetMapping("/chi-tiet/add")
+    public String showAddVariantForm(@RequestParam(value = "productId") Long productId, Model model) {
+        Optional<SanPham> sanPhamOptional = sanPhamService.findSanPhamById(productId);
+        if (sanPhamOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy sản phẩm");
+        }
+        
+        model.addAttribute("sanPham", sanPhamOptional.get());
+        model.addAttribute("sanPhamChiTiet", new SanPhamChiTiet());
+        model.addAttribute("mauSacList", mauSacService.findAllMauSac());
+        model.addAttribute("congSuatList", congSuatService.findAllCongSuat());
+        model.addAttribute("hangList", hangService.findAllHang());
+        model.addAttribute("nutBamList", nutBamService.findAll());
+        
+        return "admin/san_pham/add-variant";
+    }
+
+    // Sửa biến thể sản phẩm
+    @GetMapping("/chi-tiet/edit")
+    public String showEditVariantForm(@RequestParam(value = "id") Long id, Model model) {
+        SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietService.findById(id);
+        if (sanPhamChiTiet == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy biến thể sản phẩm");
+        }
+        
+        model.addAttribute("sanPham", sanPhamChiTiet.getSanPham());
+        model.addAttribute("sanPhamChiTiet", sanPhamChiTiet);
+        model.addAttribute("mauSacList", mauSacService.findAllMauSac());
+        model.addAttribute("congSuatList", congSuatService.findAllCongSuat());
+        model.addAttribute("hangList", hangService.findAllHang());
+        model.addAttribute("nutBamList", nutBamService.findAll());
+        
+        return "admin/san_pham/edit-variant";
     }
 }

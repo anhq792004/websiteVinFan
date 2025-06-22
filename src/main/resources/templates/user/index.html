@@ -30,115 +30,6 @@
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- YOUR CUSTOM CSS -->
-    <link href="css/custom.css" rel="stylesheet">
-
-    <style>
-        /* Custom styles for user info dropdown */
-        .user-info-dropdown {
-            position: relative;
-        }
-
-        .user-info-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 25px;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .user-info-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            text-decoration: none;
-        }
-
-        .user-dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            min-width: 280px;
-            padding: 15px 0;
-            margin-top: 10px;
-            z-index: 1000;
-            display: none;
-        }
-
-        .user-dropdown-menu.show {
-            display: block;
-        }
-
-        .user-dropdown-header {
-            padding: 10px 20px;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 10px;
-        }
-
-        .user-dropdown-item {
-            padding: 8px 20px;
-            color: #333;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            transition: background 0.2s ease;
-        }
-
-        .user-dropdown-item:hover {
-            background: #f8f9fa;
-            text-decoration: none;
-            color: #333;
-        }
-
-        .user-dropdown-text {
-            padding: 8px 20px;
-            color: #666;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-        }
-
-        .login-btn-custom {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-        }
-
-        .login-btn-custom:hover {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            text-decoration: none;
-        }
-
-        /* Mobile responsive */
-        @media (max-width: 768px) {
-            .user-dropdown-menu {
-                min-width: 250px;
-                right: -10px;
-            }
-
-            .user-info-btn span {
-                display: none;
-            }
-
-            .user-info-btn i {
-                margin-right: 0 !important;
-            }
-        }
-    </style>
-
 </head>
 
 <body>
@@ -204,14 +95,6 @@
                                     <i class="fas fa-envelope me-2"></i>
                                     <span th:text="${currentUser.email}">Email</span>
                                 </div>
-                                <div class="user-dropdown-text" th:if="${currentUser.chucVu != null}">
-                                    <i class="fas fa-id-badge me-2"></i>
-                                    <span th:text="${currentUser.chucVu.viTri != null ? currentUser.chucVu.viTri : 'Chưa có chức vụ'}">Chức vụ</span>
-                                </div>
-                                <div class="user-dropdown-text" th:if="${currentUser.chucVu != null && currentUser.chucVu.moTa != null}" style="font-size: 12px; color: #999;">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    <span th:text="${currentUser.chucVu.moTa}">Mô tả</span>
-                                </div>
                                 <hr style="margin: 10px 0;">
                                 <a href="/profile" class="user-dropdown-item">
                                     <i class="fas fa-user-edit me-2"></i>
@@ -252,92 +135,6 @@
                 <!-- /row -->
             </div>
         </div>
-        <!-- /main_header -->
-
-        <div class="main_nav Sticky">
-            <div class="container">
-                <div class="row small-gutters">
-                    <div class="col-xl-3 col-lg-3 col-md-3">
-                        <nav class="categories">
-                            <ul class="clearfix">
-                                <li><span>
-										<a href="#">
-											<span class="hamburger hamburger--spin">
-												<span class="hamburger-box">
-													<span class="hamburger-inner"></span>
-												</span>
-											</span>
-											Categories
-										</a>
-									</span>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <div class="col-xl-6 col-lg-7 col-md-6 d-none d-md-block">
-                        <div class="custom-search-input">
-                            <input type="text" placeholder="Search over 10.000 products">
-                            <button type="submit"><i class="header-icon_search_custom"></i></button>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-2 col-md-3">
-                        <ul class="top_tools">
-                            <li>
-                                <div class="dropdown dropdown-cart">
-                                    <a href="cart.html" class="cart_bt"><strong>2</strong></a>
-                                    <div class="dropdown-menu">
-                                        <ul>
-                                            <li>
-                                                <a href="product-detail-1.html">
-                                                    <figure><img src="img/products/product_placeholder_square_small.jpg" data-src="img/products/shoes/thumb/1.jpg" alt="" width="50" height="50" class="lazy"></figure>
-                                                    <strong><span>1x Armor Air x Fear</span>$90.00</strong>
-                                                </a>
-                                                <a href="#0" class="action"><i class="ti-trash"></i></a>
-                                            </li>
-                                            <li>
-                                                <a href="product-detail-1.html">
-                                                    <figure><img src="img/products/product_placeholder_square_small.jpg" data-src="img/products/shoes/thumb/2.jpg" alt="" width="50" height="50" class="lazy"></figure>
-                                                    <strong><span>1x Armor Okwahn II</span>$110.00</strong>
-                                                </a>
-                                                <a href="0" class="action"><i class="ti-trash"></i></a>
-                                            </li>
-                                        </ul>
-                                        <div class="total_drop">
-                                            <div class="clearfix"><strong>Total</strong><span>$200.00</span></div>
-                                            <a href="cart.html" class="btn_1 outline">View Cart</a><a href="checkout.html" class="btn_1">Checkout</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- /dropdown-cart-->
-                            </li>
-                            <li>
-                                <a href="#0" class="wishlist"><span>Wishlist</span></a>
-                            </li>
-
-                            <li>
-                                <a href="javascript:void(0);" class="btn_search_mob"><span>Search</span></a>
-                            </li>
-                            <li>
-                                <a href="#menu" class="btn_cat_mob">
-                                    <div class="hamburger hamburger--spin" id="hamburger">
-                                        <div class="hamburger-box">
-                                            <div class="hamburger-inner"></div>
-                                        </div>
-                                    </div>
-                                    Categories
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- /row -->
-            </div>
-            <div class="search_mob_wp">
-                <input type="text" class="form-control" placeholder="Search over 10.000 products">
-                <input type="submit" class="btn_1 full-width" value="Search">
-            </div>
-            <!-- /search_mobile -->
-        </div>
         <!-- /main_nav -->
     </header>
     <!-- /header -->
@@ -350,9 +147,9 @@
                         <div class="row justify-content-center justify-content-md-start">
                             <div class="col-lg-6">
                                 <div class="slide-text white">
-                                    <h3>Armor Air<br>Max 720 Sage Low</h3>
-                                    <p>Limited items available at this price</p>
-                                    <a class="btn_1" href="#0" role="button">Shop Now</a>
+                                    <h3>FanTech<br>Bán quạt uy tín</h3>
+                                    <p>giá rẻ</p>
+                                    <a class="btn_1" href="#0" role="button">Mua ngay</a>
                                 </div>
                             </div>
                         </div>
@@ -363,19 +160,99 @@
         </div>
         <!-- /header-video -->
         <hr class="mb-0">
-
-        <div class="container margin_60_35">
-            <div class="main_title mb-4">
-                <h2>New Arrival</h2>
-                <span>Products</span>
-                <p>Cum doctus civibus efficiantur in imperdiet deterruisset.</p>
-            </div>
-            <!-- Product content continues here... -->
-        </div>
         <!-- /container -->
+        <div class="main_nav Sticky">
+            <!-- Phần hiển thị sản phẩm - Thêm vào sau phần "New Arrival" trong file HTML -->
+            <div class="container margin_60_35">
+                <div class="main_title mb-4">
+                    <h2>Sản Phẩm Nổi Bật</h2>
+                    <span>Sản Phẩm Nổi Bật</span>
+                    <p>Khám phá các sản phẩm quạt điện chất lượng cao.</p>
+                </div>
+
+                <!-- Kiểm tra nếu có sản phẩm -->
+                <div th:if="${sanPhamList != null and !sanPhamList.isEmpty()}">
+                    <div class="row">
+                        <!-- Lặp qua danh sách sản phẩm -->
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4" th:each="sanPham : ${sanPhamList}">
+                            <div class="card h-100 shadow-sm">
+                                <!-- Hình ảnh sản phẩm -->
+                                <div class="position-relative">
+                                    <img src="https://konachan.com/jpeg/1e4f4728045e2f08b85f7f1529551a7b/Konachan.com%20-%20177633%20animal_ears%20bunny_ears%20bunnygirl%20cherry_blossoms%20flowers%20long_hair%20pink_hair%20reisen_udongein_inaba%20school_uniform%20shiki.%20touhou.jpg"
+                                         class="card-img-top"
+                                         style="height: 250px; object-fit: cover;"
+                                         th:alt="${sanPham.ten}">
+
+                                    <!-- Badge trạng thái -->
+                                    <span class="badge bg-success position-absolute top-0 start-0 m-2"
+                                          th:if="${sanPham.trangThai}">Có sẵn</span>
+                                    <span class="badge bg-secondary position-absolute top-0 start-0 m-2"
+                                          th:unless="${sanPham.trangThai}">Hết hàng</span>
+                                </div>
+
+                                <!-- Thông tin sản phẩm -->
+                                <div class="card-body d-flex flex-column">
+                                    <!-- Tên sản phẩm -->
+                                    <h5 class="card-title" th:text="${sanPham.ten}">Tên sản phẩm</h5>
+
+                                    <!-- Mô tả ngắn -->
+                                    <p class="card-text text-muted small"
+                                       th:text="${sanPham.moTa != null ? (sanPham.moTa.length() > 80 ? sanPham.moTa.substring(0, 80) + '...' : sanPham.moTa) : 'Chưa có mô tả'}">
+                                        Mô tả sản phẩm
+                                    </p>
+
+                                    <!-- Thông tin chi tiết -->
+                                    <div class="mb-3">
+                                        <!-- Mã sản phẩm -->
+                                        <small class="text-muted d-block">
+                                            <strong>Mã SP:</strong>
+                                            <span th:text="${sanPham.ma != null ? sanPham.ma : 'Chưa có mã'}">SP001</span>
+                                        </small>
+
+                                        <!-- Loại quạt -->
+                                        <small class="text-muted d-block" th:if="${sanPham.kieuQuat != null}">
+                                            <strong>Loại:</strong>
+                                            <span th:text="${sanPham.kieuQuat.ten}">Quạt trần</span>
+                                        </small>
+                                    </div>
+
+                                    <!-- Giá sản phẩm -->
+                                    <div class="mt-auto">
+                                        <h4 class="text-primary mb-3" th:if="${sanPham.sanPhamChiTiet != null and !sanPham.sanPhamChiTiet.isEmpty() and sanPham.sanPhamChiTiet[0].gia != null}">
+                                            <span th:text="${#numbers.formatDecimal(sanPham.sanPhamChiTiet[0].gia, 0, 'COMMA', 0, 'POINT')}">500,000</span>
+                                            <small>đ</small>
+                                        </h4>
+                                    </div>
+
+                                    <!-- Nút hành động -->
+                                    <div class="d-grid gap-2">
+                                        <a th:href="@{/fanTech/detail(id=${sanPham.id})}"
+                                           class="btn btn-primary btn-sm">
+                                            <i class="fas fa-eye me-1"></i>Xem chi tiết
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thông báo khi không có sản phẩm -->
+                <div th:unless="${sanPhamList != null and !sanPhamList.isEmpty()}" class="text-center py-5">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Hiện tại chưa có sản phẩm nào để hiển thị.
+                    </div>
+                </div>
+            </div>
+            <div class="search_mob_wp">
+                <input type="text" class="form-control" placeholder="Search over 10.000 products">
+                <input type="submit" class="btn_1 full-width" value="Search">
+            </div>
+            <!-- /search_mobile -->
+        </div>
 
     </main>
-    <!-- /main -->
 
     <footer class="revealed">
         <div class="container">
