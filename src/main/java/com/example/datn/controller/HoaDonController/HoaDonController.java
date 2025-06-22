@@ -66,16 +66,17 @@ public class HoaDonController {
         model.addAttribute("findSPCTByIdSanPham", findSPCTByIdSanPham);
 
         Integer tongSoLuong = hoaDonService.tongSoLuong(id);
-        model.addAttribute("tongSoLuong",tongSoLuong);
+        model.addAttribute("tongSoLuong", tongSoLuong);
 
         return "admin/hoa_don/detail";
     }
 
     @PostMapping("/xac-nhan")
     @ResponseBody
-    public ResponseEntity<String> xacNhanHoaDon(@RequestParam("id") Long id) {
+    public ResponseEntity<String> xacNhanHoaDon(@RequestParam("id") Long id,
+                                                @RequestParam("ghiChu") String ghiChu) {
         try {
-            hoaDonService.xacNhan(id);
+            hoaDonService.xacNhan(id, ghiChu);
             return ResponseEntity.ok("Đơn hàng đã được xác nhận !");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Số lượng sản phẩm không đủ");
@@ -98,13 +99,14 @@ public class HoaDonController {
 
     @PostMapping("/huy")
     @ResponseBody
-    public ResponseEntity<String> huy(@RequestParam("id") Long id) {
-        hoaDonService.huy(id);
+    public ResponseEntity<String> huy(@RequestParam("id") Long id,
+                                      @RequestParam("ghiChu") String ghiChu) {
+        hoaDonService.huy(id, ghiChu);
         return ResponseEntity.ok("Hóa đơn đã được hủy !");
     }
 
     @PostMapping("/addSP")
-    public ResponseEntity<String> addSP(@RequestBody AddSPToHDCTRequest addSPToHDCTRequest){
+    public ResponseEntity<String> addSP(@RequestBody AddSPToHDCTRequest addSPToHDCTRequest) {
         try {
             hoaDonService.addSPToHDCT(addSPToHDCTRequest);
             return ResponseEntity.ok("Thêm sản phẩm thành công!");
@@ -112,6 +114,7 @@ public class HoaDonController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lỗi: " + e.getMessage());
         }
     }
+
     @PostMapping("/xoa")
     @ResponseBody
     public ResponseEntity<String> deleteChiTiet(@RequestParam("idSP") Long idSP) {
@@ -122,28 +125,31 @@ public class HoaDonController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi xóa sản phẩm");
         }
     }
+
     @PostMapping("/tangSoLuong")
     @ResponseBody
     public ResponseEntity<String> tangSoLuong(@RequestParam("idSP") Long idSP,
                                               @RequestParam("idHD") Long idHD) {
         try {
-            hoaDonService.tangSoLuong(idHD,idSP);
+            hoaDonService.tangSoLuong(idHD, idSP);
             return ResponseEntity.ok("Tăng số lượng thành công");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @PostMapping("/giamSoLuong")
     @ResponseBody
     public ResponseEntity<String> giamSoLuong(@RequestParam("idSP") Long idSP,
                                               @RequestParam("idHD") Long idHD) {
         try {
-            hoaDonService.giamSoLuong(idHD,idSP);
+            hoaDonService.giamSoLuong(idHD, idSP);
             return ResponseEntity.ok("Giảm số lượng thành công");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @PostMapping("/updateSoLuong")
     @ResponseBody
     public ResponseEntity<?> updateSoLuong(UpdateSoLuongRequest request) {
