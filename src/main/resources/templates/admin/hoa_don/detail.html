@@ -230,7 +230,8 @@
                 <div class="card mb-4">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2>Thông tin khách hàng</h2>
-                        <button type="submit" class="btn btn-outline-warning">
+                        <button type="submit" class="btn btn-outline-warning"
+                                th:if="${hoaDon.trangThai == 0 || hoaDon.trangThai == 1 ||hoaDon.trangThai == 2}">
                             <i class="bi bi-gear-wide-connected"></i>
                         </button>
                     </div>
@@ -279,7 +280,8 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2>Thông tin sản phẩm</h2>
                         <button class="btn btn-outline-success" type="button" data-bs-toggle="modal"
-                                data-bs-target="#addSanPham" th:if="${hoaDon.trangThai == 0 || hoaDon.trangThai == 1}">
+                                data-bs-target="#addSanPham"
+                                th:if="${hoaDon.trangThai == 0 || hoaDon.trangThai == 1 ||hoaDon.trangThai == 2}">
                             <i class="bi bi-patch-plus-fill"></i>
                         </button>
                     </div>
@@ -310,11 +312,18 @@
                                           method="post"
                                           action="/sale/updateSoLuong"
                                           class="update-so-luong-form">
-                                        <div class="quantity-container" >
-                                            <button class="quantity-btn-1" type="button">−</button>
+                                        <div class="quantity-container">
+                                            <button class="quantity-btn-1" type="button"
+                                                    th:if="${hoaDon.trangThai == 0 || hoaDon.trangThai == 1 ||hoaDon.trangThai == 2}">
+                                                −
+                                            </button>
                                             <input type="text" class="quantity-input"
+                                                   th:disabled="${hoaDon.trangThai != 0 || hoaDon.trangThai != 1 ||hoaDon.trangThai != 2}"
                                                    th:value="${item.soLuong}" id="soLuong" name="soLuong">
-                                            <button class="quantity-btn" type="button">+</button>
+                                            <button class="quantity-btn" type="button"
+                                                    th:if="${hoaDon.trangThai == 0 || hoaDon.trangThai == 1 ||hoaDon.trangThai == 2}">
+                                                +
+                                            </button>
                                         </div>
                                     </form>
                                 </div>
@@ -323,7 +332,8 @@
 
                                 <a href="javascript:void(0);"
                                    class="btn btn-outline-danger text-danger btn-xoa-sanPham"
-                                   th:data-id="${item.sanPhamChiTiet.id}">
+                                   th:data-id="${item.sanPhamChiTiet.id}"
+                                   th:if="${hoaDon.trangThai == 0 || hoaDon.trangThai == 1 ||hoaDon.trangThai == 2}">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>
