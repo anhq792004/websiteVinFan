@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -60,6 +61,11 @@ public class SanPhamServiceImpl implements SanPhamService {
     }
 
     @Override
+    public List<SanPham> findAllActiveProducts() {
+        return sanPhamRepo.findByTrangThaiTrue();
+    }
+
+    @Override
     public void saveSanPham(SanPham sanPham) {
         // Đảm bảo ngày tạo được thiết lập
         if (sanPham.getNgayTao() == null) {
@@ -67,49 +73,49 @@ public class SanPhamServiceImpl implements SanPhamService {
         }
         sanPhamRepo.save(sanPham);
     }
-    
+
     @Override
     public void saveSanPhamWithImage(SanPham sanPham, MultipartFile imageFile) {
         // Đảm bảo ngày tạo được thiết lập
         if (sanPham.getNgayTao() == null) {
             sanPham.setNgayTao(LocalDateTime.now());
         }
-        
+
         // Lưu sản phẩm trước để có ID
         SanPham savedSanPham = sanPhamRepo.save(sanPham);
-        
+
         try {
             // Tạo thư mục nếu chưa tồn tại
             File uploadDir = new File(UPLOAD_DIR);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
-            
+
             // Tạo tên file duy nhất
             String originalFilename = imageFile.getOriginalFilename();
             String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
             String fileName = UUID.randomUUID() + fileExtension;
-            
+
             // Lưu file
             Path filePath = Paths.get(UPLOAD_DIR + fileName);
             Files.write(filePath, imageFile.getBytes());
-            
+
             // Tạo đối tượng HinhAnh
             HinhAnh hinhAnh = new HinhAnh();
             hinhAnh.setHinhAnh("/uploads/" + fileName);
             HinhAnh savedHinhAnh = hinhAnhRepo.save(hinhAnh);
-            
+
             // Tạo SanPhamChiTiet mới với ảnh
             SanPhamChiTiet spct = new SanPhamChiTiet();
             spct.setSanPham(savedSanPham);
             spct.setHinhAnh(savedHinhAnh);
             spct.setTrangThai(true);
-            
+
             // Khởi tạo danh sách nếu chưa có
             if (savedSanPham.getSanPhamChiTiet() == null) {
                 savedSanPham.setSanPhamChiTiet(new ArrayList<>());
             }
-            
+
             sanPhamChiTietRepo.save(spct);
         } catch (IOException e) {
             e.printStackTrace();
@@ -128,7 +134,7 @@ public class SanPhamServiceImpl implements SanPhamService {
         }
         sanPhamRepo.save(sanPham);
     }
-    
+
     @Override
     public void updateSanPhamWithImage(SanPham sanPham, MultipartFile imageFile) {
         // Lấy sản phẩm hiện tại
@@ -139,36 +145,36 @@ public class SanPhamServiceImpl implements SanPhamService {
             sanPham.setNgayTao(existingSanPham.getNgayTao());
             // Giữ danh sách chi tiết
             sanPham.setSanPhamChiTiet(existingSanPham.getSanPhamChiTiet());
-            
+
             // Lưu sản phẩm
             sanPhamRepo.save(sanPham);
-            
+
             try {
                 // Tạo thư mục nếu chưa tồn tại
                 File uploadDir = new File(UPLOAD_DIR);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdirs();
                 }
-                
+
                 // Tạo tên file duy nhất
                 String originalFilename = imageFile.getOriginalFilename();
                 String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 String fileName = UUID.randomUUID() + fileExtension;
-                
+
                 // Lưu file
                 Path filePath = Paths.get(UPLOAD_DIR + fileName);
                 Files.write(filePath, imageFile.getBytes());
-                
+
                 // Kiểm tra xem sản phẩm đã có hình ảnh chưa
                 boolean hasImage = false;
                 HinhAnh existingImage = null;
-                
+
                 if (existingSanPham.getSanPhamChiTiet() != null && !existingSanPham.getSanPhamChiTiet().isEmpty()) {
                     for (SanPhamChiTiet spct : existingSanPham.getSanPhamChiTiet()) {
                         if (spct.getHinhAnh() != null) {
                             hasImage = true;
                             existingImage = spct.getHinhAnh();
-                            
+
                             // Cập nhật hình ảnh hiện có
                             existingImage.setHinhAnh("/uploads/" + fileName);
                             hinhAnhRepo.save(existingImage);
@@ -176,25 +182,25 @@ public class SanPhamServiceImpl implements SanPhamService {
                         }
                     }
                 }
-                
+
                 // Nếu không có hình ảnh, tạo mới
                 if (!hasImage) {
                     // Tạo đối tượng HinhAnh mới
                     HinhAnh hinhAnh = new HinhAnh();
                     hinhAnh.setHinhAnh("/uploads/" + fileName);
                     HinhAnh savedHinhAnh = hinhAnhRepo.save(hinhAnh);
-                    
+
                     // Tạo SanPhamChiTiet mới với ảnh
                     SanPhamChiTiet spct = new SanPhamChiTiet();
                     spct.setSanPham(sanPham);
                     spct.setHinhAnh(savedHinhAnh);
                     spct.setTrangThai(true);
-                    
+
                     // Khởi tạo danh sách nếu chưa có
                     if (sanPham.getSanPhamChiTiet() == null) {
                         sanPham.setSanPhamChiTiet(new ArrayList<>());
                     }
-                    
+
                     sanPhamChiTietRepo.save(spct);
                 }
             } catch (IOException e) {
