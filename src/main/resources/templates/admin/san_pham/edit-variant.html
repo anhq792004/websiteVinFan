@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{/admin/fragments/head :: head}"></head>
+<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/app.css}">
+<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/app-dark.css}">
+<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/iconly.css}">
+<link rel="stylesheet" th:href="@{/admin/assets/extensions/toastify-js/src/toastify.css}">
+<style>
+    .image-preview {
+        max-width: 200px;
+        max-height: 200px;
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.3s;
+    }
+    .image-preview:hover {
+        border-color: #007bff;
+    }
+    .image-preview img {
+        max-width: 100%;
+        max-height: 180px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+    .form-label-required::after {
+        content: " *";
+        color: red;
+    }
+</style>
+<body>
+<!-- Site wrapper -->
+<div class="wrapper">
+    <!-- Sidebar -->
+    <div>
+        <aside th:replace="/admin/fragments/sidebar :: sidebar"></aside>
+    </div>
+
+    <!-- Main-->
+    <div id="main">
+        <header th:replace="/admin/fragments/header :: header"></header>
+        
+        <div class="page-content">
+            <div class="page-heading">
+                <div class="page-title mb-4">
+                    <div class="row">
+                        <div class="col-12 col-md-6 order-md-1 order-last">
+                            <h3>Chỉnh sửa biến thể sản phẩm</h3>
+                        </div>
+                        <div class="col-12 col-md-6 order-md-2 order-first">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a th:href="@{/admin}">Trang chủ</a></li>
+                                    <li class="breadcrumb-item"><a th:href="@{/admin/san-pham/list}">Sản phẩm</a></li>
+                                    <li class="breadcrumb-item"><a th:href="@{/admin/san-pham/detail(id=${sanPham.id})}" th:text="${sanPham.ten}">Chi tiết sản phẩm</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Sửa biến thể</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thông tin sản phẩm chính -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle-fill text-primary me-2"></i>
+                            Sản phẩm: <span th:text="${sanPham.ten}" class="text-primary"></span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Mã sản phẩm:</strong> <span th:text="${sanPham.ma}"></span></p>
+                                <p><strong>Kiểu quạt:</strong> <span th:text="${sanPham.kieuQuat != null ? sanPham.kieuQuat.ten : 'N/A'}"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Ngày tạo:</strong> <span th:text="${#temporals.format(sanPham.ngayTao, 'dd-MM-yyyy')}"></span></p>
+                                <p><strong>Trạng thái:</strong> 
+                                    <span th:if="${sanPham.trangThai}" class="badge bg-success">Đang kinh doanh</span>
+                                    <span th:unless="${sanPham.trangThai}" class="badge bg-danger">Ngừng kinh doanh</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form sửa biến thể -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-pencil-square text-warning me-2"></i>
+                            Chỉnh sửa thông tin biến thể
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="editVariantForm" enctype="multipart/form-data">
+                            <input type="hidden" name="id" th:value="${sanPhamChiTiet.id}">
+                            <input type="hidden" name="sanPhamId" th:value="${sanPham.id}">
+                            
+                            <div class="row">
+                                <!-- Cột trái -->
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label form-label-required">Màu sắc</label>
+                                        <select class="form-select" name="mauSacId" required>
+                                            <option value="">-- Chọn màu sắc --</option>
+                                            <option th:each="mauSac : ${mauSacList}" 
+                                                    th:value="${mauSac.id}" 
+                                                    th:text="${mauSac.ten}"
+                                                    th:selected="${sanPhamChiTiet.mauSac != null && sanPhamChiTiet.mauSac.id == mauSac.id}"
+                                                    th:if="${mauSac.trangThai}"></option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label form-label-required">Công suất</label>
+                                        <select class="form-select" name="congSuatId" required>
+                                            <option value="">-- Chọn công suất --</option>
+                                            <option th:each="congSuat : ${congSuatList}" 
+                                                    th:value="${congSuat.id}" 
+                                                    th:text="${congSuat.ten}"
+                                                    th:selected="${sanPhamChiTiet.congSuat != null && sanPhamChiTiet.congSuat.id == congSuat.id}"
+                                                    th:if="${congSuat.trangThai}"></option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label form-label-required">Hãng</label>
+                                        <select class="form-select" name="hangId" required>
+                                            <option value="">-- Chọn hãng --</option>
+                                            <option th:each="hang : ${hangList}" 
+                                                    th:value="${hang.id}" 
+                                                    th:text="${hang.ten}"
+                                                    th:selected="${sanPhamChiTiet.hang != null && sanPhamChiTiet.hang.id == hang.id}"
+                                                    th:if="${hang.trangThai}"></option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label form-label-required">Nút bấm</label>
+                                        <select class="form-select" name="nutBamId" required>
+                                            <option value="">-- Chọn nút bấm --</option>
+                                            <option th:each="nutBam : ${nutBamList}" 
+                                                    th:value="${nutBam.id}" 
+                                                    th:text="${nutBam.ten}"
+                                                    th:selected="${sanPhamChiTiet.nutBam != null && sanPhamChiTiet.nutBam.id == nutBam.id}"
+                                                    th:if="${nutBam.trangThai}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Cột phải -->
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label form-label-required">Số lượng</label>
+                                        <input type="number" class="form-control" name="soLuong" 
+                                               th:value="${sanPhamChiTiet.soLuong}" min="0" required placeholder="Nhập số lượng">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label form-label-required">Giá bán (VND)</label>
+                                        <input type="number" class="form-control" name="gia" 
+                                               th:value="${sanPhamChiTiet.gia}" min="0" step="1000" required placeholder="Nhập giá bán">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Cân nặng (gram)</label>
+                                        <input type="number" class="form-control" name="canNang" 
+                                               th:value="${sanPhamChiTiet.canNang}" min="0" step="0.1" placeholder="Nhập cân nặng">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Trạng thái</label>
+                                        <select class="form-select" name="trangThai">
+                                            <option th:value="true" th:selected="${sanPhamChiTiet.trangThai == true}">Còn hàng</option>
+                                            <option th:value="false" th:selected="${sanPhamChiTiet.trangThai == false}">Hết hàng</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Hình ảnh và mô tả -->
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Hình ảnh</label>
+                                                <div class="image-preview" id="imagePreview" onclick="document.getElementById('hinhAnh').click()">
+                                                    <div id="imagePlaceholder" th:style="${sanPhamChiTiet.hinhAnh != null ? 'display: none;' : ''}">
+                                                        <i class="bi bi-cloud-upload display-4 text-muted"></i>
+                                                        <p class="text-muted mt-2">Nhấp để chọn hình ảnh mới</p>
+                                                    </div>
+                                                    <img id="previewImg" 
+                                                         th:src="${sanPhamChiTiet.hinhAnh != null ? sanPhamChiTiet.hinhAnh.hinhAnh : ''}"
+                                                         th:style="${sanPhamChiTiet.hinhAnh != null ? 'display: block;' : 'display: none;'}"
+                                                         alt="Preview">
+                                                </div>
+                                                <input type="file" class="form-control d-none" id="hinhAnh" name="hinhAnh" accept="image/*">
+                                                <small class="text-muted">Để trống nếu không muốn thay đổi hình ảnh</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Mô tả</label>
+                                                <textarea class="form-control" name="moTa" rows="8" 
+                                                          th:text="${sanPhamChiTiet.moTa}"
+                                                          placeholder="Nhập mô tả chi tiết cho biến thể này..."></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a th:href="@{/admin/san-pham/detail(id=${sanPham.id})}" class="btn btn-secondary">
+                                            <i class="bi bi-arrow-left"></i> Quay lại
+                                        </a>
+                                        <button type="submit" class="btn btn-warning">
+                                            <i class="bi bi-check-circle"></i> Cập nhật biến thể
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer th:replace="/admin/fragments/footer :: footer"></footer>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script th:src="@{/admin/assets/static/js/components/dark.js}"></script>
+<script th:src="@{/admin/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/admin/assets/compiled/js/app.js}"></script>
+<script th:src="@{/admin/assets/extensions/jquery/jquery.min.js}"></script>
+<script th:src="@{/admin/assets/extensions/toastify-js/src/toastify.js}"></script>
+
+<script>
+    // Preview hình ảnh
+    document.getElementById('hinhAnh').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('imagePlaceholder').style.display = 'none';
+                document.getElementById('previewImg').style.display = 'block';
+                document.getElementById('previewImg').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Submit form
+    document.getElementById('editVariantForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        console.log('=== FORM SUBMIT EVENT TRIGGERED ===');
+        
+        const formData = new FormData(this);
+        const variantId = formData.get('id');
+        
+        console.log('=== SUBMIT FORM ===');
+        console.log('Variant ID:', variantId);
+        console.log('Form Data:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key + ':', value);
+        }
+        
+        // Kiểm tra variantId có hợp lệ không
+        if (!variantId) {
+            console.error('=== ERROR: Variant ID is null or empty ===');
+            showToast('error', 'Không tìm thấy ID biến thể');
+            return;
+        }
+        
+        // Hiển thị loading
+        const submitBtn = document.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Đang xử lý...';
+        submitBtn.disabled = true;
+
+        const url = `/api/san-pham-chi-tiet/${variantId}`;
+        console.log('Sending PUT request to:', url);
+
+        fetch(url, {
+            method: 'PUT',
+            body: formData
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+            
+            if (response.ok) {
+                console.log('=== UPDATE SUCCESS ===');
+                showToast('success', 'Cập nhật biến thể sản phẩm thành công!');
+                setTimeout(() => {
+                    window.location.href = `/admin/san-pham/detail?id=${formData.get('sanPhamId')}`;
+                }, 1000);
+            } else {
+                return response.text().then(text => {
+                    console.log('Error response:', text);
+                    throw new Error(text || 'Có lỗi xảy ra');
+                });
+            }
+        })
+        .catch(error => {
+            console.error('=== FETCH ERROR ===');
+            console.error('Error:', error);
+            showToast('error', error.message || 'Có lỗi xảy ra khi cập nhật biến thể');
+        })
+        .finally(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+    });
+
+    // Test để đảm bảo script được load
+    console.log('=== EDIT VARIANT SCRIPT LOADED ===');
+    
+    // Kiểm tra form có tồn tại không
+    const form = document.getElementById('editVariantForm');
+    if (form) {
+        console.log('=== FORM FOUND ===');
+        console.log('Form action:', form.action);
+        console.log('Form method:', form.method);
+    } else {
+        console.error('=== FORM NOT FOUND ===');
+    }
+
+    // Show toast notification
+    function showToast(type, message) {
+        Toastify({
+            text: message,
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            backgroundColor: type === 'success' ? '#28a745' : '#dc3545',
+        }).showToast();
+    }
+</script>
+</body>
+</html>
+ 

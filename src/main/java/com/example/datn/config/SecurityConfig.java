@@ -23,14 +23,12 @@ import java.util.Map;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     @Autowired
     private UserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Tạm thời vô hiệu hóa CSRF để loại trừ vấn đề token
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         // Tài nguyên tĩnh và trang công khai
@@ -46,14 +44,14 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         // Các trang admin khác - Admin và Employee đều truy cập được
-                        .requestMatchers("/hoa-don/**","/khach-hang/**","/sale/**").hasAnyRole("ADMIN", "EMPLOYE")
+                        // SỬA LỖI: "EMPLOYE" -> "EMPLOYEE"
+                        .requestMatchers("/hoa-don/**","/khach-hang/**","/sale/**").hasAnyRole("ADMIN", "EMPLOYEE")
 
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .successHandler((request, response, authentication) -> {
-                            // Redirect đến trang success handler để xử lý session
                             response.sendRedirect("/login-success");
                         })
                         .permitAll()
@@ -61,11 +59,10 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true) // Xóa session khi logout
+                        .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .permitAll()
                 )
-                // Xử lý khi không có quyền truy cập
                 .exceptionHandling(ex -> ex
                         .accessDeniedHandler(accessDeniedHandler())
                 );
@@ -94,7 +91,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // Hỗ trợ nhiều loại mã hóa khác nhau
         Map<String, PasswordEncoder> encoders = new HashMap<>();
         encoders.put("bcrypt", new BCryptPasswordEncoder());
         encoders.put("noop", NoOpPasswordEncoder.getInstance());
