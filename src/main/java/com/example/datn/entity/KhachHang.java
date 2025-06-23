@@ -51,5 +51,4 @@ public class KhachHang {
 
     @Column(name = "hinh_anh")
     String anh;
-
 }

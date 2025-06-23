@@ -128,7 +128,7 @@ public class HoaDonServiceImpl implements HoaDonService {
 
 
     @Override
-    public void xacNhan(Long id) {
+    public void xacNhan(Long id,String ghiChu) {
         // Tìm kiếm HoaDon dựa trên ID
         Optional<HoaDon> hoaDonOptional = hoaDonRepo.findById(id);
         List<HoaDonChiTiet> listHDCT = hoaDonChiTietRepo.findByHoaDon_Id(id);
@@ -148,6 +148,7 @@ public class HoaDonServiceImpl implements HoaDonService {
 
             // Cập nhật trạng thái của HoaDon
             hoaDon.setTrangThai(getTrangThaiHoaDon().getDaXacNhan());
+            hoaDon.setGhiChu(ghiChu);
             hoaDonRepo.save(hoaDon);
 
             // Tạo lịch sử cập nhật
@@ -155,7 +156,7 @@ public class HoaDonServiceImpl implements HoaDonService {
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getDaXacNhan());
             lichSuHoaDon.setNgayTao(LocalDateTime.now());
-            lichSuHoaDon.setMoTa("Admin đã xác nhận đơn hàng");
+            lichSuHoaDon.setMoTa(ghiChu);
 
             lichSuHoaDonRepo.save(lichSuHoaDon);
         }
@@ -199,7 +200,7 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     @Override
-    public void huy(Long id) {
+    public void huy(Long id, String ghiChu) {
         Optional<HoaDon> optionalHoaDon = hoaDonRepo.findById(id);
         if (optionalHoaDon.isPresent()) {
             HoaDon hoaDon = optionalHoaDon.get();
@@ -218,6 +219,7 @@ public class HoaDonServiceImpl implements HoaDonService {
             }
             
             // Cập nhật trạng thái hóa đơn sang HỦY
+            hoaDon.setGhiChu(ghiChu);
             hoaDon.setTrangThai(getTrangThaiHoaDon().getHuy());
             hoaDonRepo.save(hoaDon);
             
@@ -226,7 +228,7 @@ public class HoaDonServiceImpl implements HoaDonService {
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getHuy());
             lichSuHoaDon.setNgayTao(LocalDateTime.now());
-            lichSuHoaDon.setMoTa("Đơn hàng đã được hủy lúc " + LocalDateTime.now());
+            lichSuHoaDon.setMoTa(ghiChu);
             lichSuHoaDonRepo.save(lichSuHoaDon);
         } else {
             throw new RuntimeException("Không tìm thấy hóa đơn với ID: " + id);

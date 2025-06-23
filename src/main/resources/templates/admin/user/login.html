@@ -7,92 +7,107 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Thêm SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <style>
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #f5f5f5;
-        }
-        .login-form {
-            width: 400px;
-            padding: 30px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .form-title {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .btn-login {
-            width: 100%;
-            margin-top: 15px;
-        }
-        .remember-me {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-        .remember-me input {
-            margin-right: 5px;
-        }
-        /* Ẩn các alert mặc định vì sẽ dùng SweetAlert2 */
-        .alert {
-            display: none;
-        }
 
-        /* Đảm bảo toast hiển thị ở góc phải */
-        .toast-container {
-            z-index: 9999 !important;
-        }
-
-        .swal2-container.swal2-top-end {
-            top: 20px !important;
-            right: 20px !important;
-        }
-    </style>
 </head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f5f5f5;
+    }
+
+    .login-container {
+        display: flex;
+        max-width: 900px;
+        width: 100%;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-form {
+        flex: 1;
+        padding: 40px;
+        background: #ffffff;
+    }
+
+    .login-form h2 {
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .login-form .form-control {
+        border-radius: 20px;
+    }
+
+    .login-form .btn {
+        border-radius: 20px;
+        background-color: black;
+        color: white;
+    }
+
+    .login-form .btn:hover {
+        background-color: #333;
+    }
+
+    .welcome-section {
+        flex: 1;
+        background-color: black;
+        color: white;
+        padding: 40px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border-top-left-radius: 120px;
+        border-bottom-left-radius: 120px;
+    }
+
+    .welcome-section h2 {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+</style>
+
 <body>
-<div class="login-form">
-    <h2 class="form-title">Đăng nhập VinFan</h2>
+<div class="login-container">
+    <div class="login-form">
+        <h2 class="text-center">Đăng nhập</h2>
+        <form id="loginForm" th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username"><span class="text-danger">*</span> Email:</label>
+                <input type="email" class="form-control" id="username" name="username">
+            </div>
 
-    <!-- Các thông báo ẩn để JavaScript đọc -->
-    <div th:if="${param.error}" class="alert alert-danger" data-error="true">
-        Email hoặc mật khẩu không đúng.
+            <div class="form-group">
+                <label for="password"><span class="text-danger">*</span> Mật khẩu:</label>
+                <input type="password" class="form-control" id="password" name="password">
+                <p th:if="${param.error}" class="text-danger small pt-2" data-error="true">
+                    Email hoặc mật khẩu không đúng.
+                </p>
+                <p th:if="${registrationSuccess}" class="text-danger small pt-2" data-success="true"
+                   th:text="${registrationSuccess}">
+                </p>
+                <p th:if="${param.logout}" class="text-success small pt-2" data-logout="true">
+                    Bạn đã đăng xuất thành công.
+                </p>
+            </div>
+            <button type="submit" class="btn w-100 btn-login">Đăng nhập</button>
+        </form>
     </div>
 
-    <div th:if="${param.logout}" class="alert alert-success" data-logout="true">
-        Bạn đã đăng xuất thành công.
-    </div>
-
-    <!-- Thông báo đăng ký thành công từ thuộc tính Model -->
-    <div th:if="${registrationSuccess}" class="alert alert-success" data-success="true" th:text="${registrationSuccess}">
-    </div>
-
-    <form id="loginForm" th:action="@{/login}" method="post">
-        <div class="form-group">
-            <label for="username">Email:</label>
-            <input type="email" class="form-control" id="username" name="username">
+    <div class="welcome-section">
+        <h2>WELCOME BACK!!!</h2>
+        <p class="text-center">Đăng kí tài khoản</p>
+        <div class="d-flex justify-content-center">
+            <a th:href="@{/register}" class="btn btn-outline-light w-auto px-5">Đăng kí</a>
+<!--            <p><a th:href="@{/forgot-password}">Quên mật khẩu?</a></p>-->
         </div>
-
-        <div class="form-group">
-            <label for="password">Mật khẩu:</label>
-            <input type="password" class="form-control" id="password" name="password">
-        </div>
-
-        <!-- Thêm checkbox Remember Me -->
-        <div class="remember-me">
-            <input type="checkbox" id="remember-me" name="remember-me">
-            <label for="remember-me">Ghi nhớ đăng nhập</label>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-login">Đăng nhập</button>
-    </form>
-    <div class="mt-3 text-center">
-        <p>Chưa có tài khoản? <a th:href="@{/register}">Đăng ký ngay</a></p>
-        <p><a th:href="@{/forgot-password}">Quên mật khẩu?</a></p>
     </div>
 </div>
 
@@ -159,7 +174,7 @@
     }
 
     // Kiểm tra và hiển thị thông báo từ server khi trang load
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Kiểm tra thông báo lỗi đăng nhập
         if (document.querySelector('[data-error="true"]')) {
             showToastWithText('error', 'Đăng nhập thất bại', 'Email hoặc mật khẩu không đúng');
@@ -179,7 +194,7 @@
     });
 
     // Bắt sự kiện submit form
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
+    document.getElementById('loginForm').addEventListener('submit', function (event) {
         // Ngăn form submit mặc định
         event.preventDefault();
 
@@ -226,7 +241,7 @@
     });
 
     // Thêm validation real-time cho các input
-    document.getElementById('username').addEventListener('blur', function() {
+    document.getElementById('username').addEventListener('blur', function () {
         const email = this.value.trim();
         if (email !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             showToast('error', 'Email không đúng định dạng');
@@ -242,7 +257,7 @@
     // });
 
     // Xử lý sự kiện khi nhấn Enter
-    document.addEventListener('keypress', function(event) {
+    document.addEventListener('keypress', function (event) {
         if (event.key === 'Enter') {
             event.preventDefault();
             document.getElementById('loginForm').dispatchEvent(new Event('submit'));
@@ -251,12 +266,12 @@
 
     // Thêm hiệu ứng focus cho input
     document.querySelectorAll('.form-control').forEach(input => {
-        input.addEventListener('focus', function() {
+        input.addEventListener('focus', function () {
             this.style.borderColor = '#007bff';
             this.style.boxShadow = '0 0 0 0.2rem rgba(0, 123, 255, 0.25)';
         });
 
-        input.addEventListener('blur', function() {
+        input.addEventListener('blur', function () {
             this.style.borderColor = '#ced4da';
             this.style.boxShadow = 'none';
         });

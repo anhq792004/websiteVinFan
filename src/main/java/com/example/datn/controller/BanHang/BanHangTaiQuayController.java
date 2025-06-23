@@ -112,8 +112,9 @@ public class BanHangTaiQuayController {
 
     @PostMapping("/huy")
     @ResponseBody
-    public ResponseEntity<String> huy(@RequestParam("id") Long id) {
-        hoaDonService.huy(id);
+    public ResponseEntity<String> huy(@RequestParam("id") Long id,
+                                      @RequestParam("ghiChu") String ghiChu) {
+        hoaDonService.huy(id,ghiChu);
         return ResponseEntity.ok("Hóa đơn đã được hủy !");
     }
 
