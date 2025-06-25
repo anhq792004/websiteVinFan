@@ -33,6 +33,9 @@ public class LichSuHoaDon {
     @Column(name = "ngay_tao")
     LocalDateTime ngayTao;
 
+    @Column(name = "ngay_sua")
+    LocalDateTime ngaySua;
+
     @Column(name = "mo_ta")
     String moTa;
 
