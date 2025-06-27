@@ -22,7 +22,7 @@
                         <h1>Quản lý phiếu giảm giá</h1>
                     </div>
                     <div class="card-body">
-                        <a class="btn btn-primary mb-3" th:href="@{/phieu-giam-gia/create}">Thêm mới</a>
+                        <a class="btn btn-primary mb-3" th:href="@{/admin/phieu-giam-gia/create}">Thêm mới</a>
                         <!-- Bảng hiển thị dữ liệu -->
                         <div class="table-responsive">
                             <table class="table table-bordered">
@@ -56,9 +56,10 @@
                                         <span th:unless="${pgg.trangThai}" class="badge bg-danger">Không hoạt động</span>
                                     </td>
                                     <td>
-                                        <a th:href="@{|/phieu-giam-gia/edit/${pgg.id}|}" class="btn btn-warning btn-sm">Sửa</a>
-                                        <a th:href="@{|/phieu-giam-gia/delete/${pgg.id}|}" class="btn btn-danger btn-sm"
+                                        <a th:href="@{'/admin/phieu-giam-gia/edit/' + ${pgg.id}}" class="btn btn-warning btn-sm">Sửa</a>
+                                        <a th:href="@{'/admin/phieu-giam-gia/delete/' + ${pgg.id}}" class="btn btn-danger btn-sm"
                                            onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+
                                     </td>
                                 </tr>
                                 </tbody>

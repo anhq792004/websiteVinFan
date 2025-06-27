@@ -43,7 +43,7 @@ public class PhieuGiamGiaController {
 
         phieuGiamGia.setNgayTao(new Date());
         phieuGiamGiaRepo.save(phieuGiamGia);
-        return "redirect:/phieu-giam-gia/index";
+        return "redirect:/admin/phieu-giam-gia/index";
     }
 
     @GetMapping("/edit/{id}")
@@ -53,7 +53,7 @@ public class PhieuGiamGiaController {
             model.addAttribute("phieuGiamGia", pgg.get());
             return "admin/phieu_giam_gia/create"; // Sử dụng lại template create
         } else {
-            return "redirect:/phieu-giam-gia/index";
+            return "redirect:/admin/phieu-giam-gia/index";
         }
     }
 
@@ -79,7 +79,7 @@ public class PhieuGiamGiaController {
         }
 
         phieuGiamGiaRepo.save(phieuGiamGia);
-        return "redirect:/phieu-giam-gia/index";
+        return "redirect:/admin/phieu-giam-gia/index";
     }
 
     @GetMapping("/delete/{id}")
@@ -91,7 +91,7 @@ public class PhieuGiamGiaController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "redirect:/phieu-giam-gia/index";
+        return "redirect:/admin/phieu-giam-gia/index";
     }
 
     /**

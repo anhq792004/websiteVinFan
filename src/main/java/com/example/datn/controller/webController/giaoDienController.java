@@ -59,9 +59,4 @@ public class giaoDienController {
         }
     }
 
-    @GetMapping("/cart")
-    public String cart() {
-        return "user/cart";
-    }
-
 }
