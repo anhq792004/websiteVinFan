@@ -20,7 +20,7 @@
                             <h4 th:text="${phieuGiamGia.id != null ? 'Sửa phiếu giảm giá' : 'Thêm phiếu giảm giá'}"></h4>
                         </div>
                         <div class="card-body">
-                            <form th:action="@{${phieuGiamGia.id != null ? '/phieu-giam-gia/update' : '/phieu-giam-gia/save'}}" method="post" th:object="${phieuGiamGia}">
+                            <form th:action="@{${phieuGiamGia.id != null ? '/admin/phieu-giam-gia/update' : '/admin/phieu-giam-gia/save'}}" method="post" th:object="${phieuGiamGia}">
                                 <input type="hidden" th:field="*{id}"/>
 
                                 <div class="row">
@@ -98,7 +98,7 @@
 
                                 <div class="mt-4">
                                     <button type="submit" class="btn btn-primary me-2">Lưu</button>
-                                    <a th:href="@{/phieu-giam-gia/index}" class="btn btn-secondary">Hủy</a>
+                                    <a th:href="@{/admin/phieu-giam-gia/index}" class="btn btn-secondary">Hủy</a>
                                 </div>
                             </form>
                         </div>
