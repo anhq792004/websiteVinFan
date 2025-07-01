@@ -73,6 +73,11 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     @Override
+    public List<HoaDon> getHoaDonByIdKH(Long idKH) {
+        return hoaDonRepo.findByKhachHang_Id(idKH);
+    }
+
+    @Override
     public List<HoaDonChiTiet> listHoaDonChiTiets(Long id) {
         return hoaDonChiTietRepo.findByHoaDon_Id(id);
     }
