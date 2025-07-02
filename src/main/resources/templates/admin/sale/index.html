@@ -148,7 +148,7 @@
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div class="d-flex gap-3">
                                     <strong>Tên khách hàng:</strong>
-                                    <span id="tenHienThi">Khách Lẻ</span>
+                                    <span th:text="${khachHang?.ten ?: 'Khách Lẻ'}"></span>
                                 </div>
                             </div>
                             <div class="gap-3 d-flex justify-content-between">
@@ -167,6 +167,17 @@
                         <hr>
                         <div class="row">
                             <div class="col-md-12">
+                                <!-- Giao Hàng -->
+                                <!--                                <div class="form-section mb-3 d-flex align-items-center">-->
+                                <!--                                    <div class="form-check form-switch">-->
+                                <!--                                        <label class="form-check-label">Giao hàng</label>-->
+                                <!--                                        <input-->
+                                <!--                                                type="checkbox"-->
+                                <!--                                                class="form-check-input toggle-trang-thai"-->
+                                <!--                                                th:data-id-hd="${idHD}"-->
+                                <!--                                                th:checked="${hoaDon.loaiHoaDon == false}">-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
                                 <div class="total-section">
                                     <!-- Tiền hàng (tổng tiền thanh toán) -->
                                     <div class="d-flex justify-content-between">
@@ -427,21 +438,10 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script th:src="@{/admin/assets/compiled/js/sale.js}"></script>
 <!-- hienthitendangnhap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.min.js"></script>
-<script>
-    const input = document.getElementById('name');
-    const span = document.getElementById('tenHienThi');
 
-    function capNhatTen() {
-        const giaTri = input.value.trim();
-        span.textContent = giaTri === '' ? 'Khách Lẻ' : giaTri;
-    }
-
-    input.addEventListener('input', capNhatTen);
-
-    // Khởi tạo khi trang load (nếu có dữ liệu từ server)
-    window.addEventListener('DOMContentLoaded', capNhatTen);
-</script>
 
 </body>
 </html>

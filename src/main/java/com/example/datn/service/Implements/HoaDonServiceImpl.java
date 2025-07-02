@@ -149,7 +149,6 @@ public class HoaDonServiceImpl implements HoaDonService {
             // Cập nhật trạng thái của HoaDon
             hoaDon.setTrangThai(getTrangThaiHoaDon().getDaXacNhan());
             hoaDon.setGhiChu(ghiChu);
-            hoaDon.setNgaySua(LocalDateTime.now());
             hoaDonRepo.save(hoaDon);
 
             // Tạo lịch sử cập nhật
@@ -157,7 +156,6 @@ public class HoaDonServiceImpl implements HoaDonService {
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getDaXacNhan());
             lichSuHoaDon.setNgayTao(LocalDateTime.now());
-
             lichSuHoaDon.setMoTa(ghiChu);
 
             lichSuHoaDonRepo.save(lichSuHoaDon);
@@ -171,14 +169,12 @@ public class HoaDonServiceImpl implements HoaDonService {
             HoaDon hoaDon = hoaDonOptional.get();
             // Cập nhật trạng thái của HoaDon giao hàng
             hoaDon.setTrangThai(getTrangThaiHoaDon().getDangGiaoHang());
-            hoaDon.setNgaySua(LocalDateTime.now());
             hoaDonRepo.save(hoaDon);
             // Tạo một bản ghi lịch sử cho HoaDon đã được giao hàng
             LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getDangGiaoHang());
-            lichSuHoaDon.setNgaySua(LocalDateTime.now());
-
+            lichSuHoaDon.setNgayTao(LocalDateTime.now());
             lichSuHoaDon.setMoTa("Đơn hàng đã được gửi lúc " + LocalDate.now());
             lichSuHoaDonRepo.save(lichSuHoaDon);
         }
@@ -197,8 +193,7 @@ public class HoaDonServiceImpl implements HoaDonService {
             LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getHoanThanh());
-            lichSuHoaDon.setNgaySua(LocalDateTime.now());
-
+            lichSuHoaDon.setNgayTao(LocalDateTime.now());
             lichSuHoaDon.setMoTa("Đơn hàng đã được giao thành công lúc " + LocalDate.now());
             lichSuHoaDonRepo.save(lichSuHoaDon);
         }
@@ -226,14 +221,13 @@ public class HoaDonServiceImpl implements HoaDonService {
             // Cập nhật trạng thái hóa đơn sang HỦY
             hoaDon.setGhiChu(ghiChu);
             hoaDon.setTrangThai(getTrangThaiHoaDon().getHuy());
-            hoaDon.setNgaySua(LocalDateTime.now());
             hoaDonRepo.save(hoaDon);
             
             // Tạo một bản ghi lịch sử cho HoaDon hủy
             LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getHuy());
-            lichSuHoaDon.setNgaySua(LocalDateTime.now());
+            lichSuHoaDon.setNgayTao(LocalDateTime.now());
             lichSuHoaDon.setMoTa(ghiChu);
             lichSuHoaDonRepo.save(lichSuHoaDon);
         } else {

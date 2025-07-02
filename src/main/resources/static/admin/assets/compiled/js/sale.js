@@ -47,15 +47,10 @@ $(document).ready(function () {
             confirmButtonText: "Xác nhận"
         }).then((result) => {
             if (result.isConfirmed) {
-                const ghiChu = result.value;
-
                 $.ajax({
                     url: "/sale/huy",
                     type: "POST",
-                    data: {
-                        id: hoaDonId,
-                        ghiChu: ghiChu
-                    },
+                    data: {id: hoaDonId},
                     success: function (response) {
                         Swal.fire({
                             toast: true,

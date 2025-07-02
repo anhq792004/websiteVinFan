@@ -215,7 +215,7 @@
                                     <span th:case="4" class="text-primary">Hoàn thành</span>
                                     <span th:case="5" class="text-danger">Hủy</span>
                                 </td>
-                                <td th:text="${#temporals.format(hoaDon.ngaySua, 'dd-MM-yyyy HH:mm')}"></td>
+                                <td th:text="${#temporals.format(hoaDon.ngayTao, 'dd-MM-yyyy HH:mm')}"></td>
                                 <td th:text="${item.hinhThucThanhToan}"></td>
                                 <td th:class="${item.loaiHoaDon ? 'text-danger' : 'text-primary'}"
                                     th:text="${item.loaiHoaDon ? 'Tại quầy' : 'Online'}">
