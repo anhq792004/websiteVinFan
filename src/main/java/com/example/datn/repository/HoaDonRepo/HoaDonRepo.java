@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 
 public interface HoaDonRepo extends JpaRepository<HoaDon,Long> {
     @Query("SELECT hd from HoaDon hd order by hd.ngayTao desc ")
@@ -46,5 +48,6 @@ public interface HoaDonRepo extends JpaRepository<HoaDon,Long> {
             "where hd.id = :hoaDonId")
     LichSuThanhToanResponse findThanhToanHoaDonId(@Param("hoaDonId") long id);
 
+    List<HoaDon> findByKhachHang_Id(Long idKH);
 
 }
