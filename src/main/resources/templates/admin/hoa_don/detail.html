@@ -168,8 +168,7 @@
 
                             <form th:if="${hoaDon.trangThai != 3 && hoaDon.trangThai != 1 && hoaDon.trangThai != 0}"
                                   class="me-2" th:data-id="${hoaDon.id}">
-                                <button type="button" class="btn btn-outline-warning btn-giao-hang">Đang giao hàng
-                                </button>
+                                <button type="button" class="btn btn-outline-warning btn-giao-hang">Giao hàng</button>
                             </form>
 
                             <form th:if="${hoaDon.trangThai == 3}"
@@ -177,7 +176,7 @@
                                 <button type="button" class="btn btn-outline-primary btn-hoan-thanh">Hoàn Thành</button>
                             </form>
 
-                            <form th:if="${hoaDon.trangThai != 3 && hoaDon.trangThai != 2}"
+                            <form th:if="${hoaDon.trangThai != 3}"
                                   class="me-2" th:data-id="${hoaDon.id}">
                                 <button type="button" class="btn btn-outline-danger btn-huy">Hủy</button>
                             </form>
@@ -239,23 +238,30 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder">Tên người nhận</label>
-                                <input type="text" class="form-control" placeholder="Tên">
+                                <input type="text" class="form-control" placeholder="Tên"
+                                       th:value="${hoaDon.tenNguoiNhan}"
+                                       th:disabled="${hoaDon.trangThai != 0 || hoaDon.trangThai != 1 ||hoaDon.trangThai != 2}"
+                                >
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder">Số điện thoại</label>
-                                <input type="text" class="form-control" placeholder="Số điện thoại">
+                                <input type="text" class="form-control" placeholder="Số điện thoại"
+                                       th:value="${hoaDon.sdtNguoiNhan}"
+                                       th:disabled="${hoaDon.trangThai != 0 || hoaDon.trangThai != 1 ||hoaDon.trangThai != 2}">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder" for="city">Thành phố</label>
-                                <select class="form-control" id="city" name="tinhThanhPho">
+                                <select class="form-control" id="city" name="tinhThanhPho"
+                                        th:disabled="${hoaDon.trangThai != 0 || hoaDon.trangThai != 1 ||hoaDon.trangThai != 2}">
                                     <option value="" selected>Chọn tỉnh thành</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder" for="district">Quận huyện</label>
-                                <select class="form-control" id="district" name="quanHuyen">
+                                <select class="form-control" id="district" name="quanHuyen"
+                                        th:disabled="${hoaDon.trangThai != 0 || hoaDon.trangThai != 1 ||hoaDon.trangThai != 2}">
                                     <option value="" selected>Chọn quận huyện</option>
                                 </select>
                             </div>
@@ -263,14 +269,16 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder" for="district">Phường xã</label>
-                                <select class="form-control" id="ward" name="xaPhuong">
+                                <select class="form-control" id="ward" name="xaPhuong"
+                                        th:disabled="${hoaDon.trangThai != 0 || hoaDon.trangThai != 1 ||hoaDon.trangThai != 2}">
                                     <option value="" selected>Chọn phường xã</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder">Số nhà / Ngõ đường</label>
                                 <input type="text" class="form-control"
-                                       placeholder="1300 Rockdick Rd., Unit A Markham, ON L3R8C3">
+                                       placeholder="1300 Rockdick Rd., Unit A Markham, ON L3R8C3"
+                                       th:disabled="${hoaDon.trangThai != 0 || hoaDon.trangThai != 1 ||hoaDon.trangThai != 2}">
                             </div>
                         </div>
                     </form>
@@ -361,7 +369,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" id="searchQuery"
                                placeholder="Tìm kiếm sản phẩm...">
