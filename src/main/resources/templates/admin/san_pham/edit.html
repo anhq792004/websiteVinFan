@@ -27,12 +27,12 @@
                             <!-- Thông tin cơ bản -->
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="editProductCode" class="form-label" style="color: #222; font-weight: 600;">Mã sản phẩm <span class="text-danger">*</span></label>
+                                    <label for="editProductCode" class="form-label">Mã sản phẩm <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="editProductCode" name="ma" th:value="${sanPham.ma}" required>
                                     <div class="invalid-feedback">Vui lòng nhập mã sản phẩm</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="editProductName" class="form-label" style="color: #222; font-weight: 600;">Tên sản phẩm <span class="text-danger">*</span></label>
+                                    <label for="editProductName" class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="editProductName" name="ten" th:value="${sanPham.ten}" required>
                                     <div class="invalid-feedback">Vui lòng nhập tên sản phẩm</div>
                                 </div>
@@ -41,7 +41,7 @@
                             <!-- Kiểu quạt và trạng thái -->
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="editFanType" class="form-label" style="color: #222; font-weight: 600;">Kiểu quạt <span class="text-danger">*</span></label>
+                                    <label for="editFanType" class="form-label">Kiểu quạt <span class="text-danger">*</span></label>
                                     <select class="form-select" id="editFanType" name="kieuQuat.id" required>
                                         <option value="">-- Chọn kiểu quạt --</option>
                                         <option th:each="kq : ${kieuQuat}" 
@@ -53,7 +53,7 @@
                                     <div class="invalid-feedback">Vui lòng chọn kiểu quạt</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="editProductStatus" class="form-label" style="color: #222; font-weight: 600;">Trạng thái</label>
+                                    <label for="editProductStatus" class="form-label">Trạng thái</label>
                                     <select class="form-select" id="editProductStatus" name="trangThai">
                                         <option value="true" th:selected="${sanPham.trangThai}">Đang kinh doanh</option>
                                         <option value="false" th:selected="${!sanPham.trangThai}">Ngừng kinh doanh</option>
@@ -63,7 +63,7 @@
 
                             <!-- Hình ảnh -->
                             <div class="mb-3">
-                                <label for="editProductImage" class="form-label" style="color: #222; font-weight: 600;">Hình ảnh sản phẩm</label>
+                                <label for="editProductImage" class="form-label">Hình ảnh sản phẩm</label>
                                 <input type="file" class="form-control" id="editProductImage" name="hinhAnh" accept="image/*">
                                 <div class="mt-2">
                                     <img id="editProductImagePreview" 
@@ -81,7 +81,7 @@
 
                             <!-- Mô tả -->
                             <div class="mb-3">
-                                <label for="editProductDescription" class="form-label" style="color: #222; font-weight: 600;">Mô tả sản phẩm</label>
+                                <label for="editProductDescription" class="form-label">Mô tả sản phẩm</label>
                                 <textarea class="form-control" id="editProductDescription" name="moTa" rows="3" th:text="${sanPham.moTa}"></textarea>
                             </div>
                             

@@ -26,16 +26,14 @@
                             <form id="addProductForm" th:action="@{/admin/san-pham/add}" method="post" enctype="multipart/form-data">
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="productCode" class="form-label"
-                                            style="color: #222; font-weight: 600;">Mã sản phẩm <span
+                                        <label for="productCode" class="form-label">Mã sản phẩm <span
                                                 class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="productCode" name="ma" required
                                             pattern="[A-Za-z0-9]+" title="Mã sản phẩm chỉ chứa chữ cái và số">
                                         <div class="invalid-feedback">Vui lòng nhập mã sản phẩm hợp lệ</div>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="productName" class="form-label"
-                                            style="color: #222; font-weight: 600;">Tên sản phẩm <span
+                                        <label for="productName" class="form-label">Tên sản phẩm <span
                                                 class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="productName" name="ten" required>
                                         <div class="invalid-feedback">Vui lòng nhập tên sản phẩm</div>
@@ -43,8 +41,7 @@
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="fanType" class="form-label"
-                                            style="color: #222; font-weight: 600;">Kiểu quạt <span
+                                        <label for="fanType" class="form-label">Kiểu quạt <span
                                                 class="text-danger">*</span></label>
                                         <select class="form-select" id="fanType" name="kieuQuat.id" required>
                                             <option value="">-- Chọn kiểu quạt --</option>
@@ -52,8 +49,7 @@
                                         <div class="invalid-feedback">Vui lòng chọn kiểu quạt</div>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="productStatus" class="form-label"
-                                            style="color: #222; font-weight: 600;">Trạng thái</label>
+                                        <label for="productStatus" class="form-label">Trạng thái</label>
                                         <select class="form-select" id="productStatus" name="trangThai">
                                             <option value="true" selected>Đang kinh doanh</option>
                                             <option value="false">Ngừng kinh doanh</option>
@@ -63,16 +59,14 @@
 
                                 <!-- Thêm phần tải hình ảnh sản phẩm -->
                                 <div class="mb-3">
-                                    <label for="productImage" class="form-label"
-                                        style="color: #222; font-weight: 600;">Hình ảnh sản phẩm</label>
+                                    <label for="productImage" class="form-label">Hình ảnh sản phẩm</label>
                                     <input type="file" class="form-control" id="productImage" name="hinhAnh"
                                         accept="image/*">
                                 </div>
 
                                 <!-- Mô tả sản phẩm -->
                                 <div class="mb-3">
-                                    <label for="productDescription" class="form-label"
-                                        style="color: #222; font-weight: 600;">Mô tả sản phẩm</label>
+                                    <label for="productDescription" class="form-label">Mô tả sản phẩm</label>
                                     <textarea class="form-control" id="productDescription" name="moTa"
                                         rows="3"></textarea>
                                 </div>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{/admin/fragments/head :: head}"></head>
+<link rel="stylesheet" th:href="@{/admin/assets/compiled/css/sanPham.css}">
+<style>
+
+    
+    .badge .btn-close {
+        background: none;
+        border: none;
+        padding: 0;
+        margin-left: 5px;
+        line-height: 1;
+        opacity: 0.7;
+    }
+    
+    .badge .btn-close:hover {
+        opacity: 1;
+    }
+    
+    .preview-header {
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .preview-item {
+        padding: 4px 8px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        margin: 2px;
+        display: block;
+        border-left: 3px solid #007bff;
+    }
+    
+    .variant-name {
+        color: #495057;
+    }
+    
+    .spin {
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    .form-label strong {
+        color: #495057;
+    }
+    
+    .btn-success {
+        border-radius: 6px;
+    }
+    
+    #selectedMauSacContainer .badge,
+    #selectedCongSuatContainer .badge {
+        padding: 0.5em 0.8em;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    /* Nút + màu cam hình chữ nhật */
+    .btn-warning.btn-sm {
+        background-color: #fd7e14;
+        border-color: #fd7e14;
+        color: white;
+        border-radius: 6px;
+        width: 40px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-warning.btn-sm:hover {
+        background-color: #e66b06;
+        border-color: #e66b06;
+        transform: scale(1.1);
+    }
+    
+    /* Modal buttons */
+    .mau-sac-option, .cong-suat-option {
+        border-radius: 6px;
+        margin-bottom: 8px;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+    
+    .mau-sac-option:hover, .cong-suat-option:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Animation khi được chọn */
+    .mau-sac-option.btn-secondary, .cong-suat-option.btn-secondary {
+        animation: selectedPulse 0.3s ease-in-out;
+    }
+    
+    @keyframes selectedPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    /* Styles cho bảng variants */
+    .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        vertical-align: middle;
+    }
+    
+    .table td {
+        vertical-align: middle;
+        padding: 0.5rem;
+    }
+    
+    .image-upload-container {
+        max-width: 150px;
+    }
+    
+    .image-preview-container {
+        transition: all 0.3s ease;
+    }
+    
+    .image-preview-container:hover {
+        border-color: #007bff !important;
+    }
+    
+
+    
+    .remove-variant-btn {
+        transition: all 0.3s ease;
+    }
+    
+    .remove-variant-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    /* Responsive table */
+    @media (max-width: 1200px) {
+        .image-upload-container {
+            max-width: 120px;
+        }
+    }
+    
+    /* Loading animation */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+    
+    .loading-spinner {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        text-align: center;
+    }
+</style>
+<body>
+<!-- Site wrapper -->
+<div class="wrapper">
+    <!-- Sidebar -->
+    <div>
+        <aside th:replace="~{/admin/fragments/sidebar :: sidebar}"></aside>
+    </div>
+
+    <!-- Main-->
+    <div id="main">
+        <header th:replace="~{/admin/fragments/header :: header}"></header>
+        
+        <div class="page-content">
+            <div class="page-heading">
+                <div class="page-title mb-4">
+                    <div class="row">
+                        <div class="col-12 col-md-6 order-md-1 order-last">
+                            <h3>Thêm biến thể sản phẩm</h3>
+                        </div>
+                        <div class="col-12 col-md-6 order-md-2 order-first">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a th:href="@{/admin}">Trang chủ</a></li>
+                                    <li class="breadcrumb-item"><a th:href="@{/admin/san-pham/list}">Sản phẩm</a></li>
+                                    <li class="breadcrumb-item"><a th:href="@{/admin/san-pham/detail(id=${sanPham.id})}" th:text="${sanPham.ten}">Chi tiết sản phẩm</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Thêm biến thể</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thông tin sản phẩm chính -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-info-circle-fill text-primary me-2"></i>
+                            Sản phẩm: <span th:text="${sanPham.ten}" class="text-primary"></span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Mã sản phẩm:</strong> <span th:text="${sanPham.ma}"></span></p>
+                                <p><strong>Kiểu quạt:</strong> <span th:text="${sanPham.kieuQuat != null ? sanPham.kieuQuat.ten : 'N/A'}"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Ngày tạo:</strong> <span th:text="${#temporals.format(sanPham.ngayTao, 'dd-MM-yyyy')}"></span></p>
+                                <p><strong>Trạng thái:</strong> 
+                                    <span th:if="${sanPham.trangThai}" class="badge bg-success">Đang kinh doanh</span>
+                                    <span th:unless="${sanPham.trangThai}" class="badge bg-danger">Ngừng kinh doanh</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form thêm nhiều biến thể -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-plus-circle-fill text-success me-2"></i>
+                            Thêm nhiều biến thể cùng lúc
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="multipleVariantsForm">
+                            <input type="hidden" id="sanPhamId" th:value="${sanPham.id}">
+                            
+                            <div class="row">
+                                <!-- Cột bên trái: Lựa chọn thuộc tính -->
+                                <div class="col-md-8">
+                                    <!-- Màu sắc -->
+                                    <div class="mb-4">
+                                        <label class="form-label"><strong>*Màu sắc:</strong></label>
+                                        <div class="d-flex align-items-center flex-wrap gap-2">
+                                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#mauSacModal">
+                                                <i class="bi bi-plus"></i>
+                                            </button>
+                                            <!-- Hiển thị màu sắc đã chọn ngay bên cạnh -->
+                                            <div id="selectedMauSacContainer" class="d-flex flex-wrap gap-2">
+                                                <!-- Các badge màu sắc sẽ hiển thị ở đây -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Công suất -->
+                                    <div class="mb-4">
+                                        <label class="form-label"><strong>*Công suất:</strong></label>
+                                        <div class="d-flex align-items-center flex-wrap gap-2">
+                                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#congSuatModal">
+                                                <i class="bi bi-plus"></i>
+                                            </button>
+                                            <!-- Hiển thị công suất đã chọn ngay bên cạnh -->
+                                            <div id="selectedCongSuatContainer" class="d-flex flex-wrap gap-2">
+                                                <!-- Các badge công suất sẽ hiển thị ở đây -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Thông tin chung -->
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="hangId" class="form-label">Hãng:</label>
+                                                <select id="hangId" class="form-select" required>
+                                                    <option value="">Chọn hãng</option>
+                                                    <option th:each="hang : ${hangList}" 
+                                                            th:value="${hang.id}" 
+                                                            th:text="${hang.ten}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="nutBamId" class="form-label">Nút bấm:</label>
+                                                <select id="nutBamId" class="form-select" required>
+                                                    <option value="">Chọn nút bấm</option>
+                                                    <option th:each="nutBam : ${nutBamList}" 
+                                                            th:value="${nutBam.id}" 
+                                                            th:text="${nutBam.ten}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label for="soLuong" class="form-label">Số lượng:</label>
+                                                <input type="number" id="soLuong" class="form-control" value="0" min="0">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label for="gia" class="form-label">Giá (VNĐ):</label>
+                                                <input type="number" id="gia" class="form-control" step="1000" min="0">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label for="canNang" class="form-label">Cân nặng (gram):</label>
+                                                <input type="number" id="canNang" class="form-control" step="0.1" min="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="moTa" class="form-label">Mô tả:</label>
+                                        <textarea id="moTa" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    
+                                    <div class="form-check mb-3">
+                                        <input type="checkbox" id="trangThai" class="form-check-input" checked>
+                                        <label for="trangThai" class="form-check-label">Kích hoạt</label>
+                                    </div>
+                                    
+                                </div>
+                                
+                                <!-- Cột bên phải: Preview -->
+                                <div class="col-md-4">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <div id="variantsPreview">
+                                                <div class="text-center text-muted">
+                                                    <i class="bi bi-eye display-6 mb-2"></i>
+                                                    <p>Chọn màu sắc và công suất để xem trước các biến thể sẽ được tạo</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-3 d-grid">
+                                        <button type="button" id="generateVariantsList" class="btn btn-info btn-lg">
+                                            <i class="bi bi-list-ul"></i> Preview
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="mt-3 d-grid" id="saveButtonContainer" style="display: none;">
+                                        <button type="button" id="saveToDatabase" class="btn btn-success btn-lg">
+                                            <i class="bi bi-database-check"></i> Lưu vào Database
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="mt-3 d-grid">
+                                        <a th:href="@{/admin/san-pham/detail(id=${sanPham.id})}" class="btn btn-secondary">
+                                            <i class="bi bi-arrow-left"></i> Quay lại
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <!-- Bảng preview biến thể -->
+                        <div id="variantsTableContainer" style="display: none;" class="mt-4">
+                            <hr>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-table text-info me-2"></i>
+                                    Danh sách biến thể (<span id="variantsCount">0</span> biến thể)
+                                </h5>
+                                <button type="button" id="editAllToggle" class="btn btn-outline-warning btn-sm">
+                                    <i class="bi bi-pencil"></i> Chỉnh sửa tất cả
+                                </button>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover" id="variantsTable">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th width="4%">#</th>
+                                            <th width="8%">Màu sắc</th>
+                                            <th width="10%">Công suất</th>
+                                            <th width="8%">Số lượng</th>
+                                            <th width="12%">Giá (VNĐ)</th>
+                                            <th width="8%">Cân nặng</th>
+                                            <th width="20%">Mô tả</th>
+                                            <th width="15%">Hình ảnh</th>
+                                            <th width="8%">Trạng thái</th>
+                                            <th width="7%">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="variantsTableBody">
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal chọn màu sắc -->
+<div class="modal fade" id="mauSacModal" tabindex="-1" aria-labelledby="mauSacModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mauSacModalLabel">Chọn màu sắc</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-2" id="mauSacOptions">
+                    <div th:each="mauSac : ${mauSacList}" class="col-6 col-md-4" th:if="${mauSac.trangThai}">
+                        <button type="button" class="btn btn-outline-primary w-100 mau-sac-option" 
+                                th:data-mau-sac-id="${mauSac.id}" th:text="${mauSac.ten}">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal chọn công suất -->
+<div class="modal fade" id="congSuatModal" tabindex="-1" aria-labelledby="congSuatModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="congSuatModalLabel">Chọn công suất</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-2" id="congSuatOptions">
+                    <div th:each="congSuat : ${congSuatList}" class="col-6 col-md-4" th:if="${congSuat.trangThai}">
+                        <button type="button" class="btn btn-outline-info w-100 cong-suat-option" 
+                                th:data-cong-suat-id="${congSuat.id}" th:text="${congSuat.ten}">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script -->
+<script th:src="@{/admin/assets/extensions/sweetalert2/sweetalert2.min.js}"></script>
+<script th:src="@{/admin/assets/extensions/toastify-js/src/toastify.js}"></script>
+<script th:src="@{/admin/assets/compiled/js/app.js}"></script>
+
+<!-- Custom JS -->
+<script th:src="@{/admin/js/multiple-variants.js}"></script>
+
+</body>
+</html> 
