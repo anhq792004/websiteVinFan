@@ -1,13 +1,11 @@
 <header class="version_1" th:fragment="header" xmlns:th="http://www.thymeleaf.org">
     <div class="layer"></div><!-- Mobile menu overlay mask -->
-
     <div class="main_header">
         <div class="container">
             <div class="row small-gutters">
                 <div class="col-xl-3 col-lg-3 d-lg-flex align-items-center">
                     <div id="logo">
-                        <a href="/fanTech/index"><img th:src="@{/user/assets/images/logo.svg}" alt="" width="100"
-                                                      height="35"></a>
+                        <a href="/fanTech/index"><img src="/user/assets/images/logo.svg" alt="" width="100" height="35"></a>
                     </div>
                 </div>
                 <nav class="col-xl-6 col-lg-7">
@@ -38,118 +36,55 @@
                     </div>
                     <!--/main-menu -->
                 </nav>
-
-                <!-- Modified user info section -->
                 <div class="col-xl-3 col-lg-2 d-lg-flex align-items-center justify-content-end text-end">
-                    <!-- User info when logged in -->
-                    <div class="user-info-dropdown" th:if="${isLoggedIn and currentUser != null}">
-                        <a href="#" class="user-info-btn" onclick="toggleUserDropdown(event)">
-                            <i class="fas fa-user-circle me-2"></i>
-                            <span th:text="${currentUser.email}">Email người dùng</span>
-                            <i class="fas fa-chevron-down ms-2"></i>
-                        </a>
-                        <div class="user-dropdown-menu" id="userDropdownMenu">
-                            <div class="user-dropdown-header">
-                                <div style="font-weight: 600; color: #333;">
-                                    <i class="fas fa-user me-2"></i>
-                                    <span th:text="${currentUser.ma != null ? currentUser.ma : 'Chưa có mã'}">Mã TK</span>
-                                </div>
-                            </div>
-                            <div class="user-dropdown-text">
-                                <i class="fas fa-envelope me-2"></i>
-                                <span th:text="${currentUser.email}">Email</span>
-                            </div>
-                            <hr style="margin: 10px 0;">
-                            <a href="/profile" class="user-dropdown-item">
-                                <i class="fas fa-user-edit me-2"></i>
-                                Thông tin cá nhân
-                            </a>
-                            <a href="/profile/order-infor" class="user-dropdown-item">
-                                <i class="fas fa-shopping-bag me-2"></i>
-                                Đơn hàng của tôi
-                            </a>
-                            <a href="/wishlist" class="user-dropdown-item">
-                                <i class="fas fa-heart me-2"></i>
-                                Yêu thích
-                            </a>
-                            <hr style="margin: 10px 0;">
-                            <form th:action="@{/logout}" method="post" style="margin: 0;">
-                                <button type="submit" class="user-dropdown-item"
-                                        style="border: none; background: none; width: 100%; text-align: left; cursor: pointer;">
-                                    <i class="fas fa-sign-out-alt me-2"></i>
-                                    Đăng xuất
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Login button when not logged in -->
-                    <div th:if="${!isLoggedIn or currentUser == null}">
-                        <a href="/login" class="login-btn-custom">
-                            <i class="fas fa-sign-in-alt me-2"></i>
-                            <span>Đăng nhập</span>
-                        </a>
-                    </div>
-
-                    <!-- Keep the original phone number for non-logged users or as secondary info -->
-                    <a class="phone_top" href="tel://9438843343" th:if="${!isLoggedIn or currentUser == null}"
-                       style="margin-left: 15px;">
-                        <strong><span>Need Help?</span>+94 423-23-221</strong>
-                    </a>
-
-                    <!-- Cart Icon Addition -->
-                    <a href="/cart" class="cart-btn ms-3" title="Giỏ hàng">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count" style="display: none;">0</span>
-                    </a>
+                    <a class="phone_top" href="tel://9438843343"><strong><span>Need Help?</span>+94 423-23-221</strong></a>
                 </div>
             </div>
             <!-- /row -->
         </div>
     </div>
-
     <!-- /main_header -->
 
-    <!--    <div class="main_nav Sticky">-->
-    <!--        <div class="container">-->
-    <!--            <div class="row d-flex justify-content-center">-->
-    <!--                <div class="col-xl-6 col-lg-7 col-md-6 d-none d-md-block">-->
-    <!--                    <div class="custom-search-input">-->
-    <!--                        <input type="text" placeholder="Search over 10.000 products">-->
-    <!--                        <button type="submit"><i class="header-icon_search_custom"></i></button>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--                <div class="col-xl-3 col-lg-2 col-md-3">-->
-    <!--                    <div >-->
-    <!--                        <ul class="top_tools">-->
-    <!--                            <li>-->
-    <!--                                <div class="dropdown dropdown-access">-->
-    <!--                                    <a href="/fanTech/infor" class="access_link"></a>-->
-    <!--                                </div>-->
-    <!--                                &lt;!&ndash; /dropdown-access&ndash;&gt;-->
-    <!--                            </li>-->
-    <!--                        </ul>-->
-    <!--                    </div>-->
-    <!--                    <div>-->
-    <!--                        <ul class="top_tools">-->
-    <!--                            <li>-->
-    <!--                                <div class="dropdown dropdown-cart">-->
-    <!--                                    <a href="/fanTech/cart" class="cart_bt"></a>-->
-    <!--                                </div>-->
-    <!--                                &lt;!&ndash; /dropdown-access&ndash;&gt;-->
-    <!--                            </li>-->
-    <!--                        </ul>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--            </div>-->
+    <div class="main_nav Sticky">
+        <div class="container">
+            <div class="row d-flex justify-content-center">
+                <div class="col-xl-6 col-lg-7 col-md-6 d-none d-md-block">
+                    <div class="custom-search-input">
+                        <input type="text" placeholder="Search over 10.000 products">
+                        <button type="submit"><i class="header-icon_search_custom"></i></button>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-2 col-md-3">
+                    <div >
+                        <ul class="top_tools">
+                            <li>
+                                <div class="dropdown dropdown-access">
+                                    <a href="/fanTech/infor" class="access_link"></a>
+                                </div>
+                                <!-- /dropdown-access-->
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <ul class="top_tools">
+                            <li>
+                                <div class="dropdown dropdown-cart">
+                                    <a href="/fanTech/cart" class="cart_bt"></a>
+                                </div>
+                                <!-- /dropdown-access-->
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
-    <!--            &lt;!&ndash; /row &ndash;&gt;-->
-    <!--        </div>-->
-    <!--        <div class="search_mob_wp">-->
-    <!--            <input type="text" class="form-control" placeholder="Search over 10.000 products">-->
-    <!--            <input type="submit" class="btn_1 full-width" value="Search">-->
-    <!--        </div>-->
-    <!--        &lt;!&ndash; /search_mobile &ndash;&gt;-->
-    <!--    </div>-->
+            <!-- /row -->
+        </div>
+        <div class="search_mob_wp">
+            <input type="text" class="form-control" placeholder="Search over 10.000 products">
+            <input type="submit" class="btn_1 full-width" value="Search">
+        </div>
+        <!-- /search_mobile -->
+    </div>
     <!-- /main_nav -->
 </header>

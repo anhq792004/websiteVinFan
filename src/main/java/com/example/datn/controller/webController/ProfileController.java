@@ -1,13 +1,10 @@
 package com.example.datn.controller.webController;
 
-import com.example.datn.entity.HoaDon.HoaDon;
 import com.example.datn.entity.KhachHang;
 import com.example.datn.entity.TaiKhoan;
-import com.example.datn.service.HoaDonService.HoaDonService;
 import com.example.datn.service.KhachHangService.KhachHangService;
 import com.example.datn.service.taiKhoanService.TaiKhoanService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,18 +15,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Date;
-import java.util.List;
 
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("/profile")
 public class ProfileController {
 
-    private final KhachHangService khachHangService;
+    @Autowired
+    private KhachHangService khachHangService;
 
-    private final TaiKhoanService taiKhoanService;
-
-    private final HoaDonService hoaDonService;
+    @Autowired
+    private TaiKhoanService taiKhoanService;
 
     /**
      * Hiển thị trang thông tin cá nhân
@@ -137,27 +132,5 @@ public class ProfileController {
         // Lấy số lượng khách hàng hiện tại và tạo mã mới
         long count = khachHangService.count();
         return "KH" + String.format("%04d", count + 1);
-    }
-
-    @GetMapping("/order-infor")
-    public String trackOrder(Model model,
-                             HttpSession session) {
-        TaiKhoan currentUser = (TaiKhoan) session.getAttribute("currentUser");
-        KhachHang khachHang = khachHangService.findByTaiKhoan(currentUser);
-        List<HoaDon> hoaDons = hoaDonService.getHoaDonByIdKH(khachHang.getId());
-        model.addAttribute("hoaDons", hoaDons);
-
-        return "user/orderInfor/index";
-    }
-
-    @GetMapping("/order-infor/detail")
-    public String detail(Model model,
-                             HttpSession session) {
-        TaiKhoan currentUser = (TaiKhoan) session.getAttribute("currentUser");
-        KhachHang khachHang = khachHangService.findByTaiKhoan(currentUser);
-        List<HoaDon> hoaDons = hoaDonService.getHoaDonByIdKH(khachHang.getId());
-        model.addAttribute("hoaDons", hoaDons);
-
-        return "user/orderInfor/index";
     }
 }

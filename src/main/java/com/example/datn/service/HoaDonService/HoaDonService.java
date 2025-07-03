@@ -27,7 +27,6 @@ public interface HoaDonService {
 
     String generateOrderCode();
 
-    List<HoaDon> getHoaDonByIdKH(Long idKH);
 
     //hoaDonChiTiet
 
