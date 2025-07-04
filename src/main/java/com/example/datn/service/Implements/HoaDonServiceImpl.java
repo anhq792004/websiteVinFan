@@ -73,6 +73,11 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     @Override
+    public List<HoaDon> getHoaDonByIdKH(Long idKH) {
+        return hoaDonRepo.findByKhachHang_Id(idKH);
+    }
+
+    @Override
     public List<HoaDonChiTiet> listHoaDonChiTiets(Long id) {
         return hoaDonChiTietRepo.findByHoaDon_Id(id);
     }
@@ -109,16 +114,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         }
         
         if (hdctToDelete != null) {
-            // Lấy thông tin sản phẩm chi tiết
-            SanPhamChiTiet sanPhamChiTiet = hdctToDelete.getSanPhamChiTiet();
-            
-            // Lấy số lượng sản phẩm trong giỏ
-            int soLuongTrongGio = hdctToDelete.getSoLuong();
-            
-            // Hoàn trả số lượng vào kho
-            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + soLuongTrongGio);
-            sanPhamChiTietRepo.save(sanPhamChiTiet);
-            
+
             // Xóa sản phẩm khỏi giỏ hàng
             hoaDonChiTietRepo.deleteSanPhamChiTiet_Id(idSPCT);
         } else {
@@ -128,7 +124,7 @@ public class HoaDonServiceImpl implements HoaDonService {
 
 
     @Override
-    public void xacNhan(Long id) {
+    public void xacNhan(Long id,String ghiChu) {
         // Tìm kiếm HoaDon dựa trên ID
         Optional<HoaDon> hoaDonOptional = hoaDonRepo.findById(id);
         List<HoaDonChiTiet> listHDCT = hoaDonChiTietRepo.findByHoaDon_Id(id);
@@ -148,6 +144,8 @@ public class HoaDonServiceImpl implements HoaDonService {
 
             // Cập nhật trạng thái của HoaDon
             hoaDon.setTrangThai(getTrangThaiHoaDon().getDaXacNhan());
+            hoaDon.setGhiChu(ghiChu);
+            hoaDon.setNgaySua(LocalDateTime.now());
             hoaDonRepo.save(hoaDon);
 
             // Tạo lịch sử cập nhật
@@ -155,7 +153,8 @@ public class HoaDonServiceImpl implements HoaDonService {
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getDaXacNhan());
             lichSuHoaDon.setNgayTao(LocalDateTime.now());
-            lichSuHoaDon.setMoTa("Admin đã xác nhận đơn hàng");
+
+            lichSuHoaDon.setMoTa(ghiChu);
 
             lichSuHoaDonRepo.save(lichSuHoaDon);
         }
@@ -168,12 +167,14 @@ public class HoaDonServiceImpl implements HoaDonService {
             HoaDon hoaDon = hoaDonOptional.get();
             // Cập nhật trạng thái của HoaDon giao hàng
             hoaDon.setTrangThai(getTrangThaiHoaDon().getDangGiaoHang());
+            hoaDon.setNgaySua(LocalDateTime.now());
             hoaDonRepo.save(hoaDon);
             // Tạo một bản ghi lịch sử cho HoaDon đã được giao hàng
             LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getDangGiaoHang());
-            lichSuHoaDon.setNgayTao(LocalDateTime.now());
+            lichSuHoaDon.setNgaySua(LocalDateTime.now());
+
             lichSuHoaDon.setMoTa("Đơn hàng đã được gửi lúc " + LocalDate.now());
             lichSuHoaDonRepo.save(lichSuHoaDon);
         }
@@ -192,41 +193,31 @@ public class HoaDonServiceImpl implements HoaDonService {
             LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getHoanThanh());
-            lichSuHoaDon.setNgayTao(LocalDateTime.now());
+            lichSuHoaDon.setNgaySua(LocalDateTime.now());
+
             lichSuHoaDon.setMoTa("Đơn hàng đã được giao thành công lúc " + LocalDate.now());
             lichSuHoaDonRepo.save(lichSuHoaDon);
         }
     }
 
     @Override
-    public void huy(Long id) {
+    public void huy(Long id, String ghiChu) {
         Optional<HoaDon> optionalHoaDon = hoaDonRepo.findById(id);
         if (optionalHoaDon.isPresent()) {
             HoaDon hoaDon = optionalHoaDon.get();
             
-            // Lấy danh sách các chi tiết hóa đơn
-            List<HoaDonChiTiet> listHDCT = hoaDonChiTietRepo.findByHoaDon_Id(id);
-            
-            // Hoàn trả số lượng sản phẩm vào kho
-            for (HoaDonChiTiet hdct : listHDCT) {
-                SanPhamChiTiet sanPhamChiTiet = hdct.getSanPhamChiTiet();
-                int soLuongTrongGio = hdct.getSoLuong();
-                
-                // Cập nhật lại số lượng trong kho
-                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + soLuongTrongGio);
-                sanPhamChiTietRepo.save(sanPhamChiTiet);
-            }
-            
             // Cập nhật trạng thái hóa đơn sang HỦY
+            hoaDon.setGhiChu(ghiChu);
             hoaDon.setTrangThai(getTrangThaiHoaDon().getHuy());
+            hoaDon.setNgaySua(LocalDateTime.now());
             hoaDonRepo.save(hoaDon);
             
             // Tạo một bản ghi lịch sử cho HoaDon hủy
             LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
             lichSuHoaDon.setHoaDon(hoaDon);
             lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getHuy());
-            lichSuHoaDon.setNgayTao(LocalDateTime.now());
-            lichSuHoaDon.setMoTa("Đơn hàng đã được hủy lúc " + LocalDateTime.now());
+            lichSuHoaDon.setNgaySua(LocalDateTime.now());
+            lichSuHoaDon.setMoTa(ghiChu);
             lichSuHoaDonRepo.save(lichSuHoaDon);
         } else {
             throw new RuntimeException("Không tìm thấy hóa đơn với ID: " + id);
@@ -248,11 +239,6 @@ public class HoaDonServiceImpl implements HoaDonService {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietOptional.get();
         HoaDon hoaDon = hoaDonOptional.get();
 
-        // Kiểm tra số lượng trong kho
-        if (sanPhamChiTiet.getSoLuong() <= 0) {
-            throw new RuntimeException("Sản phẩm " + sanPhamChiTiet.getSanPham().getTen() + " đã hết hàng!");
-        }
-
         //check sp tồn tại trong hóa đơn
         Optional<HoaDonChiTiet> existingHDCT = hoaDonChiTietRepo.
                 findByHoaDonIdAndSanPhamChiTietId(hoaDon.getId(), sanPhamChiTiet.getId());
@@ -265,10 +251,6 @@ public class HoaDonServiceImpl implements HoaDonService {
             BigDecimal thanhTienMoi = hoaDonChiTiet.getGia().multiply(BigDecimal.valueOf(soLuongMoi));
             hoaDonChiTiet.setThanhTien(thanhTienMoi);
 
-            // Giảm số lượng sản phẩm trong kho
-            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
-            sanPhamChiTietRepo.save(sanPhamChiTiet);
-            
             hoaDonChiTietRepo.save(hoaDonChiTiet);
         } else {
             HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
@@ -278,10 +260,6 @@ public class HoaDonServiceImpl implements HoaDonService {
             hoaDonChiTiet.setSoLuong(addSPToHDCTRequest.getSoLuong());
             BigDecimal thanhTien = addSPToHDCTRequest.getGia().multiply(BigDecimal.valueOf(addSPToHDCTRequest.getSoLuong()));
             hoaDonChiTiet.setThanhTien(thanhTien);
-
-            // Giảm số lượng sản phẩm trong kho
-            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - addSPToHDCTRequest.getSoLuong());
-            sanPhamChiTietRepo.save(sanPhamChiTiet);
 
             hoaDonChiTietRepo.save(hoaDonChiTiet);
         }
@@ -362,10 +340,6 @@ public class HoaDonServiceImpl implements HoaDonService {
             BigDecimal gia = hdct.getGia();
             hdct.setThanhTien(gia.multiply(BigDecimal.valueOf(hdct.getSoLuong())));
 
-            // Giảm số lượng sản phẩm trong kho
-            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
-            sanPhamChiTietRepo.save(sanPhamChiTiet);
-
             // Lưu lại bản ghi HoaDonChiTiet đã cập nhật
             hoaDonChiTietRepo.save(hdct);
         } else {
@@ -385,19 +359,12 @@ public class HoaDonServiceImpl implements HoaDonService {
                 throw new RuntimeException("Số lượng không thể nhỏ hơn 1");
             }
 
-            // Lấy thông tin sản phẩm chi tiết
-            SanPhamChiTiet sanPhamChiTiet = hdct.getSanPhamChiTiet();
-
             // Giảm số lượng đi 1
             hdct.setSoLuong(hdct.getSoLuong() - 1);
 
             // Cập nhật lại thành tiền
             BigDecimal gia = hdct.getGia();
             hdct.setThanhTien(gia.multiply(BigDecimal.valueOf(hdct.getSoLuong())));
-
-            // Tăng số lượng sản phẩm trong kho
-            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + 1);
-            sanPhamChiTietRepo.save(sanPhamChiTiet);
 
             // Lưu lại bản ghi HoaDonChiTiet đã cập nhật
             hoaDonChiTietRepo.save(hdct);

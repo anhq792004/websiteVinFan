@@ -1,299 +1,518 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:insert="~{/admin/fragments/head :: head}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Ansonika">
+    <title>Chi tiết sản phẩm</title>
+
+    <!-- Favicons-->
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="img/apple-touch-icon-114x114-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="img/apple-touch-icon-144x144-precomposed.png">
+
+    <!-- GOOGLE WEB FONT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- BASE CSS -->
+    <link rel="stylesheet" th:href="@{/user/assets/compiled/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/user/assets/compiled/css/style.css}">
+
+    <link rel="stylesheet" th:href="@{/user/assets/compiled/css/styleMau.css}">
+
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="">
-<meta name="author" content="Ansonika">
-<title>Template</title>
-
-<!-- Favicons-->
-<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-<link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
-<link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
-<link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="img/apple-touch-icon-114x114-precomposed.png">
-<link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="img/apple-touch-icon-144x144-precomposed.png">
-
-<!-- GOOGLE WEB FONT -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-
-<!-- BASE CSS -->
-<link rel="stylesheet" th:href="@{/user/assets/compiled/css/bootstrap.min.css}">
-<link rel="stylesheet" th:href="@{/user/assets/compiled/css/style.css}">
-
-<!-- SPECIFIC CSS -->
-<link rel="stylesheet" th:href="@{/user/assets/compiled/css/product_page.css}">
-
-<!-- YOUR CUSTOM CSS -->
-<link href="css/custom.css" rel="stylesheet">
 
 <body>
-
 <div id="page">
-
     <header th:replace="/user/fragments/header :: header"></header>
 
-    <!-- /header -->
-
+    <!-- Main Content - Chi tiết sản phẩm -->
     <main>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="all">
-                    <div class="slider">
-                        <div class="owl-carousel owl-theme main">
-                            <div style="background-image: url(img/products/shoes/1.jpg);" class="item-box"></div>
-                            <div style="background-image: url(img/products/shoes/2.jpg);" class="item-box"></div>
-                            <div style="background-image: url(img/products/shoes/3.jpg);" class="item-box"></div>
-                            <div style="background-image: url(img/products/shoes/4.jpg);" class="item-box"></div>
-                            <div style="background-image: url(img/products/shoes/5.jpg);" class="item-box"></div>
-                            <div style="background-image: url(img/products/shoes/6.jpg);" class="item-box"></div>
-                        </div>
-                        <div class="left nonl"><i class="ti-angle-left"></i></div>
-                        <div class="right"><i class="ti-angle-right"></i></div>
-                    </div>
-                    <div class="slider-two">
-                        <div class="owl-carousel owl-theme thumbs">
-                            <div style="background-image: url(img/products/shoes/1.jpg);" class="item active"></div>
-                            <div style="background-image: url(img/products/shoes/2.jpg);" class="item"></div>
-                            <div style="background-image: url(img/products/shoes/3.jpg);" class="item"></div>
-                            <div style="background-image: url(img/products/shoes/4.jpg);" class="item"></div>
-                            <div style="background-image: url(img/products/shoes/5.jpg);" class="item"></div>
-                            <div style="background-image: url(img/products/shoes/6.jpg);" class="item"></div>
-                        </div>
-                        <div class="left-t nonl-t"></div>
-                        <div class="right-t"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <!-- /page_header -->
-                <div class="prod_info">
-                    <h1>Armor Air X Fear</h1>
-                    <p><small>SKU: MTKRY-001</small><br>Sed ex labitur adolescens scriptorem. Te saepe verear tibique
-                        sed. Et wisi ridens vix, lorem iudico blandit mel cu. Ex vel sint zril oportere, amet wisi
-                        aperiri te cum.</p>
-                    <div class="prod_options">
-                        <div class="row">
-                            <label class="col-xl-5 col-lg-5  col-md-6 col-6 pt-0"><strong>Color</strong></label>
-                            <div class="col-xl-4 col-lg-5 col-md-6 col-6 colors">
-                                <ul>
-                                    <li><a href="#0" class="color color_1 active"></a></li>
-                                    <li><a href="#0" class="color color_2"></a></li>
-                                    <li><a href="#0" class="color color_3"></a></li>
-                                    <li><a href="#0" class="color color_4"></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <label class="col-xl-5 col-lg-5 col-md-6 col-6"><strong>Size</strong> - Size Guide <a
-                                    href="#0" data-bs-toggle="modal" data-bs-target="#size-modal"><i
-                                    class="ti-help-alt"></i></a></label>
-                            <div class="col-xl-4 col-lg-5 col-md-6 col-6">
-                                <div class="custom-select-form">
-                                    <select class="wide">
-                                        <option value="" selected>Small (S)</option>
-                                        <option value="">M</option>
-                                        <option value=" ">L</option>
-                                        <option value=" ">XL</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <label class="col-xl-5 col-lg-5  col-md-6 col-6"><strong>Quantity</strong></label>
-                            <div class="col-xl-4 col-lg-5 col-md-6 col-6">
-                                <div class="numbers-row">
-                                    <input type="text" value="1" id="quantity_1" class="qty2" name="quantity_1">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-5 col-md-6">
-                            <div class="price_main"><span class="new_price">$148.00</span><span
-                                    class="percentage">-20%</span> <span class="old_price">$160.00</span></div>
-                        </div>
-                        <div class="col-lg-4 col-md-6">
-                            <div class="btn_add_to_cart"><a href="#0" class="btn_1">Add to Cart</a></div>
-                        </div>
+        <div class="container mt-5 mb-5" th:if="${sanPham != null}">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/fanTech/index">Trang chủ</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Chi tiết sản phẩm</li>
+                </ol>
+            </nav>
+
+            <div class="row">
+                <!-- Hình ảnh sản phẩm -->
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <img id="productImage"
+                             src="https://konachan.com/jpeg/1e4f4728045e2f08b85f7f1529551a7b/Konachan.com%20-%20177633%20animal_ears%20bunny_ears%20bunnygirl%20cherry_blossoms%20flowers%20long_hair%20pink_hair%20reisen_udongein_inaba%20school_uniform%20shiki.%20touhou.jpg"
+                             class="card-img-top"
+                             style="height: 400px; object-fit: cover;"
+                             th:alt="${sanPham.ten}">
                     </div>
                 </div>
 
-            </div>
-        </div>
-        <!-- /row -->
-        <!-- /container -->
+                <!-- Thông tin sản phẩm -->
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <!-- Tên sản phẩm -->
+                            <h1 class="card-title h2 mb-3" th:text="${sanPham.ten}">Tên sản phẩm</h1>
 
-        <div class="tabs_product">
-            <div class="container">
-                <ul class="nav nav-tabs" role="tablist">
-                    <li class="nav-item">
-                        <a id="tab-A" href="#pane-A" class="nav-link active" data-bs-toggle="tab"
-                           role="tab">Description</a>
-                    </li>
-                    <li class="nav-item">
-                        <a id="tab-B" href="#pane-B" class="nav-link" data-bs-toggle="tab" role="tab">Reviews</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <!-- /tabs_product -->
-        <div class="tab_content_wrapper">
-            <div class="container">
-                <div class="tab-content" role="tablist">
-                    <div id="pane-A" class="card tab-pane fade active show" role="tabpanel" aria-labelledby="tab-A">
-                        <div class="card-header" role="tab" id="heading-A">
-                            <h5 class="mb-0">
-                                <a class="collapsed" data-bs-toggle="collapse" href="#collapse-A" aria-expanded="false"
-                                   aria-controls="collapse-A">
-                                    Description
+                            <!-- Mã sản phẩm -->
+                            <p class="text-muted mb-3">
+                                <strong>Mã sản phẩm:</strong>
+                                <span th:text="${sanPham.ma != null ? sanPham.ma : 'Chưa có mã'}">SP001</span>
+                            </p>
+
+                            <!-- Trạng thái -->
+                            <div class="mb-3">
+                                <span class="badge bg-success" th:if="${sanPham.trangThai}">
+                                    <i class="fas fa-check-circle me-1"></i>Có sẵn
+                                </span>
+                                <span class="badge bg-secondary" th:unless="${sanPham.trangThai}">
+                                    <i class="fas fa-times-circle me-1"></i>Hết hàng
+                                </span>
+                            </div>
+
+                            <!-- Loại quạt -->
+                            <div class="mb-3" th:if="${sanPham.kieuQuat != null}">
+                                <strong>Loại quạt:</strong>
+                                <span class="badge bg-info ms-2" th:text="${sanPham.kieuQuat.ten}">Quạt trần</span>
+                            </div>
+
+                            <!-- Lựa chọn màu sắc -->
+                            <div class="mb-4" th:if="${sanPham.sanPhamChiTiet != null and !sanPham.sanPhamChiTiet.isEmpty()}">
+                                <h5>Chọn màu sắc:</h5>
+                                <div class="row" id="colorOptions">
+                                    <div class="col-auto" th:each="chiTiet, iterStat : ${sanPham.sanPhamChiTiet}">
+                                        <input type="radio"
+                                               class="btn-check color-option"
+                                               th:id="'color-' + ${iterStat.index}"
+                                               th:value="${chiTiet.id}"
+                                               th:data-color="${chiTiet.mauSac != null ? chiTiet.mauSac.ten : 'Không có'}"
+                                               th:data-power="${chiTiet.congSuat != null ? chiTiet.congSuat.ten : 'Không có'}"
+                                               name="selectedColor"
+                                               autocomplete="off"
+                                               th:checked="${iterStat.first}">
+                                        <label class="btn btn-outline-primary"
+                                               th:for="'color-' + ${iterStat.index}"
+                                               th:text="${chiTiet.mauSac != null ? chiTiet.mauSac.ten : 'Không có màu'}">
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Lựa chọn công suất -->
+                            <div class="mb-4" id="powerSection" style="display: none;">
+                                <h5>Chọn công suất:</h5>
+                                <div class="row" id="powerOptions">
+                                    <!-- Các tùy chọn công suất sẽ được JavaScript điền vào -->
+                                </div>
+                            </div>
+
+                            <!-- Giá sản phẩm -->
+                            <div class="mb-4">
+                                <h3 class="text-primary">
+                                    <span id="productPrice" th:text="${chiTietDauTien != null and chiTietDauTien.gia != null ? #numbers.formatDecimal(chiTietDauTien.gia, 0, 'COMMA', 0, 'POINT') : '0'}">500,000</span>
+                                    <small class="text-muted">VNĐ</small>
+                                </h3>
+                            </div>
+
+                            <!-- Mô tả -->
+                            <div class="mb-4">
+                                <h5>Mô tả sản phẩm</h5>
+                                <p class="text-muted" th:text="${sanPham.moTa != null ? sanPham.moTa : 'Chưa có mô tả cho sản phẩm này.'}">
+                                    Mô tả sản phẩm sẽ được hiển thị ở đây...
+                                </p>
+                            </div>
+
+                            <!-- Thông tin chi tiết -->
+                            <div class="mb-4" id="productDetails">
+                                <h5>Thông tin chi tiết</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <tbody id="detailsTableBody">
+                                        <!-- Thông tin chi tiết sẽ được JavaScript cập nhật -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Mô tả chi tiết -->
+                            <div class="mb-4" id="detailedDescription">
+                                <h5>Mô tả chi tiết</h5>
+                                <p class="text-muted" id="detailedDescriptionText">
+                                    Mô tả chi tiết của biến thể sản phẩm...
+                                </p>
+                            </div>
+
+                            <!-- Số lượng -->
+                            <div class="mb-4">
+                                <label for="quantity" class="form-label">Số lượng:</label>
+                                <div class="input-group" style="width: 150px;">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity()">-</button>
+                                    <input type="number" class="form-control text-center" id="quantity" value="1" min="1" max="999">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity()">+</button>
+                                </div>
+                                <small class="text-muted">Số lượng có sẵn: <span id="availableQuantity">0</span></small>
+                            </div>
+
+                            <!-- Nút hành động -->
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary btn-lg" id="addToCartBtn" onclick="addToCart()">
+                                    <i class="fas fa-shopping-cart me-2"></i>Thêm vào giỏ hàng
+                                </button>
+                                <a href="/fanTech/index" class="btn btn-outline-primary">
+                                    <i class="fas fa-arrow-left me-2"></i>Quay lại trang chủ
                                 </a>
-                            </h5>
-                        </div>
-                        <div id="collapse-A" class="collapse" role="tabpanel" aria-labelledby="heading-A">
-                            <div class="card-body">
-                                <div class="row justify-content-between">
-                                    <div class="col-lg-6">
-                                        <h3>Details</h3>
-                                        <p>Lorem ipsum dolor sit amet, in eleifend <strong>inimicus elaboraret</strong>
-                                            his, harum efficiendi mel ne. Sale percipit vituperata ex mel, sea ne essent
-                                            aeterno sanctus, nam ea laoreet civibus electram. Ea vis eius explicari.
-                                            Quot iuvaret ad has.</p>
-                                        <p>Vis ei ipsum conclusionemque. Te enim suscipit recusabo mea, ne vis mazim
-                                            aliquando, everti insolens at sit. Cu vel modo unum quaestio, in vide dicta
-                                            has. Ut his laudem explicari adversarium, nisl <strong>laboramus
-                                                hendrerit</strong> te his, alia lobortis vis ea.</p>
-                                        <p>Perfecto eleifend sea no, cu audire voluptatibus eam. An alii praesent sit,
-                                            nobis numquam principes ea eos, cu autem constituto suscipiantur eam. Ex
-                                            graeci elaboraret pro. Mei te omnis tantas, nobis viderer vivendo ex
-                                            has.</p>
-                                    </div>
-                                    <div class="col-lg-5">
-                                        <h3>Specifications</h3>
-                                        <div class="table-responsive">
-                                            <table class="table table-sm table-striped">
-                                                <tbody>
-                                                <tr>
-                                                    <td><strong>Color</strong></td>
-                                                    <td>Blue, Purple</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Size</strong></td>
-                                                    <td>150x100x100</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Weight</strong></td>
-                                                    <td>0.6kg</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Manifacturer</strong></td>
-                                                    <td>Manifacturer</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <!-- /table-responsive -->
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- /tab-content -->
             </div>
-            <!-- /container -->
         </div>
-        <!-- /tab_content_wrapper -->
 
-        <div class="container margin_60_35">
-            <div class="main_title">
-                <h2>Related</h2>
-                <span>Products</span>
-                <p>Cum doctus civibus efficiantur in imperdiet deterruisset.</p>
-            </div>
-            <div class="owl-carousel owl-theme products_carousel">
-                <div class="item">
-                    <div class="grid_item">
-                        <span class="ribbon new">New</span>
-                        <figure>
-                            <a href="product-detail-1.html">
-                                <img class="owl-lazy" src="img/products/product_placeholder_square_medium.jpg"
-                                     data-src="img/products/shoes/4.jpg" alt="">
-                            </a>
-                        </figure>
-                        <div class="rating"><i class="icon-star voted"></i><i class="icon-star voted"></i><i
-                                class="icon-star voted"></i><i class="icon-star voted"></i><i class="icon-star"></i>
-                        </div>
-                        <a href="product-detail-1.html">
-                            <h3>ACG React Terra</h3>
-                        </a>
-                        <div class="price_box">
-                            <span class="new_price">$110.00</span>
-                        </div>
-                        <ul>
-                            <li><a href="#0" class="tooltip-1" data-bs-toggle="tooltip" data-bs-placement="left"
-                                   title="Add to favorites"><i class="ti-heart"></i><span>Add to favorites</span></a>
-                            </li>
-                            <li><a href="#0" class="tooltip-1" data-bs-toggle="tooltip" data-bs-placement="left"
-                                   title="Add to compare"><i class="ti-control-shuffle"></i><span>Add to compare</span></a>
-                            </li>
-                            <li><a href="#0" class="tooltip-1" data-bs-toggle="tooltip" data-bs-placement="left"
-                                   title="Add to cart"><i class="ti-shopping-cart"></i><span>Add to cart</span></a></li>
-                        </ul>
-                    </div>
-                    <!-- /grid_item -->
+        <!-- Thông báo khi không tìm thấy sản phẩm -->
+        <div class="container mt-5 mb-5" th:unless="${sanPham != null}">
+            <div class="text-center">
+                <div class="alert alert-warning">
+                    <h4><i class="fas fa-exclamation-triangle me-2"></i>Không tìm thấy sản phẩm</h4>
+                    <p>Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.</p>
+                    <a href="/fanTech/index" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i>Về trang chủ
+                    </a>
                 </div>
             </div>
-            <!-- /products_carousel -->
         </div>
-        <!-- /container -->
-
-        <div class="feat">
-            <div class="container">
-                <ul>
-                    <li>
-                        <div class="box">
-                            <i class="ti-gift"></i>
-                            <div class="justify-content-center">
-                                <h3>Free Shipping</h3>
-                                <p>For all oders over $99</p>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="box">
-                            <i class="ti-wallet"></i>
-                            <div class="justify-content-center">
-                                <h3>Secure Payment</h3>
-                                <p>100% secure payment</p>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="box">
-                            <i class="ti-headphone-alt"></i>
-                            <div class="justify-content-center">
-                                <h3>24/7 Support</h3>
-                                <p>Online top support</p>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <!--/feat-->
     </main>
-    <!-- /main -->
 
+    <!-- Footer -->
     <footer th:replace="/user/fragments/footer :: footer"></footer>
-
-    <!--/footer-->
 </div>
 
-</body>
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
+<!-- Custom JavaScript -->
+<script th:inline="javascript">
+    // Dữ liệu sản phẩm chi tiết từ Thymeleaf
+    const productDetails = /*[[${sanPham.sanPhamChiTiet}]]*/ [];
+
+    // Đối tượng lưu trữ thông tin chi tiết theo ID
+    const detailsMap = {};
+
+    // Tạo map từ dữ liệu
+    productDetails.forEach(detail => {
+        detailsMap[detail.id] = detail;
+    });
+
+    // Khởi tạo trang
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeProductDetails();
+        setupColorSelection();
+    });
+
+    function initializeProductDetails() {
+        // Hiển thị chi tiết của sản phẩm đầu tiên
+        const firstDetail = productDetails[0];
+        if (firstDetail) {
+            updateProductDetails(firstDetail);
+        }
+    }
+
+    function setupColorSelection() {
+        const colorOptionsContainer = document.getElementById('colorOptions');
+        const powerSection = document.getElementById('powerSection');
+
+        // Lấy danh sách màu sắc duy nhất
+        const uniqueColors = [...new Set(productDetails.map(detail => detail.mauSac?.ten))].filter(color => color);
+
+        // Xóa các tùy chọn màu cũ
+        colorOptionsContainer.innerHTML = '';
+
+        // Tạo radio button cho mỗi màu duy nhất
+        uniqueColors.forEach((color, index) => {
+            const matchingDetails = productDetails.filter(detail => detail.mauSac?.ten === color);
+            const defaultDetail = matchingDetails[0]; // Lấy chi tiết đầu tiên làm mặc định
+
+            const div = document.createElement('div');
+            div.className = 'col-auto';
+            div.innerHTML = `
+                <input type="radio" class="btn-check color-option" id="color-${index}" value="${defaultDetail.id}"
+                       data-color="${color}" name="selectedColor" autocomplete="off" ${index === 0 ? 'checked' : ''}>
+                <label class="btn btn-outline-primary" for="color-${index}">${color}</label>
+            `;
+            colorOptionsContainer.appendChild(div);
+
+            // Thêm sự kiện thay đổi
+            const colorInput = div.querySelector('.color-option');
+            colorInput.addEventListener('change', function() {
+                if (this.checked) {
+                    const selectedDetail = detailsMap[this.value];
+                    updateProductDetails(selectedDetail);
+                    updatePowerOptions(selectedDetail);
+                }
+            });
+        });
+
+        // Khởi tạo power options cho màu đầu tiên
+        if (productDetails[0]) {
+            updatePowerOptions(productDetails[0]);
+        }
+    }
+
+    function updatePowerOptions(selectedDetail) {
+        const powerOptions = document.getElementById('powerOptions');
+        const powerSection = document.getElementById('powerSection');
+
+        // Lấy tất cả các chi tiết có cùng màu
+        const selectedColor = selectedDetail.mauSac?.ten;
+        const sameColorDetails = productDetails.filter(detail => detail.mauSac?.ten === selectedColor);
+
+        if (sameColorDetails.length > 1 && [...new Set(sameColorDetails.map(d => d.congSuat?.ten))].length > 1) {
+            // Hiển thị các tùy chọn công suất duy nhất
+            let html = '';
+            const uniquePowers = [...new Set(sameColorDetails.map(detail => detail.congSuat?.ten))].filter(power => power);
+            uniquePowers.forEach((power, index) => {
+                const matchingDetail = sameColorDetails.find(d => d.congSuat?.ten === power);
+                const isSelected = matchingDetail.id === selectedDetail.id;
+                html += `
+                    <div class="col-auto">
+                        <input type="radio" class="btn-check power-option" id="power-${matchingDetail.id}" value="${matchingDetail.id}"
+                               name="selectedPower" autocomplete="off" ${isSelected ? 'checked' : ''}
+                               onchange="selectPowerOption(${matchingDetail.id})">
+                        <label class="btn btn-outline-success" for="power-${matchingDetail.id}">${power}</label>
+                    </div>
+                `;
+            });
+            powerOptions.innerHTML = html;
+            powerSection.style.display = 'block';
+        } else {
+            powerSection.style.display = 'none';
+        }
+    }
+
+    function selectPowerOption(detailId) {
+        const detail = detailsMap[detailId];
+        if (detail) {
+            updateProductDetails(detail);
+        }
+    }
+
+    function updateProductDetails(detail) {
+        // Cập nhật giá
+        const priceElement = document.getElementById('productPrice');
+        if (detail.gia) {
+            priceElement.textContent = new Intl.NumberFormat('vi-VN').format(detail.gia);
+        } else {
+            priceElement.textContent = '0';
+        }
+
+        // Cập nhật số lượng có sẵn
+        const availableQuantityElement = document.getElementById('availableQuantity');
+        availableQuantityElement.textContent = detail.soLuong || 0;
+
+        // Cập nhật input quantity max
+        const quantityInput = document.getElementById('quantity');
+        quantityInput.max = detail.soLuong || 1;
+        if (parseInt(quantityInput.value) > (detail.soLuong || 1)) {
+            quantityInput.value = detail.soLuong || 1;
+        }
+
+        // Cập nhật bảng thông tin chi tiết
+        updateDetailsTable(detail);
+
+        // Cập nhật mô tả chi tiết
+        const descriptionElement = document.getElementById('detailedDescriptionText');
+        descriptionElement.textContent = detail.moTa || 'Chưa có mô tả chi tiết cho biến thể này.';
+
+        // Cập nhật trạng thái nút thêm vào giỏ hàng
+        updateAddToCartButton(detail);
+
+        // Cập nhật hình ảnh nếu có
+        updateProductImage(detail);
+    }
+
+    function updateDetailsTable(detail) {
+        const tableBody = document.getElementById('detailsTableBody');
+        let html = '';
+
+        if (detail.mauSac && detail.mauSac.ten) {
+            html += `<tr><td><strong>Màu sắc:</strong></td><td>${detail.mauSac.ten}</td></tr>`;
+        }
+        if (detail.congSuat && detail.congSuat.ten) {
+            html += `<tr><td><strong>Công suất:</strong></td><td>${detail.congSuat.ten}</td></tr>`;
+        }
+        if (detail.hang && detail.hang.ten) {
+            html += `<tr><td><strong>Hãng:</strong></td><td>${detail.hang.ten}</td></tr>`;
+        }
+        if (detail.nutBam && detail.nutBam.ten) {
+            html += `<tr><td><strong>Loại nút bấm:</strong></td><td>${detail.nutBam.ten}</td></tr>`;
+        }
+        if (detail.canNang) {
+            html += `<tr><td><strong>Cân nặng:</strong></td><td>${detail.canNang} kg</td></tr>`;
+        }
+        if (detail.soLuong !== null && detail.soLuong !== undefined) {
+            html += `<tr><td><strong>Số lượng có sẵn:</strong></td><td>${detail.soLuong}</td></tr>`;
+        }
+
+        tableBody.innerHTML = html;
+    }
+
+    function updateAddToCartButton(detail) {
+        const addToCartBtn = document.getElementById('addToCartBtn');
+        if (detail.soLuong && detail.soLuong > 0 && detail.trangThai !== false) {
+            addToCartBtn.disabled = false;
+            addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart me-2"></i>Thêm vào giỏ hàng';
+            addToCartBtn.classList.remove('btn-secondary');
+            addToCartBtn.classList.add('btn-primary');
+        } else {
+            addToCartBtn.disabled = true;
+            addToCartBtn.innerHTML = '<i class="fas fa-times-circle me-2"></i>Hết hàng';
+            addToCartBtn.classList.remove('btn-primary');
+            addToCartBtn.classList.add('btn-secondary');
+        }
+    }
+
+    function updateProductImage(detail) {
+        const productImage = document.getElementById('productImage');
+        if (detail.hinhAnh) {
+            productImage.src = detail.hinhAnh;
+        }
+    }
+
+    // Hàm tăng/giảm số lượng
+    function increaseQuantity() {
+        const quantityInput = document.getElementById('quantity');
+        const currentValue = parseInt(quantityInput.value);
+        const maxValue = parseInt(quantityInput.max);
+
+        if (currentValue < maxValue) {
+            quantityInput.value = currentValue + 1;
+        }
+    }
+
+    function decreaseQuantity() {
+        const quantityInput = document.getElementById('quantity');
+        const currentValue = parseInt(quantityInput.value);
+
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+        }
+    }
+
+    // Hàm thêm vào giỏ hàng (giữ nguyên logic cũ)
+    function addToCart() {
+        const selectedColorOption = document.querySelector('input[name="selectedColor"]:checked');
+        const selectedPowerOption = document.querySelector('input[name="selectedPower"]:checked');
+        const quantity = parseInt(document.getElementById('quantity').value);
+
+        let selectedDetailId;
+        if (selectedPowerOption) {
+            selectedDetailId = selectedPowerOption.value;
+        } else if (selectedColorOption) {
+            selectedDetailId = selectedColorOption.value;
+        }
+
+        if (!selectedDetailId) {
+            showNotification('Vui lòng chọn màu sắc và công suất!', 'warning');
+            return;
+        }
+
+        const selectedDetail = detailsMap[selectedDetailId];
+        if (!selectedDetail) {
+            showNotification('Không tìm thấy thông tin sản phẩm!', 'error');
+            return;
+        }
+
+        if (quantity > selectedDetail.soLuong) {
+            showNotification(`Số lượng vượt quá số lượng có sẵn (${selectedDetail.soLuong})!`, 'warning');
+            return;
+        }
+
+        const cartItem = {
+            id: selectedDetail.id,
+            ten: /*[[${sanPham.ten}]]*/ 'Tên sản phẩm',
+            mauSac: selectedDetail.mauSac ? selectedDetail.mauSac.ten : 'Không có',
+            congSuat: selectedDetail.congSuat ? selectedDetail.congSuat.ten : 'Không có',
+            gia: selectedDetail.gia,
+            soLuong: quantity,
+            hinhAnh: document.getElementById('productImage').src
+        };
+
+        addToCartServer(cartItem);
+    }
+
+    function addToCartServer(cartItem) {
+        const addToCartBtn = document.getElementById('addToCartBtn');
+        addToCartBtn.disabled = true;
+        addToCartBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang thêm...';
+
+        const formData = new FormData();
+        formData.append('sanPhamChiTietId', cartItem.id);
+        formData.append('soLuong', cartItem.soLuong);
+
+        fetch('/cart/add', {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+            .then(response => response.ok ? response.json() : Promise.reject())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Đã thêm sản phẩm vào giỏ hàng!', 'success');
+                    updateCartCount(data.cartCount);
+                } else {
+                    showNotification(data.message || 'Có lỗi xảy ra!', 'error');
+                }
+            })
+            .catch(() => showNotification('Có lỗi xảy ra khi thêm vào giỏ hàng!', 'error'))
+            .finally(() => {
+                const selectedDetail = getCurrentSelectedDetail();
+                updateAddToCartButton(selectedDetail);
+            });
+    }
+
+    function getCurrentSelectedDetail() {
+        const selectedPowerOption = document.querySelector('input[name="selectedPower"]:checked');
+        const selectedColorOption = document.querySelector('input[name="selectedColor"]:checked');
+        return selectedPowerOption ? detailsMap[selectedPowerOption.value] : (selectedColorOption ? detailsMap[selectedColorOption.value] : null);
+    }
+
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${getBootstrapAlertClass(type)} alert-dismissible fade show position-fixed`;
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = `${getNotificationIcon(type)}${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 5000);
+    }
+
+    function getBootstrapAlertClass(type) { return { 'success': 'success', 'error': 'danger', 'warning': 'warning' }[type] || 'info'; }
+    function getNotificationIcon(type) { return { 'success': '<i class="fas fa-check-circle me-2"></i>', 'error': '<i class="fas fa-exclamation-circle me-2"></i>', 'warning': '<i class="fas fa-exclamation-triangle me-2"></i>' }[type] || '<i class="fas fa-info-circle me-2"></i>'; }
+    function updateCartCount(count) { document.querySelectorAll('.cart-count').forEach(el => { el.textContent = count; el.style.display = count > 0 ? 'inline' : 'none'; }); }
+    function toggleUserDropdown(event) { event.preventDefault(); event.stopPropagation(); const dropdown = document.getElementById('userDropdownMenu'); document.querySelectorAll('.user-dropdown-menu').forEach(menu => menu.style.display = 'none'); dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block'; }
+    document.addEventListener('click', () => document.querySelectorAll('.user-dropdown-menu').forEach(menu => menu.style.display = 'none'));
+
+    document.getElementById('quantity').addEventListener('input', function() {
+        const value = parseInt(this.value);
+        const max = parseInt(this.max);
+        const min = parseInt(this.min);
+        if (value > max) { this.value = max; showNotification(`Số lượng tối đa là ${max}`, 'warning'); }
+        else if (value < min) this.value = min;
+    });
+
+    window.addEventListener('resize', () => document.querySelectorAll('.user-dropdown-menu').forEach(menu => menu.style.display = 'none'));
+    function initLazyLoading() { const lazyImages = document.querySelectorAll('img[data-src]'); if ('IntersectionObserver' in window) { const observer = new IntersectionObserver((entries) => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.src = entry.target.dataset.src; entry.target.classList.remove('lazy'); observer.unobserve(entry.target); } })); lazyImages.forEach(img => observer.observe(img)); } else lazyImages.forEach(img => { img.src = img.dataset.src; img.classList.remove('lazy'); }); }
+    initLazyLoading();
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => anchor.addEventListener('click', function(e) { e.preventDefault(); document.querySelector(this.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
+</script>
+
+</body>
 </html>

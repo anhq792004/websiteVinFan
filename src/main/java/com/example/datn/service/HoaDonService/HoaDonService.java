@@ -27,6 +27,7 @@ public interface HoaDonService {
 
     String generateOrderCode();
 
+    List<HoaDon> getHoaDonByIdKH(Long idKH);
 
     //hoaDonChiTiet
 
@@ -38,13 +39,13 @@ public interface HoaDonService {
 
     void deleteSPInHD(Long idSPCT);
 
-    void xacNhan(Long id);
+    void xacNhan(Long id, String ghiChu);
 
     void giaoHang(Long id);
 
     void hoanThanh(Long id);
 
-    void huy(Long id);
+    void huy(Long id, String ghiChu);
 
     void addSPToHDCT(AddSPToHDCTRequest addSPToHDCTRequest);
 

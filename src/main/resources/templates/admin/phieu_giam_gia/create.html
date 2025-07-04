@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:insert="~{/admin/fragments/head :: head}"></head>
+<head th:insert="~{/admin/fragments/head :: head}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
 <body>
 <!-- Site wrapper -->
 <div class="wrapper">
@@ -20,24 +23,26 @@
                             <h4 th:text="${phieuGiamGia.id != null ? 'Sửa phiếu giảm giá' : 'Thêm phiếu giảm giá'}"></h4>
                         </div>
                         <div class="card-body">
-                            <form th:action="@{${phieuGiamGia.id != null ? '/phieu-giam-gia/update' : '/phieu-giam-gia/save'}}" method="post" th:object="${phieuGiamGia}">
+                            <form th:action="@{${phieuGiamGia.id != null ? '/admin/phieu-giam-gia/update' : '/admin/phieu-giam-gia/save'}}"
+                                  method="post" th:object="${phieuGiamGia}">
                                 <input type="hidden" th:field="*{id}"/>
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <div class="form-group">
                                             <label for="ma">Mã phiếu giảm giá</label>
-                                            <!-- Hiển thị mã tự tạo (đã tự tạo trong controller) -->
                                             <input type="text" class="form-control" id="ma" th:field="*{ma}"
-                                                   th:readonly="${phieuGiamGia.id == null}" /> <!-- Chỉ readonly khi tạo mới -->
-                                            <small class="text-muted" th:if="${phieuGiamGia.id == null}">Mã được tạo tự động</small>
+                                                   th:readonly="${phieuGiamGia.id == null}"/>
+                                            <small class="text-muted" th:if="${phieuGiamGia.id == null}">Mã được tạo tự
+                                                động</small>
                                         </div>
                                     </div>
 
                                     <div class="col-md-6 mb-3">
                                         <div class="form-group">
                                             <label for="ten">Tên</label>
-                                            <input type="text" class="form-control" id="ten" th:field="*{ten}" required />
+                                            <input type="text" class="form-control" id="ten" th:field="*{ten}"
+                                                   required/>
                                         </div>
                                     </div>
                                 </div>
@@ -46,14 +51,16 @@
                                     <div class="col-md-6 mb-3">
                                         <div class="form-group">
                                             <label for="ngayBatDau">Ngày bắt đầu</label>
-                                            <input type="date" class="form-control" id="ngayBatDau" th:field="*{ngayBatDau}" />
+                                            <input type="date" class="form-control" id="ngayBatDau"
+                                                   th:field="*{ngayBatDau}"/>
                                         </div>
                                     </div>
 
                                     <div class="col-md-6 mb-3">
                                         <div class="form-group">
                                             <label for="ngayKetThuc">Ngày kết thúc</label>
-                                            <input type="date" class="form-control" id="ngayKetThuc" th:field="*{ngayKetThuc}" />
+                                            <input type="date" class="form-control" id="ngayKetThuc"
+                                                   th:field="*{ngayKetThuc}"/>
                                         </div>
                                     </div>
                                 </div>
@@ -62,14 +69,16 @@
                                     <div class="col-md-4 mb-3">
                                         <div class="form-group">
                                             <label for="soLuong">Số lượng</label>
-                                            <input type="number" class="form-control" id="soLuong" th:field="*{soLuong}" min="0" />
+                                            <input type="number" class="form-control" id="soLuong" th:field="*{soLuong}"
+                                                   min="0"/>
                                         </div>
                                     </div>
 
                                     <div class="col-md-4 mb-3">
                                         <div class="form-group">
                                             <label for="giaTriGiam">Giá trị giảm</label>
-                                            <input type="number" step="0.01" class="form-control" id="giaTriGiam" th:field="*{giaTriGiam}" />
+                                            <input type="number" step="0.01" class="form-control" id="giaTriGiam"
+                                                   th:field="*{giaTriGiam}"/>
                                         </div>
                                     </div>
 
@@ -85,7 +94,25 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-group">
+                                            <label for="giaTriDonHangToiThieu">Giá trị đơn hàng tối thiểu</label>
+                                            <input type="number" class="form-control" id="giaTriDonHangToiThieu"
+                                                   th:field="*{giaTriDonHangToiThieu}" step="0.01"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-group">
+                                            <label for="loaiPhieu">Loại phiếu</label>
+                                            <select class="form-select" id="loaiPhieu" th:field="*{loaiPhieu}">
+                                                <option th:value="true">Công khai</option>
+                                                <option th:value="false">Cá Nhân</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
                                         <div class="form-group">
                                             <label for="trangThai">Trạng thái</label>
                                             <select class="form-select" id="trangThai" th:field="*{trangThai}">
@@ -96,9 +123,144 @@
                                     </div>
                                 </div>
 
+                                <div class="row">
+                                    <div class="col-md-6 mb-3" id="giaTriGiamToiDaGroup">
+                                        <div class="form-group">
+                                            <label for="giaTriGiamToiDa">Giá trị giảm tối đa (VNĐ)</label>
+                                            <input type="number" step="0.01" class="form-control" id="giaTriGiamToiDa"
+                                                   th:field="*{giaTriGiamToiDa}"
+                                                   placeholder="Chỉ áp dụng với giảm phần trăm"/>
+                                            <small class="text-muted">Áp dụng nếu loại giảm là phần trăm (%)</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Phần chọn khách hàng cho phiếu cá nhân -->
+                                <div class="row" id="khachHangSelection" style="display: none;">
+                                    <div class="col-12">
+                                        <div class="card border-info">
+                                            <div class="card-header bg-info text-white">
+                                                <h5 class="mb-0">
+                                                    <i class="fas fa-users"></i> Chọn khách hàng nhận phiếu giảm giá
+                                                </h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <!-- Thanh công cụ -->
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">
+                                                                <i class="fas fa-search"></i>
+                                                            </span>
+                                                            <input type="text" class="form-control" id="searchKhachHang"
+                                                                   placeholder="Tìm kiếm khách hàng theo tên, email, SĐT...">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="btn-group" role="group">
+                                                            <button type="button" class="btn btn-outline-primary btn-sm"
+                                                                    id="selectAllKhachHang">
+                                                                <i class="fas fa-check-square"></i> Chọn tất cả
+                                                            </button>
+                                                            <button type="button" class="btn btn-outline-secondary btn-sm"
+                                                                    id="clearAllKhachHang">
+                                                                <i class="fas fa-times"></i> Bỏ chọn
+                                                            </button>
+                                                        </div>
+                                                        <span class="badge bg-primary ms-2">
+                                                            <i class="fas fa-user-check"></i>
+                                                            Đã chọn: <span id="selectedCount">0</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Bảng danh sách khách hàng -->
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover table-striped">
+                                                        <thead class="table-dark">
+                                                        <tr>
+                                                            <th width="50">
+                                                                <input type="checkbox" class="form-check-input" id="selectAllHeader">
+                                                            </th>
+                                                            <th>Tên khách hàng</th>
+                                                            <th>Số điện thoại</th>
+                                                            <th>Email</th>
+                                                            <th>Trạng thái</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody id="khachHangTableBody">
+                                                        <!-- Sample data - replace with Thymeleaf loop -->
+                                                        <tr th:each="kh : ${dsKhachHang}" class="khach-hang-row">
+                                                            <td>
+                                                                <input class="form-check-input khach-hang-checkbox"
+                                                                       type="checkbox"
+                                                                       th:id="'kh_' + ${kh.id}"
+                                                                       th:value="${kh.id}"
+                                                                       name="selectedKhachHang"
+                                                                       th:checked="${dsKhachHangDaCoPhieu != null && #lists.contains(dsKhachHangDaCoPhieu.![khachHang.id], kh.id)}">
+                                                            </td>
+                                                            <td>
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                                        <i class="fas fa-user"></i>
+                                                                    </div>
+                                                                    <div>
+                                                                        <div class="fw-bold khach-hang-name" th:text="${kh.ten}"></div>
+                                                                        <small class="text-muted">ID: <span th:text="${kh.id}"></span></small>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <span class="khach-hang-phone" th:text="${kh.soDienThoai}"></span>
+                                                            </td>
+                                                            <td>
+                                                                    <span class="badge bg-success" th:if="${kh.trangThai}">
+                                                                        <i class="fas fa-check-circle"></i> Hoạt động
+                                                                    </span>
+                                                                <span class="badge bg-secondary" th:unless="${kh.trangThai}">
+                                                                        <i class="fas fa-pause-circle"></i> Tạm dừng
+                                                                    </span>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <!-- Pagination -->
+                                                <nav aria-label="Customer pagination">
+                                                    <ul class="pagination justify-content-center" id="customerPagination">
+                                                        <!-- Pagination will be generated by JavaScript -->
+                                                    </ul>
+                                                </nav>
+
+                                                <!-- Thông tin thống kê -->
+                                                <div class="row mt-3">
+                                                    <div class="col-md-6">
+                                                        <div class="alert alert-info mb-0">
+                                                            <i class="fas fa-info-circle"></i>
+                                                            <strong>Thống kê:</strong>
+                                                            Hiển thị <span id="showingCount">0</span> / <span id="totalCount">0</span> khách hàng
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="alert alert-success mb-0">
+                                                            <i class="fas fa-user-check"></i>
+                                                            <strong>Đã chọn:</strong> <span id="selectedCountDetail">0</span> khách hàng
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="mt-4">
-                                    <button type="submit" class="btn btn-primary me-2">Lưu</button>
-                                    <a th:href="@{/phieu-giam-gia/index}" class="btn btn-secondary">Hủy</a>
+                                    <button type="submit" class="btn btn-primary me-2">
+                                        <i class="fas fa-save"></i> Lưu
+                                    </button>
+                                    <a th:href="@{/admin/phieu-giam-gia/index}" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> Hủy
+                                    </a>
                                 </div>
                             </form>
                         </div>
@@ -118,14 +280,34 @@
     <script th:replace="/admin/fragments/script :: script"></script>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-    // Script kiểm tra ngày bắt đầu phải nhỏ hơn ngày kết thúc
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('form');
         const ngayBatDau = document.getElementById('ngayBatDau');
         const ngayKetThuc = document.getElementById('ngayKetThuc');
+        const loaiPhieu = document.getElementById('loaiPhieu');
+        const khachHangSelection = document.getElementById('khachHangSelection');
+        const searchKhachHang = document.getElementById('searchKhachHang');
+        const selectAllBtn = document.getElementById('selectAllKhachHang');
+        const clearAllBtn = document.getElementById('clearAllKhachHang');
+        const selectAllHeader = document.getElementById('selectAllHeader');
+        const selectedCount = document.getElementById('selectedCount');
+        const selectedCountDetail = document.getElementById('selectedCountDetail');
 
-        form.addEventListener('submit', function(event) {
+        // Pagination variables
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let filteredRows = [];
+        let allRows = [];
+
+        // Initialize
+        initializeCustomerData();
+
+        // Validate form khi submit
+        form.addEventListener('submit', function (event) {
             if (ngayBatDau.value && ngayKetThuc.value) {
                 const startDate = new Date(ngayBatDau.value);
                 const endDate = new Date(ngayKetThuc.value);
@@ -133,35 +315,245 @@
                 if (startDate > endDate) {
                     event.preventDefault();
                     alert('Ngày bắt đầu không thể sau ngày kết thúc');
+                    return;
                 }
+            }
+
+            // Kiểm tra nếu là phiếu cá nhân thì phải chọn ít nhất 1 khách hàng
+            if (loaiPhieu.value === 'false') {
+                const selectedKhachHang = document.querySelectorAll('input[name="selectedKhachHang"]:checked');
+                if (selectedKhachHang.length === 0) {
+                    event.preventDefault();
+                    alert('Vui lòng chọn ít nhất 1 khách hàng cho phiếu giảm giá cá nhân');
+                    return;
+                }
+            }
+        });
+
+        // Xử lý hiển thị/ẩn phần chọn khách hàng
+        function toggleKhachHangSelection() {
+            if (loaiPhieu.value === 'false') { // Cá nhân
+                khachHangSelection.style.display = 'block';
+                initializeCustomerData();
+            } else { // Công khai
+                khachHangSelection.style.display = 'none';
+            }
+        }
+
+        loaiPhieu.addEventListener('change', toggleKhachHangSelection);
+        toggleKhachHangSelection();
+
+        // Initialize customer data
+        function initializeCustomerData() {
+            allRows = Array.from(document.querySelectorAll('.khach-hang-row'));
+            filteredRows = [...allRows];
+            updatePagination();
+            updateSelectedCount();
+        }
+
+        // Search functionality
+        searchKhachHang.addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+
+            filteredRows = allRows.filter(row => {
+                const name = row.querySelector('.khach-hang-name').textContent.toLowerCase();
+                const phone = row.querySelector('.khach-hang-phone').textContent.toLowerCase();
+                const email = row.querySelector('.khach-hang-email') ?
+                    row.querySelector('.khach-hang-email').textContent.toLowerCase() : '';
+
+                return name.includes(searchTerm) ||
+                    phone.includes(searchTerm) ||
+                    email.includes(searchTerm);
+            });
+
+            currentPage = 1;
+            updatePagination();
+            displayCurrentPage();
+        });
+
+        // Pagination
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
+            const pagination = document.getElementById('customerPagination');
+            pagination.innerHTML = '';
+
+            // Previous button
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#" data-page="${currentPage - 1}">
+                <i class="fas fa-chevron-left"></i>
+            </a>`;
+            pagination.appendChild(prevLi);
+
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+
+            for (let i = startPage; i <= endPage; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+                pagination.appendChild(li);
+            }
+
+            // Next button
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#" data-page="${currentPage + 1}">
+                <i class="fas fa-chevron-right"></i>
+            </a>`;
+            pagination.appendChild(nextLi);
+
+            // Add event listeners to pagination links
+            pagination.querySelectorAll('a[data-page]').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const page = parseInt(this.dataset.page);
+                    if (page >= 1 && page <= totalPages) {
+                        currentPage = page;
+                        updatePagination();
+                        displayCurrentPage();
+                    }
+                });
+            });
+
+            displayCurrentPage();
+        }
+
+        // Display current page
+        function displayCurrentPage() {
+            // Hide all rows
+            allRows.forEach(row => row.style.display = 'none');
+
+            // Calculate start and end indexes
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+
+            // Show rows for current page
+            const currentRows = filteredRows.slice(startIndex, endIndex);
+            currentRows.forEach(row => row.style.display = '');
+
+            // Update statistics
+            document.getElementById('showingCount').textContent = currentRows.length;
+            document.getElementById('totalCount').textContent = filteredRows.length;
+        }
+
+        // Select all functionality
+        selectAllBtn.addEventListener('click', function () {
+            const visibleCheckboxes = document.querySelectorAll('.khach-hang-row:not([style*="display: none"]) .khach-hang-checkbox');
+            visibleCheckboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            updateSelectedCount();
+            updateSelectAllHeaderState();
+        });
+
+        // Clear all functionality
+        clearAllBtn.addEventListener('click', function () {
+            const checkboxes = document.querySelectorAll('.khach-hang-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            updateSelectedCount();
+            updateSelectAllHeaderState();
+        });
+
+        // Header select all
+        selectAllHeader.addEventListener('change', function () {
+            const visibleCheckboxes = document.querySelectorAll('.khach-hang-row:not([style*="display: none"]) .khach-hang-checkbox');
+            visibleCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateSelectedCount();
+        });
+
+        // Update selected count
+        function updateSelectedCount() {
+            const selectedCheckboxes = document.querySelectorAll('.khach-hang-checkbox:checked');
+            const count = selectedCheckboxes.length;
+            selectedCount.textContent = count;
+            selectedCountDetail.textContent = count;
+        }
+
+        // Update header select all state
+        function updateSelectAllHeaderState() {
+            const visibleCheckboxes = document.querySelectorAll('.khach-hang-row:not([style*="display: none"]) .khach-hang-checkbox');
+            const checkedVisibleCheckboxes = document.querySelectorAll('.khach-hang-row:not([style*="display: none"]) .khach-hang-checkbox:checked');
+
+            if (visibleCheckboxes.length === 0) {
+                selectAllHeader.indeterminate = false;
+                selectAllHeader.checked = false;
+            } else if (checkedVisibleCheckboxes.length === visibleCheckboxes.length) {
+                selectAllHeader.indeterminate = false;
+                selectAllHeader.checked = true;
+            } else if (checkedVisibleCheckboxes.length > 0) {
+                selectAllHeader.indeterminate = true;
+                selectAllHeader.checked = false;
+            } else {
+                selectAllHeader.indeterminate = false;
+                selectAllHeader.checked = false;
+            }
+        }
+
+        // Listen for checkbox changes
+        document.addEventListener('change', function (event) {
+            if (event.target.classList.contains('khach-hang-checkbox')) {
+                updateSelectedCount();
+                updateSelectAllHeaderState();
             }
         });
 
         // Xử lý hiển thị ô giá trị giảm dựa trên loại giảm giá
         const loaiGiamGia = document.getElementById('loaiGiamGia');
         const giaTriGiam = document.getElementById('giaTriGiam');
+        const giaTriGiamToiDaGroup = document.getElementById('giaTriGiamToiDaGroup');
 
         function updateGiaTriGiamLabel() {
             const isPercent = loaiGiamGia.value === 'true';
+
             if (isPercent) {
                 giaTriGiam.setAttribute('max', '100');
                 giaTriGiam.setAttribute('placeholder', 'Nhập giá trị từ 0-100');
                 document.querySelector('label[for="giaTriGiam"]').textContent = 'Giá trị giảm (%)';
+                giaTriGiamToiDaGroup.style.display = 'block';
             } else {
                 giaTriGiam.removeAttribute('max');
                 giaTriGiam.setAttribute('placeholder', 'Nhập số tiền');
                 document.querySelector('label[for="giaTriGiam"]').textContent = 'Giá trị giảm (VNĐ)';
+                giaTriGiamToiDaGroup.style.display = 'none';
             }
         }
 
         loaiGiamGia.addEventListener('change', updateGiaTriGiamLabel);
-        updateGiaTriGiamLabel(); // Chạy khi trang tải xong
+        updateGiaTriGiamLabel();
     });
 </script>
-<!-- hienthitendangnhap -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.min.js"></script>
+
+<style>
+    .avatar-sm {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .khach-hang-row:hover {
+        background-color: rgba(0, 123, 255, 0.1);
+    }
+
+    .pagination {
+        margin-bottom: 0;
+    }
+
+    .alert {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+</style>
 
 </body>
 </html>

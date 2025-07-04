@@ -168,8 +168,7 @@
 
                             <form th:if="${hoaDon.trangThai != 3 && hoaDon.trangThai != 1 && hoaDon.trangThai != 0}"
                                   class="me-2" th:data-id="${hoaDon.id}">
-                                <button type="button" class="btn btn-outline-warning btn-giao-hang">Đang giao hàng
-                                </button>
+                                <button type="button" class="btn btn-outline-warning btn-giao-hang">Giao hàng</button>
                             </form>
 
                             <form th:if="${hoaDon.trangThai == 3}"
@@ -177,7 +176,7 @@
                                 <button type="button" class="btn btn-outline-primary btn-hoan-thanh">Hoàn Thành</button>
                             </form>
 
-                            <form th:if="${hoaDon.trangThai != 3 && hoaDon.trangThai != 2}"
+                            <form th:if="${hoaDon.trangThai != 3}"
                                   class="me-2" th:data-id="${hoaDon.id}">
                                 <button type="button" class="btn btn-outline-danger btn-huy">Hủy</button>
                             </form>
@@ -215,7 +214,7 @@
                                     <span th:case="4" class="text-primary">Hoàn thành</span>
                                     <span th:case="5" class="text-danger">Hủy</span>
                                 </td>
-                                <td th:text="${#temporals.format(hoaDon.ngayTao, 'dd-MM-yyyy HH:mm')}"></td>
+                                <td th:text="${#temporals.format(hoaDon.ngaySua, 'dd-MM-yyyy HH:mm')}"></td>
                                 <td th:text="${item.hinhThucThanhToan}"></td>
                                 <td th:class="${item.loaiHoaDon ? 'text-danger' : 'text-primary'}"
                                     th:text="${item.loaiHoaDon ? 'Tại quầy' : 'Online'}">
@@ -230,7 +229,8 @@
                 <div class="card mb-4">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2>Thông tin khách hàng</h2>
-                        <button type="submit" class="btn btn-outline-warning">
+                        <button type="submit" class="btn btn-outline-warning"
+                                th:if="${hoaDon.trangThai == 0 || hoaDon.trangThai == 1 ||hoaDon.trangThai == 2}">
                             <i class="bi bi-gear-wide-connected"></i>
                         </button>
                     </div>
@@ -238,23 +238,30 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder">Tên người nhận</label>
-                                <input type="text" class="form-control" placeholder="Tên">
+                                <input type="text" class="form-control" placeholder="Tên"
+                                       th:value="${hoaDon.tenNguoiNhan}"
+                                       th:disabled="${hoaDon.trangThai == 4 || hoaDon.trangThai == 5 || hoaDon.trangThai == 3}"
+                                >
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder">Số điện thoại</label>
-                                <input type="text" class="form-control" placeholder="Số điện thoại">
+                                <input type="text" class="form-control" placeholder="Số điện thoại"
+                                       th:value="${hoaDon.sdtNguoiNhan}"
+                                       th:disabled="${hoaDon.trangThai == 4 || hoaDon.trangThai == 5 || hoaDon.trangThai == 3}">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder" for="city">Thành phố</label>
-                                <select class="form-control" id="city" name="tinhThanhPho">
+                                <select class="form-control" id="city" name="tinhThanhPho"
+                                        th:disabled="${hoaDon.trangThai == 4 || hoaDon.trangThai == 5 || hoaDon.trangThai == 3}">
                                     <option value="" selected>Chọn tỉnh thành</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder" for="district">Quận huyện</label>
-                                <select class="form-control" id="district" name="quanHuyen">
+                                <select class="form-control" id="district" name="quanHuyen"
+                                        th:disabled="${hoaDon.trangThai == 4 || hoaDon.trangThai == 5 || hoaDon.trangThai == 3}">
                                     <option value="" selected>Chọn quận huyện</option>
                                 </select>
                             </div>
@@ -262,14 +269,16 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder" for="district">Phường xã</label>
-                                <select class="form-control" id="ward" name="xaPhuong">
+                                <select class="form-control" id="ward" name="xaPhuong"
+                                        th:disabled="${hoaDon.trangThai == 4 || hoaDon.trangThai == 5 || hoaDon.trangThai == 3}">
                                     <option value="" selected>Chọn phường xã</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder">Số nhà / Ngõ đường</label>
                                 <input type="text" class="form-control"
-                                       placeholder="1300 Rockdick Rd., Unit A Markham, ON L3R8C3">
+                                       placeholder="1300 Rockdick Rd., Unit A Markham, ON L3R8C3"
+                                       th:disabled="${hoaDon.trangThai == 4 || hoaDon.trangThai == 5 || hoaDon.trangThai == 3}">
                             </div>
                         </div>
                     </form>
@@ -279,7 +288,8 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2>Thông tin sản phẩm</h2>
                         <button class="btn btn-outline-success" type="button" data-bs-toggle="modal"
-                                data-bs-target="#addSanPham" th:if="${hoaDon.trangThai == 0 || hoaDon.trangThai == 1}">
+                                data-bs-target="#addSanPham"
+                                th:if="${hoaDon.trangThai == 0 || hoaDon.trangThai == 1 ||hoaDon.trangThai == 2}">
                             <i class="bi bi-patch-plus-fill"></i>
                         </button>
                     </div>
@@ -310,11 +320,18 @@
                                           method="post"
                                           action="/sale/updateSoLuong"
                                           class="update-so-luong-form">
-                                        <div class="quantity-container" >
-                                            <button class="quantity-btn-1" type="button">−</button>
+                                        <div class="quantity-container">
+                                            <button class="quantity-btn-1" type="button"
+                                                    th:if="${hoaDon.trangThai == 0 || hoaDon.trangThai == 1 ||hoaDon.trangThai == 2}">
+                                                −
+                                            </button>
                                             <input type="text" class="quantity-input"
+                                                   th:disabled="${hoaDon.trangThai != 0 || hoaDon.trangThai != 1 ||hoaDon.trangThai != 2}"
                                                    th:value="${item.soLuong}" id="soLuong" name="soLuong">
-                                            <button class="quantity-btn" type="button">+</button>
+                                            <button class="quantity-btn" type="button"
+                                                    th:if="${hoaDon.trangThai == 0 || hoaDon.trangThai == 1 ||hoaDon.trangThai == 2}">
+                                                +
+                                            </button>
                                         </div>
                                     </form>
                                 </div>
@@ -323,7 +340,8 @@
 
                                 <a href="javascript:void(0);"
                                    class="btn btn-outline-danger text-danger btn-xoa-sanPham"
-                                   th:data-id="${item.sanPhamChiTiet.id}">
+                                   th:data-id="${item.sanPhamChiTiet.id}"
+                                   th:if="${hoaDon.trangThai == 0 || hoaDon.trangThai == 1 ||hoaDon.trangThai == 2}">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>
@@ -332,10 +350,10 @@
 
                     <div class="summary mt-5 mx-4">
                         <p>Tổng số lượng <span class="float-end" th:text="${tongSoLuong}"></span></p>
-                        <p>Shipping fee <span class="float-end">$20.00</span></p>
-                        <p>Tổng tiền <span class="order-total float-end">$7220.00</span></p>
-                        <p>Discount Voucher <span class="discount float-end">$25</span></p>
-                        <p>Estimated delivery time <span class="float-end">5 days</span></p>
+<!--                        <p>Shipping fee <span class="float-end">$20.00</span></p>-->
+                        <p>Tổng tiền <span class="order-total float-end" th:text="${tongTien}"></span></p>
+<!--                        <p>Discount Voucher <span class="discount float-end">$25</span></p>-->
+<!--                        <p>Estimated delivery time <span class="float-end">5 days</span></p>-->
                     </div>
                 </div>
             </section>
@@ -351,7 +369,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" id="searchQuery"
                                placeholder="Tìm kiếm sản phẩm...">

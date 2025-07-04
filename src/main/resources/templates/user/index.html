@@ -8,13 +8,6 @@
     <meta name="author" content="Ansonika">
     <title>Template-Home</title>
 
-    <!-- Favicons-->
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="img/apple-touch-icon-114x114-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="img/apple-touch-icon-144x144-precomposed.png">
-
     <!-- GOOGLE WEB FONT -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,317 +22,12 @@
 
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <!-- YOUR CUSTOM CSS -->
-    <link href="css/custom.css" rel="stylesheet">
-
-    <style>
-        /* Custom styles for user info dropdown */
-        .user-info-dropdown {
-            position: relative;
-        }
-
-        .user-info-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 25px;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .user-info-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            text-decoration: none;
-        }
-
-        .user-dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            min-width: 280px;
-            padding: 15px 0;
-            margin-top: 10px;
-            z-index: 1000;
-            display: none;
-        }
-
-        .user-dropdown-menu.show {
-            display: block;
-        }
-
-        .user-dropdown-header {
-            padding: 10px 20px;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 10px;
-        }
-
-        .user-dropdown-item {
-            padding: 8px 20px;
-            color: #333;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            transition: background 0.2s ease;
-        }
-
-        .user-dropdown-item:hover {
-            background: #f8f9fa;
-            text-decoration: none;
-            color: #333;
-        }
-
-        .user-dropdown-text {
-            padding: 8px 20px;
-            color: #666;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-        }
-
-        .login-btn-custom {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-        }
-
-        .login-btn-custom:hover {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            text-decoration: none;
-        }
-
-        /* Mobile responsive */
-        @media (max-width: 768px) {
-            .user-dropdown-menu {
-                min-width: 250px;
-                right: -10px;
-            }
-
-            .user-info-btn span {
-                display: none;
-            }
-
-            .user-info-btn i {
-                margin-right: 0 !important;
-            }
-        }
-    </style>
-
 </head>
 
 <body>
 
 <div id="page">
-
-    <header class="version_1">
-        <div class="layer"></div><!-- Mobile menu overlay mask -->
-        <div class="main_header">
-            <div class="container">
-                <div class="row small-gutters">
-                    <div class="col-xl-3 col-lg-3 d-lg-flex align-items-center">
-                        <div id="logo">
-                            <a href="index.html"><img th:src="@{user/assets/images/logo.svg}" alt="" width="100" height="35"></a>
-                        </div>
-                    </div>
-                    <nav class="col-xl-6 col-lg-7">
-                        <a class="open_close" href="javascript:void(0);">
-                            <div class="hamburger hamburger--spin">
-                                <div class="hamburger-box">
-                                    <div class="hamburger-inner"></div>
-                                </div>
-                            </div>
-                        </a>
-                        <!-- Mobile menu button -->
-                        <div class="main-menu">
-                            <div id="header_menu">
-                                <a href="index.html"><img src="img/logo_black.svg" alt="" width="100" height="35"></a>
-                                <a href="#" class="open_close" id="close_in"><i class="ti-close"></i></a>
-                            </div>
-                            <ul>
-                                <li class="submenu">
-                                    <a href="javascript:void(0);" class="show-submenu">Home</a>
-                                    <ul>
-                                        <li><a href="index.html">Slider</a></li>
-                                        <li><a href="index-2.html">Video Background</a></li>
-                                        <li><a href="index-3.html">Vertical Slider</a></li>
-                                        <li><a href="index-4.html">GDPR Cookie Bar</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                        <!--/main-menu -->
-                    </nav>
-
-                    <!-- Modified user info section -->
-                    <div class="col-xl-3 col-lg-2 d-lg-flex align-items-center justify-content-end text-end">
-                        <!-- User info when logged in -->
-                        <div class="user-info-dropdown" th:if="${isLoggedIn and currentUser != null}">
-                            <a href="#" class="user-info-btn" onclick="toggleUserDropdown(event)">
-                                <i class="fas fa-user-circle me-2"></i>
-                                <span th:text="${currentUser.email}">Email người dùng</span>
-                                <i class="fas fa-chevron-down ms-2"></i>
-                            </a>
-                            <div class="user-dropdown-menu" id="userDropdownMenu">
-                                <div class="user-dropdown-header">
-                                    <div style="font-weight: 600; color: #333;">
-                                        <i class="fas fa-user me-2"></i>
-                                        <span th:text="${currentUser.ma != null ? currentUser.ma : 'Chưa có mã'}">Mã TK</span>
-                                    </div>
-                                </div>
-                                <div class="user-dropdown-text">
-                                    <i class="fas fa-envelope me-2"></i>
-                                    <span th:text="${currentUser.email}">Email</span>
-                                </div>
-                                <div class="user-dropdown-text" th:if="${currentUser.chucVu != null}">
-                                    <i class="fas fa-id-badge me-2"></i>
-                                    <span th:text="${currentUser.chucVu.viTri != null ? currentUser.chucVu.viTri : 'Chưa có chức vụ'}">Chức vụ</span>
-                                </div>
-                                <div class="user-dropdown-text" th:if="${currentUser.chucVu != null && currentUser.chucVu.moTa != null}" style="font-size: 12px; color: #999;">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    <span th:text="${currentUser.chucVu.moTa}">Mô tả</span>
-                                </div>
-                                <hr style="margin: 10px 0;">
-                                <a href="/profile" class="user-dropdown-item">
-                                    <i class="fas fa-user-edit me-2"></i>
-                                    Thông tin cá nhân
-                                </a>
-                                <a href="/orders" class="user-dropdown-item">
-                                    <i class="fas fa-shopping-bag me-2"></i>
-                                    Đơn hàng của tôi
-                                </a>
-                                <a href="/wishlist" class="user-dropdown-item">
-                                    <i class="fas fa-heart me-2"></i>
-                                    Yêu thích
-                                </a>
-                                <hr style="margin: 10px 0;">
-                                <form th:action="@{/logout}" method="post" style="margin: 0;">
-                                    <button type="submit" class="user-dropdown-item" style="border: none; background: none; width: 100%; text-align: left; cursor: pointer;">
-                                        <i class="fas fa-sign-out-alt me-2"></i>
-                                        Đăng xuất
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-
-                        <!-- Login button when not logged in -->
-                        <div th:if="${!isLoggedIn or currentUser == null}">
-                            <a href="/login" class="login-btn-custom">
-                                <i class="fas fa-sign-in-alt me-2"></i>
-                                <span>Đăng nhập</span>
-                            </a>
-                        </div>
-
-                        <!-- Keep the original phone number for non-logged users or as secondary info -->
-                        <a class="phone_top" href="tel://9438843343" th:if="${!isLoggedIn or currentUser == null}" style="margin-left: 15px;">
-                            <strong><span>Need Help?</span>+94 423-23-221</strong>
-                        </a>
-                    </div>
-                </div>
-                <!-- /row -->
-            </div>
-        </div>
-        <!-- /main_header -->
-
-        <div class="main_nav Sticky">
-            <div class="container">
-                <div class="row small-gutters">
-                    <div class="col-xl-3 col-lg-3 col-md-3">
-                        <nav class="categories">
-                            <ul class="clearfix">
-                                <li><span>
-										<a href="#">
-											<span class="hamburger hamburger--spin">
-												<span class="hamburger-box">
-													<span class="hamburger-inner"></span>
-												</span>
-											</span>
-											Categories
-										</a>
-									</span>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <div class="col-xl-6 col-lg-7 col-md-6 d-none d-md-block">
-                        <div class="custom-search-input">
-                            <input type="text" placeholder="Search over 10.000 products">
-                            <button type="submit"><i class="header-icon_search_custom"></i></button>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-2 col-md-3">
-                        <ul class="top_tools">
-                            <li>
-                                <div class="dropdown dropdown-cart">
-                                    <a href="cart.html" class="cart_bt"><strong>2</strong></a>
-                                    <div class="dropdown-menu">
-                                        <ul>
-                                            <li>
-                                                <a href="product-detail-1.html">
-                                                    <figure><img src="img/products/product_placeholder_square_small.jpg" data-src="img/products/shoes/thumb/1.jpg" alt="" width="50" height="50" class="lazy"></figure>
-                                                    <strong><span>1x Armor Air x Fear</span>$90.00</strong>
-                                                </a>
-                                                <a href="#0" class="action"><i class="ti-trash"></i></a>
-                                            </li>
-                                            <li>
-                                                <a href="product-detail-1.html">
-                                                    <figure><img src="img/products/product_placeholder_square_small.jpg" data-src="img/products/shoes/thumb/2.jpg" alt="" width="50" height="50" class="lazy"></figure>
-                                                    <strong><span>1x Armor Okwahn II</span>$110.00</strong>
-                                                </a>
-                                                <a href="0" class="action"><i class="ti-trash"></i></a>
-                                            </li>
-                                        </ul>
-                                        <div class="total_drop">
-                                            <div class="clearfix"><strong>Total</strong><span>$200.00</span></div>
-                                            <a href="cart.html" class="btn_1 outline">View Cart</a><a href="checkout.html" class="btn_1">Checkout</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- /dropdown-cart-->
-                            </li>
-                            <li>
-                                <a href="#0" class="wishlist"><span>Wishlist</span></a>
-                            </li>
-
-                            <li>
-                                <a href="javascript:void(0);" class="btn_search_mob"><span>Search</span></a>
-                            </li>
-                            <li>
-                                <a href="#menu" class="btn_cat_mob">
-                                    <div class="hamburger hamburger--spin" id="hamburger">
-                                        <div class="hamburger-box">
-                                            <div class="hamburger-inner"></div>
-                                        </div>
-                                    </div>
-                                    Categories
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- /row -->
-            </div>
-            <div class="search_mob_wp">
-                <input type="text" class="form-control" placeholder="Search over 10.000 products">
-                <input type="submit" class="btn_1 full-width" value="Search">
-            </div>
-            <!-- /search_mobile -->
-        </div>
-        <!-- /main_nav -->
-    </header>
+    <header th:replace="/user/fragments/header :: header"></header>
     <!-- /header -->
 
     <main>
@@ -350,9 +38,9 @@
                         <div class="row justify-content-center justify-content-md-start">
                             <div class="col-lg-6">
                                 <div class="slide-text white">
-                                    <h3>Armor Air<br>Max 720 Sage Low</h3>
-                                    <p>Limited items available at this price</p>
-                                    <a class="btn_1" href="#0" role="button">Shop Now</a>
+                                    <h3>FanTech<br>Bán quạt uy tín</h3>
+                                    <p>giá rẻ</p>
+                                    <a class="btn_1" href="#0" role="button">Mua ngay</a>
                                 </div>
                             </div>
                         </div>
@@ -363,121 +51,101 @@
         </div>
         <!-- /header-video -->
         <hr class="mb-0">
-
-        <div class="container margin_60_35">
-            <div class="main_title mb-4">
-                <h2>New Arrival</h2>
-                <span>Products</span>
-                <p>Cum doctus civibus efficiantur in imperdiet deterruisset.</p>
-            </div>
-            <!-- Product content continues here... -->
-        </div>
         <!-- /container -->
+        <div class="main_nav Sticky">
+            <!-- Phần hiển thị sản phẩm - Thêm vào sau phần "New Arrival" trong file HTML -->
+            <div class="container margin_60_35">
+                <div class="main_title mb-4">
+                    <h2>Sản Phẩm Nổi Bật</h2>
+                    <span>Sản Phẩm Nổi Bật</span>
+                    <p>Khám phá các sản phẩm quạt điện chất lượng cao.</p>
+                </div>
 
-    </main>
-    <!-- /main -->
+                <!-- Kiểm tra nếu có sản phẩm -->
+                <div th:if="${sanPhamList != null and !sanPhamList.isEmpty()}">
+                    <div class="row">
+                        <!-- Lặp qua danh sách sản phẩm -->
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4" th:each="sanPham : ${sanPhamList}">
+                            <div class="card h-100 shadow-sm">
+                                <!-- Hình ảnh sản phẩm -->
+                                <div class="position-relative">
+                                    <img src="https://konachan.com/jpeg/1e4f4728045e2f08b85f7f1529551a7b/Konachan.com%20-%20177633%20animal_ears%20bunny_ears%20bunnygirl%20cherry_blossoms%20flowers%20long_hair%20pink_hair%20reisen_udongein_inaba%20school_uniform%20shiki.%20touhou.jpg"
+                                         class="card-img-top"
+                                         style="height: 250px; object-fit: cover;"
+                                         th:alt="${sanPham.ten}">
 
-    <footer class="revealed">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <h3 data-bs-target="#collapse_1">Quick Links</h3>
-                    <div class="collapse dont-collapse-sm links" id="collapse_1">
-                        <ul>
-                            <li><a href="about.html">About us</a></li>
-                            <li><a href="help.html">Faq</a></li>
-                            <li><a href="help.html">Help</a></li>
-                            <li><a href="account.html">My account</a></li>
-                            <li><a href="blog.html">Blog</a></li>
-                            <li><a href="contacts.html">Contacts</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h3 data-bs-target="#collapse_2">Categories</h3>
-                    <div class="collapse dont-collapse-sm links" id="collapse_2">
-                        <ul>
-                            <li><a href="listing-grid-1-full.html">Clothes</a></li>
-                            <li><a href="listing-grid-2-full.html">Electronics</a></li>
-                            <li><a href="listing-grid-1-full.html">Furniture</a></li>
-                            <li><a href="listing-grid-3.html">Glasses</a></li>
-                            <li><a href="listing-grid-1-full.html">Shoes</a></li>
-                            <li><a href="listing-grid-1-full.html">Watches</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h3 data-bs-target="#collapse_3">Contacts</h3>
-                    <div class="collapse dont-collapse-sm contacts" id="collapse_3">
-                        <ul>
-                            <li><i class="ti-home"></i>97845 Baker st. 567<br>Los Angeles - US</li>
-                            <li><i class="ti-headphone-alt"></i>+94 423-23-221</li>
-                            <li><i class="ti-email"></i><a href="#0">info@allaia.com</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h3 data-bs-target="#collapse_4">Keep in touch</h3>
-                    <div class="collapse dont-collapse-sm" id="collapse_4">
-                        <div id="newsletter">
-                            <div class="form-group">
-                                <input type="email" name="email_newsletter" id="email_newsletter" class="form-control" placeholder="Your email">
-                                <button type="submit" id="submit-newsletter"><i class="ti-angle-double-right"></i></button>
+                                    <!-- Badge trạng thái -->
+                                    <span class="badge bg-success position-absolute top-0 start-0 m-2"
+                                          th:if="${sanPham.trangThai}">Có sẵn</span>
+                                    <span class="badge bg-secondary position-absolute top-0 start-0 m-2"
+                                          th:unless="${sanPham.trangThai}">Hết hàng</span>
+                                </div>
+
+                                <!-- Thông tin sản phẩm -->
+                                <div class="card-body d-flex flex-column">
+                                    <!-- Tên sản phẩm -->
+                                    <h5 class="card-title" th:text="${sanPham.ten}">Tên sản phẩm</h5>
+
+                                    <!-- Mô tả ngắn -->
+                                    <p class="card-text text-muted small"
+                                       th:text="${sanPham.moTa != null ? (sanPham.moTa.length() > 80 ? sanPham.moTa.substring(0, 80) + '...' : sanPham.moTa) : 'Chưa có mô tả'}">
+                                        Mô tả sản phẩm
+                                    </p>
+
+                                    <!-- Thông tin chi tiết -->
+                                    <div class="mb-3">
+                                        <!-- Mã sản phẩm -->
+                                        <small class="text-muted d-block">
+                                            <strong>Mã SP:</strong>
+                                            <span th:text="${sanPham.ma != null ? sanPham.ma : 'Chưa có mã'}">SP001</span>
+                                        </small>
+
+                                        <!-- Loại quạt -->
+                                        <small class="text-muted d-block" th:if="${sanPham.kieuQuat != null}">
+                                            <strong>Loại:</strong>
+                                            <span th:text="${sanPham.kieuQuat.ten}">Quạt trần</span>
+                                        </small>
+                                    </div>
+
+                                    <!-- Giá sản phẩm -->
+                                    <div class="mt-auto">
+                                        <h4 class="text-primary mb-3" th:if="${sanPham.sanPhamChiTiet != null and !sanPham.sanPhamChiTiet.isEmpty() and sanPham.sanPhamChiTiet[0].gia != null}">
+                                            <span th:text="${#numbers.formatDecimal(sanPham.sanPhamChiTiet[0].gia, 0, 'COMMA', 0, 'POINT')}">500,000</span>
+                                            <small>đ</small>
+                                        </h4>
+                                    </div>
+
+                                    <!-- Nút hành động -->
+                                    <div class="d-grid gap-2">
+                                        <a th:href="@{/fanTech/detail(id=${sanPham.id})}"
+                                           class="btn btn-primary btn-sm">
+                                            <i class="fas fa-eye me-1"></i>Xem chi tiết
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="follow_us">
-                            <h5>Follow Us</h5>
-                            <ul>
-                                <li><a href="#0"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="img/twitter_icon.svg" alt="" class="lazy"></a></li>
-                                <li><a href="#0"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="img/facebook_icon.svg" alt="" class="lazy"></a></li>
-                                <li><a href="#0"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="img/instagram_icon.svg" alt="" class="lazy"></a></li>
-                                <li><a href="#0"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="img/youtube_icon.svg" alt="" class="lazy"></a></li>
-                            </ul>
-                        </div>
+                    </div>
+                </div>
+
+                <!-- Thông báo khi không có sản phẩm -->
+                <div th:unless="${sanPhamList != null and !sanPhamList.isEmpty()}" class="text-center py-5">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Hiện tại chưa có sản phẩm nào để hiển thị.
                     </div>
                 </div>
             </div>
-            <!-- /row-->
-            <hr>
-            <div class="row add_bottom_25">
-                <div class="col-lg-6">
-                    <ul class="footer-selector clearfix">
-                        <li>
-                            <div class="styled-select lang-selector">
-                                <select>
-                                    <option value="English" selected>English</option>
-                                    <option value="French">French</option>
-                                    <option value="Spanish">Spanish</option>
-                                    <option value="Russian">Russian</option>
-                                </select>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="styled-select currency-selector">
-                                <select>
-                                    <option value="US Dollars" selected>US Dollars</option>
-                                    <option value="Euro">Euro</option>
-                                </select>
-                            </div>
-                        </li>
-                        <li><img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="img/cards_all.svg" alt="" width="198" height="30" class="lazy"></li>
-                    </ul>
-                </div>
-                <div class="col-lg-6">
-                    <ul class="additional_links">
-                        <li><a href="#0">Terms and conditions</a></li>
-                        <li><a href="#0">Privacy</a></li>
-                        <li><span>© 2025 NTA</span></li>
-                    </ul>
-                </div>
+            <div class="search_mob_wp">
+                <input type="text" class="form-control" placeholder="Search over 10.000 products">
+                <input type="submit" class="btn_1 full-width" value="Search">
             </div>
         </div>
-    </footer>
+    </main>
+
+    <footer th:replace="/user/fragments/footer :: footer"></footer>
     <!--/footer-->
 </div>
-<!-- page -->
-
-<div id="toTop"></div><!-- Back to top button -->
 
 <!-- Bootstrap JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
@@ -517,16 +185,7 @@
 
 <!-- SPECIFIC SCRIPTS -->
 <script th:src="@{/user/assets/compiled/js/video_header.min.js}"></script>
-<script>
-    // Video Header
-    HeaderVideo.init({
-        container: $('.header-video'),
-        header: $('.header-video--media'),
-        videoTrigger: $("#video-trigger"),
-        autoPlayVideo: true
-    });
-</script>
-<script src="js/isotope.min.js"></script>
+
 <script>
     // Isotope filter
     $(window).on('load',function(){

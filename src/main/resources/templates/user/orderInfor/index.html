@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Ansonika">
+    <title>Template-Home</title>
+
+    <!-- GOOGLE WEB FONT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- BASE CSS -->
+    <link rel="stylesheet" th:href="@{/user/assets/compiled/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/user/assets/compiled/css/style.css}">
+
+    <!-- SPECIFIC CSS -->
+    <link rel="stylesheet" th:href="@{/user/assets/compiled/css/home_1.css}">
+
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+<header th:replace="/user/fragments/header :: header"></header>
+
+<main class="flex-grow-1">
+    <!-- Nội dung chính -->
+    <div class="container py-5">
+        <main class="flex-grow-1">
+            <div class="container py-4">
+                <h1>THong tin don hang</h1>
+                <div th:unless="${#lists.isEmpty(hoaDons)}" class="table-container"
+                     style="max-height: 400px; overflow-y: auto;">
+                    <table class="table-auto w-full border-collapse border border-gray-200 mt-4">
+                        <thead>
+                        <tr class="bg-gray-100 text-gray-700">
+                            <th class="px-4 py-2 border text-center">Mã hóa đơn</th>
+                            <th class="px-4 py-2 border text-center">Ngày tạo</th>
+                            <th class="px-4 py-2 border text-center">Số tiền</th>
+                            <th class="px-4 py-2 border text-center">Trạng thái</th>
+                            <th class="px-4 py-2 border text-center">Chi tiết</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="hoaDon : ${hoaDons}" class="text-gray-800 hover:bg-gray-50">
+                            <td class="px-4 py-2 border text-center" th:text="${hoaDon.ma}"></td>
+                            <td class="px-4 py-2 border text-center" th:text="${hoaDon.ngayTao}"></td>
+                            <td class="px-4 py-2 border text-center giaVND" th:text="${hoaDon.tongTien}"></td>
+                            <td class="px-4 py-2 border text-center"
+                                th:switch="${hoaDon.trangThai}">
+                                <span th:case="0" class="text-success-emphasis">Đang treo</span>
+                                <span th:case="1" class="text-secondary-emphasis">Đang chờ xác nhận</span>
+                                <span th:case="2" class="text-success">Đã xác nhận</span>
+                                <span th:case="3" class="text-warning">Đang giao hàng</span>
+                                <span th:case="4" class="text-primary">Hoàn thành</span>
+                                <span th:case="5" class="text-danger">Hủy</span>
+                            </td>
+                            <td class="px-4 py-2 border text-center">
+                                <a th:href="@{/vin-fan/hoa-don-kh/{id}(id=${hoaDon.id})}"
+                                   class="text-blue-500 hover:underline">Xem
+                                    chi tiết</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+    </div>
+</main>
+
+<footer th:replace="/user/fragments/footer :: header"></footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+<!-- Custom JavaScript for dropdown -->
+<script>
+    function toggleUserDropdown(event) {
+        event.preventDefault();
+        const dropdown = document.getElementById('userDropdownMenu');
+        dropdown.classList.toggle('show');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function (event) {
+        const dropdown = document.getElementById('userDropdownMenu');
+        const button = document.querySelector('.user-info-btn');
+
+        if (dropdown && !dropdown.contains(event.target) && !button.contains(event.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+
+    // Close dropdown when pressing Escape
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            const dropdown = document.getElementById('userDropdownMenu');
+            if (dropdown) {
+                dropdown.classList.remove('show');
+            }
+        }
+    });
+</script>
+
+<!-- COMMON SCRIPTS -->
+<script th:src="@{/user/assets/compiled/js/common_scripts.min.js}"></script>
+<script th:src="@{/user/assets/compiled/js/main.js}"></script>
+
+
+<script>
+    // Isotope filter
+    $(window).on('load', function () {
+        var $container = $('.isotope-wrapper');
+        $container.isotope({itemSelector: '.isotope-item', layoutMode: 'masonry'});
+    });
+    $('.isotope_filter').on('click', 'a', 'change', function () {
+        var selector = $(this).attr('data-filter');
+        $('.isotope-wrapper').isotope({filter: selector});
+    });
+</script>
+
+</body>
+</html>

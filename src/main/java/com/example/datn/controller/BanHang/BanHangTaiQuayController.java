@@ -112,8 +112,9 @@ public class BanHangTaiQuayController {
 
     @PostMapping("/huy")
     @ResponseBody
-    public ResponseEntity<String> huy(@RequestParam("id") Long id) {
-        hoaDonService.huy(id);
+    public ResponseEntity<String> huy(@RequestParam("id") Long id,
+                                      @RequestParam("ghiChu") String ghiChu) {
+        hoaDonService.huy(id,ghiChu);
         return ResponseEntity.ok("Hóa đơn đã được hủy !");
     }
 
@@ -325,7 +326,7 @@ public class BanHangTaiQuayController {
             BigDecimal tongTien = hoaDon.getTongTien();
             BigDecimal giaTriGiam;
             
-            if (phieuGiamGia.isLoaiGiamGia()) {
+            if (phieuGiamGia.getLoaiGiamGia()) {
                 // Giảm theo phần trăm
                 giaTriGiam = tongTien.multiply(phieuGiamGia.getGiaTriGiam())
                                     .divide(new BigDecimal(100), 0, BigDecimal.ROUND_HALF_UP);

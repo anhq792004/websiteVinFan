@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:insert="~{/admin/fragments/head :: head}"></head>
-<!-- Bỏ link Bootstrap CDN vì có thể gây xung đột CSS -->
-<!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet"> -->
 <body>
 <!-- Site wrapper -->
 <div class="wrapper">
@@ -22,7 +20,7 @@
                         <h1>Quản lý phiếu giảm giá</h1>
                     </div>
                     <div class="card-body">
-                        <a class="btn btn-primary mb-3" th:href="@{/phieu-giam-gia/create}">Thêm mới</a>
+                        <a class="btn btn-primary mb-3" th:href="@{/admin/phieu-giam-gia/create}">Thêm mới</a>
                         <!-- Bảng hiển thị dữ liệu -->
                         <div class="table-responsive">
                             <table class="table table-bordered">
@@ -34,6 +32,11 @@
                                     <th>Ngày kết thúc</th>
                                     <th>Giá trị giảm</th>
                                     <th>Loại giảm</th>
+                                    <th>Số lượng</th>
+                                    <th>Số lượng đã sử dụng</th>
+                                    <th>Giá trị đơn hàng tối thiểu</th>
+                                    <th>Loại phiếu</th>
+                                    <th>Người tạo</th>
                                     <th>Trạng thái</th>
                                     <th>Hành động</th>
                                 </tr>
@@ -51,13 +54,18 @@
                                         <span th:unless="${pgg.loaiGiamGia}" class="giaVND" th:text="${pgg.giaTriGiam}"></span>
                                     </td>
                                     <td th:text="${pgg.loaiGiamGia ? 'Phần trăm' : 'Tiền mặt'}"></td>
+                                    <td th:text="${pgg.soLuong}"></td>
+                                    <td th:text="${pgg.soLuongDaSuDung}"></td>
+                                    <td class="giaVND" th:text="${pgg.giaTriDonHangToiThieu}"></td>
+                                    <td th:text="${pgg.loaiPhieu ? 'Công khai' : 'Riêng tư'}"></td>
+                                    <td th:text="${pgg.nguoiTao}"></td>
                                     <td>
                                         <span th:if="${pgg.trangThai}" class="badge bg-success">Hoạt động</span>
                                         <span th:unless="${pgg.trangThai}" class="badge bg-danger">Không hoạt động</span>
                                     </td>
                                     <td>
-                                        <a th:href="@{|/phieu-giam-gia/edit/${pgg.id}|}" class="btn btn-warning btn-sm">Sửa</a>
-                                        <a th:href="@{|/phieu-giam-gia/delete/${pgg.id}|}" class="btn btn-danger btn-sm"
+                                        <a th:href="@{'/admin/phieu-giam-gia/edit/' + ${pgg.id}}" class="btn btn-warning btn-sm">Sửa</a>
+                                        <a th:href="@{'/admin/phieu-giam-gia/delete/' + ${pgg.id}}" class="btn btn-danger btn-sm"
                                            onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
                                     </td>
                                 </tr>
@@ -98,10 +106,8 @@
         console.log("Số lượng phiếu giảm giá:", document.querySelectorAll('tbody tr').length);
     });
 </script>
-<!-- hienthitendangnhap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.min.js"></script>
-
 </body>
 </html>

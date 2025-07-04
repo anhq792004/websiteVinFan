@@ -4,22 +4,40 @@ $(document).ready(function () {
     $(".btn-xac-nhan").click(function () {
         btn = $(this);
         hoaDonId = $(this).closest("form").data("id"); // Lấy ID hóa đơn
-// Vô hiệu hóa nút
 //         btn.prop("disabled", true);
         Swal.fire({
             title: "Xác nhận hóa đơn",
-            text: "Vui lòng kiểm tra kĩ trước khi xác nhận hóa đơn",
-            icon: "warning",
+            input: "textarea",
+            inputPlaceholder: "Nhập để xác nhận đơn hàng",
+            inputAttributes: {
+                "aria-label": "Nhập để xác nhận đơn hàng"
+            },
+            icon: "success",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Xác nhận"
+            confirmButtonText: "Xác nhận",
+            didOpen: () => {
+                const confirmBtn = Swal.getConfirmButton();
+                const input = Swal.getInput();
+
+                confirmBtn.disabled = true; // ban đầu disable
+
+                input.addEventListener('input', () => {
+                    confirmBtn.disabled = !input.value.trim(); // có nhập thì enable
+                });
+            }
         }).then((result) => {
             if (result.isConfirmed) {
+                const ghiChu = result.value;
+
                 $.ajax({
                     url: "/hoa-don/xac-nhan",
                     type: "POST",
-                    data: {id: hoaDonId}, // Gửi ID của hóa đơn
+                    data: {
+                        id: hoaDonId,
+                        ghiChu: ghiChu
+                    }, // Gửi ID của hóa đơn
                     success: function (response) {
                         Swal.fire({
                             toast: true,
@@ -116,18 +134,37 @@ $(document).ready(function () {
 
         Swal.fire({
             title: "Hủy hóa đơn?",
-            text: "Bạn có chắc chắn muốn hủy hóa đơn này?",
+            input: "textarea",
+            inputPlaceholder: "Vui lòng nhập lí do hủy hóa đơn",
+            inputAttributes: {
+                "aria-label": "Vui lòng nhập lí do hủy hóa đơn"
+            },
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Xác nhận"
+            confirmButtonText: "Xác nhận",
+            didOpen: () => {
+                const confirmBtn = Swal.getConfirmButton();
+                const input = Swal.getInput();
+
+                confirmBtn.disabled = true; // ban đầu disable
+
+                input.addEventListener('input', () => {
+                    confirmBtn.disabled = !input.value.trim(); // có nhập thì enable
+                });
+            }
         }).then((result) => {
             if (result.isConfirmed) {
+                const ghiChu = result.value;
+
                 $.ajax({
                     url: "/hoa-don/huy",
                     type: "POST",
-                    data: {id: hoaDonId}, // Gửi ID của hóa đơn
+                    data: {
+                        id: hoaDonId,
+                        ghiChu: ghiChu
+                    }, // Gửi ID của hóa đơn
                     success: function (response) {
                         Swal.fire({
                             toast: true,
