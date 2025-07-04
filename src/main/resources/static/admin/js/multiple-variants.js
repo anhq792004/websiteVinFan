@@ -219,20 +219,20 @@ class VariantsManager {
     // Đóng modal đúng cách  
     closeModal(modalId) {
         try {
-            const modalElement = document.getElementById(modalId);
+        const modalElement = document.getElementById(modalId);
             if (!modalElement) {
                 console.warn(`Modal element with id "${modalId}" not found`);
                 return;
             }
             
-            const modal = bootstrap.Modal.getInstance(modalElement);
-            
-            if (modal) {
-                modal.hide();
-            } else {
-                // Nếu không có instance, tạo mới và đóng
-                const newModal = new bootstrap.Modal(modalElement);
-                newModal.hide();
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        
+        if (modal) {
+            modal.hide();
+        } else {
+            // Nếu không có instance, tạo mới và đóng
+            const newModal = new bootstrap.Modal(modalElement);
+            newModal.hide();
             }
         } catch (error) {
             console.error('Error closing modal:', error);
