@@ -8,6 +8,7 @@ import com.example.datn.entity.HoaDon.HoaDonChiTiet;
 import com.example.datn.entity.HoaDon.LichSuHoaDon;
 import com.example.datn.entity.SanPham.SanPhamChiTiet;
 import com.example.datn.repository.HoaDonRepo.HoaDonChiTietRepo;
+import com.example.datn.service.BanHang.BanHangService;
 import com.example.datn.service.HoaDonService.HoaDonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ import java.util.Optional;
 @RequestMapping("/hoa-don")
 public class HoaDonController {
     private final HoaDonService hoaDonService;
-    private final HoaDonChiTietRepo hoaDonChiTietRepo;
+    private final BanHangService banHangService;
 
 
     @GetMapping("/index")
@@ -67,6 +68,9 @@ public class HoaDonController {
 
         Integer tongSoLuong = hoaDonService.tongSoLuong(id);
         model.addAttribute("tongSoLuong", tongSoLuong);
+
+        model.addAttribute("tongTien", hoaDon.getTongTien());
+        model.addAttribute("tongTienSauGiamGia", hoaDon.getTongTienSauGiamGia());
 
         return "admin/hoa_don/detail";
     }
@@ -109,6 +113,7 @@ public class HoaDonController {
     public ResponseEntity<String> addSP(@RequestBody AddSPToHDCTRequest addSPToHDCTRequest) {
         try {
             hoaDonService.addSPToHDCT(addSPToHDCTRequest);
+            banHangService.updateTongTienHoaDon(addSPToHDCTRequest.getIdHD());
             return ResponseEntity.ok("Thêm sản phẩm thành công!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lỗi: " + e.getMessage());
@@ -117,9 +122,11 @@ public class HoaDonController {
 
     @PostMapping("/xoa")
     @ResponseBody
-    public ResponseEntity<String> deleteChiTiet(@RequestParam("idSP") Long idSP) {
+    public ResponseEntity<String> deleteChiTiet(@RequestParam("idSP") Long idSP,
+                                                @RequestParam("idHD") Long idHD) {
         try {
             hoaDonService.deleteSPInHD(idSP);
+            banHangService.updateTongTienHoaDon(idHD);
             return ResponseEntity.ok("Xóa thành công");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi xóa sản phẩm");
@@ -132,6 +139,7 @@ public class HoaDonController {
                                               @RequestParam("idHD") Long idHD) {
         try {
             hoaDonService.tangSoLuong(idHD, idSP);
+            banHangService.updateTongTienHoaDon(idHD);
             return ResponseEntity.ok("Tăng số lượng thành công");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -144,6 +152,7 @@ public class HoaDonController {
                                               @RequestParam("idHD") Long idHD) {
         try {
             hoaDonService.giamSoLuong(idHD, idSP);
+            banHangService.updateTongTienHoaDon(idHD);
             return ResponseEntity.ok("Giảm số lượng thành công");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

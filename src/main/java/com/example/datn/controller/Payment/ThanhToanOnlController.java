@@ -130,7 +130,6 @@ public class ThanhToanOnlController {
             hoaDon.setKhachHang(khachHang);
             hoaDon.setTenNguoiNhan(hoTen);
             hoaDon.setSdtNguoiNhan(soDienThoai);
-            hoaDon.setDiaChi(savedDiaChi);
             hoaDon.setPhuongThucThanhToan(phuongThucThanhToan);
             hoaDon.setGhiChu(ghiChu);
             hoaDon.setLoaiHoaDon(false);

@@ -120,7 +120,7 @@ $(".btn-add-khachHang").click(function () {
         }
     });
 });
-
+//xoa san pham khoi gio hang
 $(".btn-xoa-sanPham").click(function () {
     const sanPhamId = $(this).data("id-sp");
     const hoaDonId = $(this).data("id-hd");
@@ -197,25 +197,23 @@ $(document).ready(function () {
     });
 });
 
-
-
-
+//tang so luong
 $(".quantity-btn").click(function () {
     const idSP = $(this).closest("form").data("idsp");  // lấy từ data-idsp
     const idHD = $(this).closest("form").data("idhd");  // lấy từ data-idhd
-    const soLuongHienTai = parseInt($(this).closest('form').find('.quantity-input').val()) || 0;
 
+    // const soLuongHienTai = parseInt($(this).closest('form').find('.quantity-input').val()) || 0;
     // Tìm sản phẩm tương ứng trong bảng sản phẩm (nếu đang hiển thị)
-    const productRow = $(`#modalThemSanPham tr:has(button[data-id-sp="${idSP}"])`);
-    if (productRow.length) {
-        const soLuongElement = productRow.find('td:eq(5)');
-        const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
-
-        // Giảm số lượng hiển thị trong bảng (chỉ trên UI)
-        if (soLuongTrongKho > 0) {
-            soLuongElement.text(soLuongTrongKho - 1);
-        }
-    }
+    // const productRow = $(`#modalThemSanPham tr:has(button[data-id-sp="${idSP}"])`);
+    // if (productRow.length) {
+    //     const soLuongElement = productRow.find('td:eq(5)');
+    //     const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
+    //
+    //     // Giảm số lượng hiển thị trong bảng (chỉ trên UI)
+    //     if (soLuongTrongKho > 0) {
+    //         soLuongElement.text(soLuongTrongKho - 1);
+    //     }
+    // }
 
     $.ajax({
         url: '/sale/tangSoLuong',
@@ -236,11 +234,11 @@ $(".quantity-btn").click(function () {
         },
         error: function (xhr) {
             // Khôi phục số lượng hiển thị trong trường hợp lỗi
-            if (productRow.length) {
-                const soLuongElement = productRow.find('td:eq(5)');
-                const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
-                soLuongElement.text(soLuongTrongKho + 1);
-            }
+            // if (productRow.length) {
+            //     const soLuongElement = productRow.find('td:eq(5)');
+            //     const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
+            //     soLuongElement.text(soLuongTrongKho + 1);
+            // }
 
             Swal.fire({
                 toast: true,
@@ -253,21 +251,21 @@ $(".quantity-btn").click(function () {
         }
     });
 });
-
+// giam so luong
 $(".quantity-btn-1").click(function () {
     const idSP = $(this).closest("form").data("idsp");  // lấy từ data-idsp
     const idHD = $(this).closest("form").data("idhd");  // lấy từ data-idhd
-    const soLuongHienTai = parseInt($(this).closest('form').find('.quantity-input').val()) || 0;
 
-    // Tìm sản phẩm tương ứng trong bảng sản phẩm (nếu đang hiển thị)
-    const productRow = $(`#modalThemSanPham tr:has(button[data-id-sp="${idSP}"])`);
-    if (productRow.length) {
-        const soLuongElement = productRow.find('td:eq(5)');
-        const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
-
-        // Tăng số lượng hiển thị trong bảng (chỉ trên UI) khi giảm số lượng trong giỏ
-        soLuongElement.text(soLuongTrongKho + 1);
-    }
+    // const soLuongHienTai = parseInt($(this).closest('form').find('.quantity-input').val()) || 0;
+    // // Tìm sản phẩm tương ứng trong bảng sản phẩm (nếu đang hiển thị)
+    // const productRow = $(`#modalThemSanPham tr:has(button[data-id-sp="${idSP}"])`);
+    // if (productRow.length) {
+    //     const soLuongElement = productRow.find('td:eq(5)');
+    //     const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
+    //
+    //     // Tăng số lượng hiển thị trong bảng (chỉ trên UI) khi giảm số lượng trong giỏ
+    //     soLuongElement.text(soLuongTrongKho + 1);
+    // }
 
     $.ajax({
         url: '/sale/giamSoLuong',
@@ -288,11 +286,11 @@ $(".quantity-btn-1").click(function () {
         },
         error: function (xhr) {
             // Khôi phục số lượng hiển thị trong trường hợp lỗi
-            if (productRow.length) {
-                const soLuongElement = productRow.find('td:eq(5)');
-                const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
-                soLuongElement.text(soLuongTrongKho - 1);
-            }
+            // if (productRow.length) {
+            //     const soLuongElement = productRow.find('td:eq(5)');
+            //     const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
+            //     soLuongElement.text(soLuongTrongKho - 1);
+            // }
 
             Swal.fire({
                 toast: true,
@@ -305,7 +303,7 @@ $(".quantity-btn-1").click(function () {
         }
     });
 });
-
+// update so lượng
 $(document).ready(function () {
     $('.update-so-luong-form').on('submit', function (e) {
         e.preventDefault();
@@ -834,23 +832,6 @@ function formatCurrency() {
     }
 }
 
-// // button ẩn form
-// document.addEventListener('DOMContentLoaded', function () {
-//     const toggle = document.getElementById('toggleForm');
-//     const form = document.getElementById('shippingForm');
-//     const btn = document.getElementById('btnDiaChi');
-//
-//     toggle.addEventListener('change', function () {
-//         if (toggle.checked) {
-//             form.style.visibility = 'visible';
-//             btn.style.visibility = 'visible';
-//         } else {
-//             form.style.visibility = 'hidden';
-//             btn.style.visibility = 'hidden';
-//         }
-//     });
-// });
-
 // Thêm code xử lý cho nút thêm sản phẩm
 $(document).ready(function() {
     console.log("Document ready - checking btn-add-sanPham elements");
@@ -869,20 +850,20 @@ $(document).ready(function() {
         const hoaDonId = $(this).data("id-hd");
         const sanPhamId = $(this).data("id-sp");
         const gia = $(this).data("gia");
-        const rowElement = $(this).closest('tr');
-        const soLuongElement = rowElement.find('td:eq(5)');
-        const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
-
-        console.log("Data: ", { hoaDonId, sanPhamId, gia, soLuongTrongKho });
+        // const rowElement = $(this).closest('tr');
+        // const soLuongElement = rowElement.find('td:eq(5)');
+        // const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
+        //
+        // console.log("Data: ", { hoaDonId, sanPhamId, gia, soLuongTrongKho });
 
         // Vô hiệu hóa nút để tránh nhấn nhiều lần
         const button = $(this);
         button.prop('disabled', true);
 
         // Giảm số lượng hiển thị trong bảng (chỉ trên UI)
-        if (soLuongTrongKho > 0) {
-            soLuongElement.text(soLuongTrongKho - 1);
-        }
+        // if (soLuongTrongKho > 0) {
+        //     soLuongElement.text(soLuongTrongKho - 1);
+        // }
 
         $.ajax({
             url: '/sale/addSP',
@@ -895,17 +876,16 @@ $(document).ready(function() {
                 soLuong: 1
             }),
             success: function (response) {
-                console.log("Success: ", response);
                 // Kiểm tra nếu số lượng sản phẩm trong giỏ vượt quá số lượng trong kho
                 // Chúng ta sẽ hiển thị thông báo cảnh báo, nhưng vẫn cho phép thêm vào giỏ
                 let warningMessage = "";
-                const itemInCart = $('#product-list').find(`[data-idsp="${sanPhamId}"]`).closest('form');
-                if (itemInCart.length > 0) {
-                    const soLuongTrongGio = parseInt(itemInCart.find('.quantity-input').val()) || 0;
-                    if (soLuongTrongGio >= soLuongTrongKho) {
-                        warningMessage = `Cảnh báo: Số lượng sản phẩm trong giỏ (${soLuongTrongGio}) đã vượt quá số lượng trong kho (${soLuongTrongKho}). Vẫn có thể mua nhưng sẽ kiểm tra lại khi thanh toán.`;
-                    }
-                }
+                // const itemInCart = $('#product-list').find(`[data-idsp="${sanPhamId}"]`).closest('form');
+                // if (itemInCart.length > 0) {
+                //     const soLuongTrongGio = parseInt(itemInCart.find('.quantity-input').val()) || 0;
+                //     if (soLuongTrongGio >= soLuongTrongKho) {
+                //         warningMessage = `Cảnh báo: Số lượng sản phẩm trong giỏ (${soLuongTrongGio}) đã vượt quá số lượng trong kho (${soLuongTrongKho}). Vẫn có thể mua nhưng sẽ kiểm tra lại khi thanh toán.`;
+                //     }
+                // }
 
                 Swal.fire({
                     toast: true,
@@ -925,7 +905,7 @@ $(document).ready(function() {
                 button.prop('disabled', false);
 
                 // Khôi phục số lượng hiển thị trong trường hợp lỗi
-                soLuongElement.text(soLuongTrongKho);
+                // soLuongElement.text(soLuongTrongKho);
 
                 Swal.fire({
                     toast: true,
@@ -1130,23 +1110,6 @@ function updateDiscountDisplay() {
 
     console.log("Tổng tiền:", tongTien, "Giảm giá:", giaTriGiamGia, "Tổng sau giảm:", tongTienSauGiam);
 }
-
-// // button ẩn form
-// document.addEventListener('DOMContentLoaded', function () {
-//     const toggle = document.getElementById('toggleForm');
-//     const form = document.getElementById('shippingForm');
-//     const btn = document.getElementById('btnDiaChi');
-//
-//     toggle.addEventListener('change', function () {
-//         if (toggle.checked) {
-//             form.style.visibility = 'visible';
-//             btn.style.visibility = 'visible';
-//         } else {
-//             form.style.visibility = 'hidden';
-//             btn.style.visibility = 'hidden';
-//         }
-//     });
-// });
 
 // Chức năng chọn địa chỉ từ danh sách tỉnh thành Việt Nam
 document.addEventListener("DOMContentLoaded", function () {
