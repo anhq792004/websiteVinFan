@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -38,14 +39,17 @@ public interface KhachHangRepo extends JpaRepository<KhachHang, Long> {
     @Query("SELECT kh FROM KhachHang kh WHERE kh.taiKhoan.id = :taiKhoanId")
     Optional<KhachHang> findByTaiKhoan(@Param("taiKhoanId") Long taiKhoanId);
 
-    /**
-     * Kiểm tra khách hàng có tồn tại theo tài khoản không
-     */
-    boolean existsByTaiKhoan(TaiKhoan taiKhoan);
+//    /**
+//     * Kiểm tra khách hàng có tồn tại theo tài khoản không
+//     */
+//    boolean existsByTaiKhoan(TaiKhoan taiKhoan);
 
-    /**
-     * Kiểm tra khách hàng có tồn tại theo ID của tài khoản không
-     */
-    @Query("SELECT CASE WHEN COUNT(kh) > 0 THEN true ELSE false END FROM KhachHang kh WHERE kh.taiKhoan.id = :taiKhoanId")
-    boolean existsByTaiKhoanId(@Param("taiKhoanId") Long taiKhoanId);
+//    /**
+//     * Kiểm tra khách hàng có tồn tại theo ID của tài khoản không
+//     */
+//    @Query("SELECT CASE WHEN COUNT(kh) > 0 THEN true ELSE false END FROM KhachHang kh WHERE kh.taiKhoan.id = :taiKhoanId")
+//    boolean existsByTaiKhoanId(@Param("taiKhoanId") Long taiKhoanId);
+
+    List<KhachHang> findByTrangThai(Boolean trangThai);
+
 }
