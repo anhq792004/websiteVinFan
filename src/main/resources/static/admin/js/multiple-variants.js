@@ -63,6 +63,15 @@ class VariantsManager {
     
     // Setup event listeners cho modal
     setupModalEvents() {
+        // Event khi modal mở để reset trạng thái
+        document.getElementById('mauSacModal').addEventListener('show.bs.modal', () => {
+            this.resetModalButtons('mau-sac-option', 'btn-outline-primary', 'btn-primary');
+        });
+        
+        document.getElementById('congSuatModal').addEventListener('show.bs.modal', () => {
+            this.resetModalButtons('cong-suat-option', 'btn-outline-info', 'btn-info');
+        });
+        
         // Event khi modal đóng để đảm bảo làm sạch
         document.getElementById('mauSacModal').addEventListener('hidden.bs.modal', () => {
             this.cleanupModal();
@@ -70,6 +79,18 @@ class VariantsManager {
         
         document.getElementById('congSuatModal').addEventListener('hidden.bs.modal', () => {
             this.cleanupModal();
+        });
+    }
+    
+    // Reset trạng thái các nút trong modal
+    resetModalButtons(className, defaultClass, selectedClass) {
+        const buttons = document.querySelectorAll(`.${className}`);
+        buttons.forEach(button => {
+            button.classList.remove(selectedClass);
+            button.classList.add(defaultClass);
+            button.disabled = false;
+            // Xóa dấu tick nếu có
+            button.innerHTML = button.textContent.replace('✓ ', '');
         });
     }
     
@@ -123,9 +144,27 @@ class VariantsManager {
         // Click vào nút màu sắc trong modal
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('mau-sac-option')) {
+                e.preventDefault();
+                e.stopPropagation();
+                
                 const mauSacId = e.target.getAttribute('data-mau-sac-id');
+                
+                // Kiểm tra xem đã chọn chưa
+                if (this.selectedMauSacIds.has(mauSacId)) {
+                    this.showError('Màu sắc này đã được chọn');
+                    return;
+                }
+                
+                // Thêm màu sắc
                 this.addMauSacById(mauSacId);
-                // Đóng modal sau khi chọn
+                
+                // Đổi màu nút để hiển thị đã chọn
+                e.target.classList.remove('btn-outline-primary');
+                e.target.classList.add('btn-primary');
+                e.target.innerHTML = '✓ ' + e.target.textContent.replace('✓ ', '');
+                e.target.disabled = true;
+                
+                // Đóng modal ngay lập tức
                 this.closeModal('mauSacModal');
             }
         });
@@ -133,9 +172,27 @@ class VariantsManager {
         // Click vào nút công suất trong modal
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('cong-suat-option')) {
+                e.preventDefault();
+                e.stopPropagation();
+                
                 const congSuatId = e.target.getAttribute('data-cong-suat-id');
+                
+                // Kiểm tra xem đã chọn chưa
+                if (this.selectedCongSuatIds.has(congSuatId)) {
+                    this.showError('Công suất này đã được chọn');
+                    return;
+                }
+                
+                // Thêm công suất
                 this.addCongSuatById(congSuatId);
-                // Đóng modal sau khi chọn
+                
+                // Đổi màu nút để hiển thị đã chọn
+                e.target.classList.remove('btn-outline-info');
+                e.target.classList.add('btn-info');
+                e.target.innerHTML = '✓ ' + e.target.textContent.replace('✓ ', '');
+                e.target.disabled = true;
+                
+                // Đóng modal ngay lập tức
                 this.closeModal('congSuatModal');
             }
         });
@@ -161,15 +218,31 @@ class VariantsManager {
     
     // Đóng modal đúng cách  
     closeModal(modalId) {
-        const modalElement = document.getElementById(modalId);
-        const modal = bootstrap.Modal.getInstance(modalElement);
-        
-        if (modal) {
-            modal.hide();
-        } else {
-            // Nếu không có instance, tạo mới và đóng
-            const newModal = new bootstrap.Modal(modalElement);
-            newModal.hide();
+        try {
+            const modalElement = document.getElementById(modalId);
+            if (!modalElement) {
+                console.warn(`Modal element with id "${modalId}" not found`);
+                return;
+            }
+            
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            
+            if (modal) {
+                modal.hide();
+            } else {
+                // Nếu không có instance, tạo mới và đóng
+                const newModal = new bootstrap.Modal(modalElement);
+                newModal.hide();
+            }
+        } catch (error) {
+            console.error('Error closing modal:', error);
+            // Fallback: đóng modal bằng cách trigger click vào backdrop
+            const modalElement = document.getElementById(modalId);
+            if (modalElement) {
+                modalElement.classList.remove('show');
+                modalElement.style.display = 'none';
+                this.cleanupModal();
+            }
         }
     }
     
@@ -213,11 +286,6 @@ class VariantsManager {
     addMauSacById(mauSacId) {
         if (!mauSacId) return;
         
-        if (this.selectedMauSacIds.has(mauSacId)) {
-            this.showError('Màu sắc này đã được chọn');
-            return;
-        }
-        
         // Thêm vào danh sách đã chọn
         this.selectedMauSacIds.add(mauSacId);
         
@@ -235,11 +303,6 @@ class VariantsManager {
     // Thêm công suất theo ID
     addCongSuatById(congSuatId) {
         if (!congSuatId) return;
-        
-        if (this.selectedCongSuatIds.has(congSuatId)) {
-            this.showError('Công suất này đã được chọn');
-            return;
-        }
         
         // Thêm vào danh sách đã chọn
         this.selectedCongSuatIds.add(congSuatId);
@@ -693,6 +756,22 @@ class VariantsManager {
                 return;
             }
 
+            // Xác nhận trước khi lưu
+            const confirmResult = await Swal.fire({
+                title: 'Xác nhận lưu',
+                text: `Bạn có chắc chắn muốn lưu ${this.variantsList.length} biến thể này không?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Lưu',
+                cancelButtonText: 'Hủy'
+            });
+            
+            if (!confirmResult.isConfirmed) {
+                return;
+            }
+
             // Hiển thị loading
             const saveBtn = document.getElementById('saveToDatabase');
             const originalText = saveBtn.innerHTML;
@@ -782,7 +861,17 @@ class VariantsManager {
     }
 
     showSuccess(message) {
-        if (typeof Toastify !== 'undefined') {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công!',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                position: 'top-end',
+                toast: true
+            });
+        } else if (typeof Toastify !== 'undefined') {
             Toastify({
                 text: message,
                 duration: 3000,
@@ -796,7 +885,17 @@ class VariantsManager {
     }
 
     showError(message) {
-        if (typeof Toastify !== 'undefined') {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi!',
+                text: message,
+                timer: 3000,
+                showConfirmButton: false,
+                position: 'top-end',
+                toast: true
+            });
+        } else if (typeof Toastify !== 'undefined') {
             Toastify({
                 text: message,
                 duration: 3000,
@@ -810,7 +909,19 @@ class VariantsManager {
     }
     
     showMiniToast(message) {
-        if (typeof Toastify !== 'undefined') {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'success',
+                text: message,
+                timer: 1500,
+                showConfirmButton: false,
+                position: 'top-end',
+                toast: true,
+                customClass: {
+                    popup: 'swal2-small'
+                }
+            });
+        } else if (typeof Toastify !== 'undefined') {
             Toastify({
                 text: message,
                 duration: 1500,
@@ -859,7 +970,7 @@ document.addEventListener('DOMContentLoaded', function() {
     variantsManager = new VariantsManager();
 });
 
-// CSS cho các element được chọn
+// CSS cho các element được chọn và modal cải thiện
 const style = document.createElement('style');
 style.textContent = `
     .mau-sac-item, .cong-suat-item {
@@ -899,6 +1010,41 @@ style.textContent = `
     
     .variant-name {
         font-size: 0.9em;
+    }
+    
+    /* Modal improvements */
+    .modal.fade {
+        transition: opacity 0.15s linear;
+    }
+    
+    .modal.fade .modal-dialog {
+        transition: transform 0.15s ease-out;
+        transform: translateY(-25px);
+    }
+    
+    .modal.show .modal-dialog {
+        transform: translateY(0);
+    }
+    
+    .modal-backdrop {
+        transition: opacity 0.15s linear;
+    }
+    
+    /* Button loading state */
+    .btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.65;
+    }
+    
+    /* SweetAlert custom styles */
+    .swal2-small {
+        font-size: 14px !important;
+        padding: 0.5rem !important;
+    }
+    
+    /* Prevent modal body scroll */
+    body.modal-open {
+        overflow: hidden;
     }
 `;
 document.head.appendChild(style); 
