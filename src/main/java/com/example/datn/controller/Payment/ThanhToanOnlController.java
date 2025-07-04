@@ -179,6 +179,14 @@ public class ThanhToanOnlController {
 
             HoaDon savedHoaDon = hoaDonRepo.save(hoaDon);
 
+            LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
+            lichSuHoaDon.setHoaDon(savedHoaDon);
+            lichSuHoaDon.setTrangThai(1);
+            lichSuHoaDon.setNgayTao(LocalDateTime.now());
+            lichSuHoaDon.setMoTa("Đơn hàng được tạo bởi khách hàng: " + khachHang.getTen());
+            lichSuHoaDon.setNguoiTao(khachHang.getTen());
+            lichSuHoaDonRepo.save(lichSuHoaDon);
+
             response.put("success", true);
             response.put("orderId", savedHoaDon.getId());
             response.put("finalAmount", finalAmount);

@@ -223,7 +223,8 @@ public class BanHangTaiQuayController {
             // Cập nhật phương thức thanh toán
             hoaDon.setPhuongThucThanhToan(phuongThucThanhToan);
             hoaDonService.saveHoaDon(hoaDon);
-            
+
+            hoaDonService.truSoLuongSanPham(idHD);
             // Xử lý thanh toán dựa trên phương thức
             if ("MOMO".equals(phuongThucThanhToan)) {
                 // Tạo QR code thanh toán Momo
