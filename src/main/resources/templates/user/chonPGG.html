@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chọn Phiếu Giảm Giá</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .voucher-card {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .voucher-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 4px 12px rgba(0,123,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        .voucher-card.selected {
+            border-color: #28a745;
+            background-color: #f8fff9;
+            box-shadow: 0 4px 12px rgba(40,167,69,0.2);
+        }
+
+        .voucher-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .voucher-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+
+        .voucher-type-private {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .voucher-type-public {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .voucher-discount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #dc3545;
+        }
+
+        .voucher-condition {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .voucher-expiry {
+            font-size: 0.8rem;
+            color: #ffc107;
+        }
+
+        .voucher-expiry.expired {
+            color: #dc3545;
+        }
+
+        .voucher-expiry.soon {
+            color: #fd7e14;
+        }
+
+        .voucher-code {
+            background: #f8f9fa;
+            border: 1px dashed #dee2e6;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #495057;
+            font-size: 0.9rem;
+        }
+
+        .selected-voucher-info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+<!-- Demo page container -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Giỏ hàng - Tổng: <span id="orderTotal">500,000₫</span></h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <span>Giảm giá: </span>
+                            <span id="discountAmount" class="text-success fw-bold">0₫</span>
+                        </div>
+                        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#voucherModal">
+                            <i class="fas fa-ticket-alt me-2"></i>
+                            Chọn phiếu giảm giá
+                        </button>
+                    </div>
+                    <div id="selectedVoucherInfo" class="selected-voucher-info" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong id="selectedVoucherName"></strong>
+                                <br>
+                                <small class="text-muted">Mã: <span id="selectedVoucherCode"></span></small>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger" onclick="removeVoucher()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center fs-5 fw-bold">
+                        <span>Thành tiền:</span>
+                        <span id="finalTotal" class="text-danger">500,000₫</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Voucher Selection Modal -->
+<div class="modal fade" id="voucherModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-ticket-alt me-2"></i>
+                    Chọn Phiếu Giảm Giá
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Loading -->
+                <div id="voucherLoading" class="loading-spinner">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Đang tải...</span>
+                    </div>
+                </div>
+
+                <!-- Voucher List -->
+                <div id="voucherList" style="display: none;">
+                    <div class="row g-3" id="voucherContainer">
+                        <!-- Vouchers will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <i class="fas fa-ticket-alt"></i>
+                    <h5>Không có phiếu giảm giá</h5>
+                    <p>Bạn chưa có phiếu giảm giá nào có thể sử dụng cho đơn hàng này.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>
+                    Đóng
+                </button>
+                <button type="button" class="btn btn-primary" id="applyVoucherBtn" disabled>
+                    <i class="fas fa-check me-2"></i>
+                    Áp dụng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    class VoucherManager {
+        constructor() {
+            this.selectedVoucher = null;
+            this.orderAmount = 500000; // Demo amount
+            this.originalTotal = 500000;
+            this.voucherModal = new bootstrap.Modal(document.getElementById('voucherModal'));
+            this.init();
+        }
+
+        init() {
+            this.bindEvents();
+            this.updateTotalDisplay();
+        }
+
+        bindEvents() {
+            // Modal shown event
+            document.getElementById('voucherModal').addEventListener('shown.bs.modal', () => {
+                this.loadVouchers();
+            });
+
+            // Apply voucher button
+            document.getElementById('applyVoucherBtn').addEventListener('click', () => {
+                this.applySelectedVoucher();
+            });
+        }
+
+        async loadVouchers() {
+            try {
+                this.showLoading();
+
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Mock voucher data
+                const vouchers = [
+                    {
+                        id: 1,
+                        code: 'SAVE10',
+                        name: 'Giảm 10% cho đơn hàng từ 300K',
+                        type: 'public',
+                        discountType: 'percent',
+                        discountValue: 10,
+                        maxDiscount: 50000,
+                        minOrderValue: 300000,
+                        startDate: new Date('2024-01-01'),
+                        endDate: new Date('2024-12-31'),
+                        remainingQuantity: 100,
+                        discountAmount: Math.min(this.orderAmount * 0.1, 50000)
+                    },
+                    {
+                        id: 2,
+                        code: 'FREESHIP',
+                        name: 'Miễn phí vận chuyển',
+                        type: 'private',
+                        discountType: 'amount',
+                        discountValue: 30000,
+                        maxDiscount: null,
+                        minOrderValue: 200000,
+                        startDate: new Date('2024-01-01'),
+                        endDate: new Date('2024-06-30'),
+                        remainingQuantity: 1,
+                        discountAmount: 30000
+                    },
+                    {
+                        id: 3,
+                        code: 'SUMMER50',
+                        name: 'Giảm 50K cho mùa hè',
+                        type: 'public',
+                        discountType: 'amount',
+                        discountValue: 50000,
+                        maxDiscount: null,
+                        minOrderValue: 500000,
+                        startDate: new Date('2024-06-01'),
+                        endDate: new Date('2024-08-31'),
+                        remainingQuantity: 50,
+                        discountAmount: 50000
+                    },
+                    {
+                        id: 4,
+                        code: 'EXPIRED',
+                        name: 'Voucher đã hết hạn',
+                        type: 'public',
+                        discountType: 'percent',
+                        discountValue: 20,
+                        maxDiscount: 100000,
+                        minOrderValue: 100000,
+                        startDate: new Date('2024-01-01'),
+                        endDate: new Date('2024-03-31'),
+                        remainingQuantity: 0,
+                        discountAmount: 0
+                    }
+                ];
+
+                this.renderVouchers(vouchers);
+
+            } catch (error) {
+                console.error('Error loading vouchers:', error);
+                this.showError('Có lỗi xảy ra khi tải phiếu giảm giá');
+            }
+        }
+
+        renderVouchers(vouchers) {
+            const container = document.getElementById('voucherContainer');
+
+            if (vouchers.length === 0) {
+                this.showEmptyState();
+                return;
+            }
+
+            const validVouchers = vouchers.filter(v => this.isVoucherValid(v));
+            const invalidVouchers = vouchers.filter(v => !this.isVoucherValid(v));
+
+            container.innerHTML = '';
+
+            // Render valid vouchers first
+            validVouchers.forEach(voucher => {
+                container.appendChild(this.createVoucherCard(voucher, false));
+            });
+
+            // Render invalid vouchers
+            invalidVouchers.forEach(voucher => {
+                container.appendChild(this.createVoucherCard(voucher, true));
+            });
+
+            this.showVoucherList();
+        }
+
+        createVoucherCard(voucher, isDisabled) {
+            const col = document.createElement('div');
+            col.className = 'col-12';
+
+            const card = document.createElement('div');
+            card.className = `voucher-card ${isDisabled ? 'disabled' : ''}`;
+            card.setAttribute('data-voucher-id', voucher.id);
+
+            if (!isDisabled) {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', () => this.selectVoucher(voucher));
+            }
+
+            const discountText = voucher.discountType === 'percent'
+                ? `${voucher.discountValue}%`
+                : this.formatPrice(voucher.discountValue);
+
+            const typeClass = voucher.type === 'private' ? 'voucher-type-private' : 'voucher-type-public';
+            const typeText = voucher.type === 'private' ? 'Riêng tư' : 'Công khai';
+
+            const expiryInfo = this.getExpiryInfo(voucher.endDate);
+            const canUse = this.canUseVoucher(voucher);
+
+            card.innerHTML = `
+                    <div class="p-3 position-relative">
+                        <div class="voucher-badge ${typeClass}">
+                            ${typeText}
+                        </div>
+
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <h6 class="mb-1 fw-bold">${voucher.name}</h6>
+                                <div class="voucher-code mb-2">${voucher.code}</div>
+
+                                <div class="voucher-condition mb-2">
+                                    ${voucher.minOrderValue ? `Đơn tối thiểu: ${this.formatPrice(voucher.minOrderValue)}` : 'Không giới hạn'}
+                                    ${voucher.maxDiscount ? ` • Giảm tối đa: ${this.formatPrice(voucher.maxDiscount)}` : ''}
+                                </div>
+
+                                <div class="voucher-expiry ${expiryInfo.class}">
+                                    <i class="fas fa-clock me-1"></i>
+                                    ${expiryInfo.text}
+                                </div>
+
+                                ${voucher.remainingQuantity !== null ? `
+                                    <div class="text-muted small">
+                                        <i class="fas fa-ticket-alt me-1"></i>
+                                        Còn lại: ${voucher.remainingQuantity}
+                                    </div>
+                                ` : ''}
+
+                                ${!canUse.valid ? `
+                                    <div class="text-danger small mt-1">
+                                        <i class="fas fa-exclamation-triangle me-1"></i>
+                                        ${canUse.reason}
+                                    </div>
+                                ` : ''}
+                            </div>
+
+                            <div class="col-4 text-end">
+                                <div class="voucher-discount">
+                                    ${discountText}
+                                </div>
+                                ${canUse.valid ? `
+                                    <div class="text-success small">
+                                        Giảm: ${this.formatPrice(voucher.discountAmount)}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+            col.appendChild(card);
+            return col;
+        }
+
+        selectVoucher(voucher) {
+            // Remove selection from other cards
+            document.querySelectorAll('.voucher-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Select current card
+            const card = document.querySelector(`[data-voucher-id="${voucher.id}"]`);
+            card.classList.add('selected');
+
+            this.selectedVoucher = voucher;
+            document.getElementById('applyVoucherBtn').disabled = false;
+        }
+
+        applySelectedVoucher() {
+            if (!this.selectedVoucher) return;
+
+            // Update UI
+            document.getElementById('selectedVoucherName').textContent = this.selectedVoucher.name;
+            document.getElementById('selectedVoucherCode').textContent = this.selectedVoucher.code;
+            document.getElementById('selectedVoucherInfo').style.display = 'block';
+
+            // Update amounts
+            document.getElementById('discountAmount').textContent =
+                `-${this.formatPrice(this.selectedVoucher.discountAmount)}`;
+
+            const finalTotal = this.originalTotal - this.selectedVoucher.discountAmount;
+            document.getElementById('finalTotal').textContent = this.formatPrice(finalTotal);
+
+            // Close modal
+            this.voucherModal.hide();
+
+            // Show success message
+            this.showAlert('Áp dụng phiếu giảm giá thành công!', 'success');
+        }
+
+        removeVoucher() {
+            this.selectedVoucher = null;
+            document.getElementById('selectedVoucherInfo').style.display = 'none';
+            document.getElementById('discountAmount').textContent = '0₫';
+            document.getElementById('finalTotal').textContent = this.formatPrice(this.originalTotal);
+
+            this.showAlert('Đã xóa phiếu giảm giá', 'info');
+        }
+
+        isVoucherValid(voucher) {
+            const now = new Date();
+            return voucher.endDate >= now &&
+                voucher.remainingQuantity > 0 &&
+                this.orderAmount >= (voucher.minOrderValue || 0);
+        }
+
+        canUseVoucher(voucher) {
+            const now = new Date();
+
+            if (voucher.endDate < now) {
+                return { valid: false, reason: 'Đã hết hạn' };
+            }
+
+            if (voucher.remainingQuantity <= 0) {
+                return { valid: false, reason: 'Đã hết lượt sử dụng' };
+            }
+
+            if (voucher.minOrderValue && this.orderAmount < voucher.minOrderValue) {
+                return { valid: false, reason: 'Đơn hàng chưa đủ điều kiện' };
+            }
+
+            return { valid: true };
+        }
+
+        getExpiryInfo(endDate) {
+            const now = new Date();
+            const diffDays = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) {
+                return { class: 'expired', text: 'Đã hết hạn' };
+            } else if (diffDays <= 3) {
+                return { class: 'soon', text: `Còn ${diffDays} ngày` };
+            } else {
+                return { class: '', text: `Hết hạn: ${endDate.toLocaleDateString('vi-VN')}` };
+            }
+        }
+
+        showLoading() {
+            document.getElementById('voucherLoading').style.display = 'block';
+            document.getElementById('voucherList').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+        }
+
+        showVoucherList() {
+            document.getElementById('voucherLoading').style.display = 'none';
+            document.getElementById('voucherList').style.display = 'block';
+            document.getElementById('emptyState').style.display = 'none';
+        }
+
+        showEmptyState() {
+            document.getElementById('voucherLoading').style.display = 'none';
+            document.getElementById('voucherList').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'block';
+        }
+
+        showError(message) {
+            this.showAlert(message, 'danger');
+        }
+
+        showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+
+            document.body.appendChild(alertDiv);
+
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        formatPrice(price) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(price);
+        }
+
+        updateTotalDisplay() {
+            document.getElementById('orderTotal').textContent = this.formatPrice(this.orderAmount);
+            document.getElementById('finalTotal').textContent = this.formatPrice(this.originalTotal);
+        }
+    }
+
+    // Global function for remove voucher button
+    function removeVoucher() {
+        if (window.voucherManager) {
+            window.voucherManager.removeVoucher();
+        }
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        window.voucherManager = new VoucherManager();
+    });
+</script>
+</body>
+</html>

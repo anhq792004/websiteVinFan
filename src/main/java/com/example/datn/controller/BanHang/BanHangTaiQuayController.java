@@ -326,7 +326,7 @@ public class BanHangTaiQuayController {
             BigDecimal tongTien = hoaDon.getTongTien();
             BigDecimal giaTriGiam;
             
-            if (phieuGiamGia.isLoaiGiamGia()) {
+            if (phieuGiamGia.getLoaiGiamGia()) {
                 // Giảm theo phần trăm
                 giaTriGiam = tongTien.multiply(phieuGiamGia.getGiaTriGiam())
                                     .divide(new BigDecimal(100), 0, BigDecimal.ROUND_HALF_UP);

@@ -1,18 +1,19 @@
 package com.example.datn.controller.Payment;
 
-import com.example.datn.entity.DiaChi;
+import com.example.datn.entity.*;
 import com.example.datn.entity.HoaDon.HoaDon;
 import com.example.datn.entity.HoaDon.HoaDonChiTiet;
 import com.example.datn.entity.HoaDon.LichSuHoaDon;
-import com.example.datn.entity.KhachHang;
 import com.example.datn.entity.SanPham.SanPhamChiTiet;
-import com.example.datn.entity.TaiKhoan;
 import com.example.datn.repository.DiaChiRepo;
 import com.example.datn.repository.HoaDonRepo.HoaDonChiTietRepo;
 import com.example.datn.repository.HoaDonRepo.HoaDonRepo;
 import com.example.datn.repository.HoaDonRepo.LichSuHoaDonRepo;
 import com.example.datn.repository.KhachHangRepo.KhachHangRepo;
+import com.example.datn.repository.PhieuGiamGiaKhachHangRepo;
+import com.example.datn.repository.PhieuGiamGiaRepo;
 import com.example.datn.repository.SanPhamRepo.SanPhamChiTietRepo;
+import com.example.datn.service.PhieuGiamGiaSercvice;
 import com.example.datn.service.gioHangService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -48,7 +48,12 @@ public class ThanhToanOnlController {
     private DiaChiRepo diaChiRepo;
 
     @Autowired
-    private SanPhamChiTietRepo sanPhamChiTietRepo;
+    private PhieuGiamGiaRepo phieuGiamGiaRepo;
+
+    @Autowired
+    private PhieuGiamGiaSercvice phieuGiamGiaService;
+    @Autowired
+    private PhieuGiamGiaKhachHangRepo phieuGiamGiaKhachHangRepo;
 
     // Hiển thị trang checkout
     @GetMapping("")
@@ -83,17 +88,16 @@ public class ThanhToanOnlController {
     public ResponseEntity<Map<String, Object>> processOrder(
             @RequestParam String hoTen,
             @RequestParam String soDienThoai,
-            @RequestParam(required = false) String email,
             @RequestParam String tinhThanh,
             @RequestParam String quanHuyen,
             @RequestParam String phuongXa,
             @RequestParam String diaChiChiTiet,
             @RequestParam String phuongThucThanhToan,
             @RequestParam(required = false) String ghiChu,
+            @RequestParam(required = false) Long voucherId,
             HttpSession session) {
 
         Map<String, Object> response = new HashMap<>();
-
         try {
             TaiKhoan currentUser = (TaiKhoan) session.getAttribute("currentUser");
             if (currentUser == null) {
@@ -117,6 +121,38 @@ public class ThanhToanOnlController {
                 return ResponseEntity.ok(response);
             }
 
+            BigDecimal totalAmount = (BigDecimal) cartInfo.get("totalAmount");
+            BigDecimal finalAmount = totalAmount;
+
+            // Xử lý phiếu giảm giá
+            BigDecimal discountAmount = BigDecimal.ZERO;
+            if (voucherId != null) {
+                Optional<PhieuGiamGia> voucherOpt = phieuGiamGiaRepo.findById(voucherId);
+                if (voucherOpt.isPresent()) {
+                    PhieuGiamGia voucher = voucherOpt.get();
+                    System.out.println("DEBUG: Voucher - ID: " + voucher.getId() +
+                            ", loaiGiamGia: " + voucher.getLoaiGiamGia() +
+                            ", giaTriGiam: " + voucher.getGiaTriGiam());
+                    // Kiểm tra private voucher
+                    if (!voucher.getLoaiPhieu()) {
+                        Optional<PhieuGiamGiaKhachHang> pggkhOpt = phieuGiamGiaKhachHangRepo
+                                .findByPhieuGiamGiaAndKhachHang(voucher, khachHang);
+                        if (!pggkhOpt.isPresent()) {
+                            response.put("success", false);
+                            response.put("message", "Phiếu giảm giá không hợp lệ hoặc không thuộc về bạn");
+                            return ResponseEntity.ok(response);
+                        }
+                    }
+                    discountAmount = phieuGiamGiaService.calculateDiscountAmount(voucher, totalAmount);
+                    finalAmount = totalAmount.subtract(discountAmount);
+                    System.out.println("DEBUG: Calculated - totalAmount: " + totalAmount +
+                            ", discountAmount: " + discountAmount +
+                            ", finalAmount: " + finalAmount);
+                } else {
+                    System.out.println("DEBUG: Voucher with ID " + voucherId + " not found");
+                }
+            }
+
             DiaChi diaChi = new DiaChi();
             diaChi.setKhachHang(khachHang);
             diaChi.setTinh(tinhThanh);
@@ -130,66 +166,23 @@ public class ThanhToanOnlController {
             hoaDon.setKhachHang(khachHang);
             hoaDon.setTenNguoiNhan(hoTen);
             hoaDon.setSdtNguoiNhan(soDienThoai);
+//            hoaDon.setDiaChi(savedDiaChi);
             hoaDon.setPhuongThucThanhToan(phuongThucThanhToan);
             hoaDon.setGhiChu(ghiChu);
             hoaDon.setLoaiHoaDon(false);
             hoaDon.setTrangThai(1);
             hoaDon.setNgayTao(LocalDateTime.now());
             hoaDon.setNguoiTao(khachHang.getTen());
-            hoaDon.setTongTien((BigDecimal) cartInfo.get("totalAmount"));
-            hoaDon.setTongTienSauGiamGia(hoaDon.getTongTien());
+            hoaDon.setTongTien(totalAmount);
+            hoaDon.setTongTienSauGiamGia(finalAmount);
             hoaDon.setPhiVanChuyen(BigDecimal.ZERO);
 
             HoaDon savedHoaDon = hoaDonRepo.save(hoaDon);
-            if (savedHoaDon.getId() == null) {
-                throw new RuntimeException("Không thể lưu hóa đơn");
-            }
-
-            List<Map<String, Object>> cartItems = (List<Map<String, Object>>) cartInfo.get("items");
-            for (Map<String, Object> item : cartItems) {
-                Long sanPhamChiTietId = Long.valueOf(item.get("sanPhamChiTietId").toString());
-                Integer soLuong = (Integer) item.get("soLuong");
-                BigDecimal gia = (BigDecimal) item.get("gia");
-                BigDecimal tongTienItem = (BigDecimal) item.get("tongTien");
-
-                Optional<SanPhamChiTiet> sanPhamChiTietOpt = sanPhamChiTietRepo.findById(sanPhamChiTietId);
-                if (!sanPhamChiTietOpt.isPresent()) {
-                    throw new RuntimeException("Sản phẩm không tồn tại");
-                }
-
-                SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietOpt.get();
-                if (sanPhamChiTiet.getSoLuong() < soLuong) {
-                    throw new RuntimeException("Sản phẩm " + sanPhamChiTiet.getSanPham().getTen() + " không đủ số lượng");
-                }
-
-                HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
-                hoaDonChiTiet.setHoaDon(savedHoaDon);
-                hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
-                hoaDonChiTiet.setSoLuong(soLuong);
-                hoaDonChiTiet.setGia(gia);
-                hoaDonChiTiet.setGiaSauGiam(gia);
-                hoaDonChiTiet.setThanhTien(tongTienItem);
-                hoaDonChiTiet.setTrangThai(1);
-                hoaDonChiTietRepo.save(hoaDonChiTiet);
-
-                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuong);
-                sanPhamChiTietRepo.save(sanPhamChiTiet);
-            }
-
-            LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
-            lichSuHoaDon.setHoaDon(savedHoaDon);
-            lichSuHoaDon.setTrangThai(1);
-            lichSuHoaDon.setNgayTao(LocalDateTime.now());
-            lichSuHoaDon.setMoTa("Đơn hàng được tạo bởi khách hàng: " + khachHang.getTen());
-            lichSuHoaDon.setNguoiTao(khachHang.getTen());
-            lichSuHoaDonRepo.save(lichSuHoaDon);
-
-            gioHangService.clearCart(session);
 
             response.put("success", true);
-            response.put("message", "Đặt hàng thành công!");
             response.put("orderId", savedHoaDon.getId());
-            response.put("orderCode", savedHoaDon.getMa());
+            response.put("finalAmount", finalAmount);
+            response.put("discountAmount", discountAmount);
             response.put("redirectUrl", "/checkout/success?id=" + savedHoaDon.getId());
 
         } catch (Exception e) {
@@ -197,7 +190,6 @@ public class ThanhToanOnlController {
             response.put("message", "Có lỗi xảy ra: " + e.getMessage());
             e.printStackTrace();
         }
-
         return ResponseEntity.ok(response);
     }
 
@@ -241,10 +233,74 @@ public class ThanhToanOnlController {
         }
     }
 
+    @GetMapping("/PGG")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getAvailableVouchers(HttpSession session) {
+        try {
+            // Kiểm tra đăng nhập
+            TaiKhoan currentUser = (TaiKhoan) session.getAttribute("currentUser");
+            if (currentUser == null) {
+                System.out.println("❌ DEBUG: Không tìm thấy currentUser trong session");
+                return ResponseEntity.status(401).build();
+            }
+
+            System.out.println(" DEBUG: Current user ID: " + currentUser.getId());
+
+            // Tìm khách hàng
+            Optional<KhachHang> khachHangOpt = khachHangRepo.findByTaiKhoan(currentUser.getId());
+            if (!khachHangOpt.isPresent()) {
+                System.out.println(" DEBUG: Không tìm thấy khách hàng cho TaiKhoan ID: " + currentUser.getId());
+                return ResponseEntity.status(404).build();
+            }
+            KhachHang khachHang = khachHangOpt.get();
+            System.out.println(" DEBUG: Found KhachHang ID: " + khachHang.getId());
+
+            // Lấy thông tin giỏ hàng
+            Map<String, Object> cartInfo = gioHangService.getCartInfo(session);
+            if ((Boolean) cartInfo.get("isEmpty")) {
+                System.out.println(" DEBUG: Giỏ hàng trống");
+                return ResponseEntity.ok(new ArrayList<>());
+            }
+
+            BigDecimal orderAmount = (BigDecimal) cartInfo.get("totalAmount");
+            System.out.println(" DEBUG: Order amount: " + orderAmount);
+
+            // Kiểm tra quan hệ phiếu giảm giá - khách hàng
+            List<PhieuGiamGiaKhachHang> allRelations = phieuGiamGiaKhachHangRepo.findByKhachHang(khachHang);
+            System.out.println(" DEBUG: Total PGG-KH relations: " + allRelations.size());
+
+            for (PhieuGiamGiaKhachHang relation : allRelations) {
+                System.out.println("   - Relation ID: " + relation.getId() +
+                        ", PGG: " + relation.getPhieuGiamGia().getMa() +
+                        ", TrangThai: " + relation.getTrangThai() +
+                        ", DaSuDung: " + relation.getDaSuDung());
+            }
+
+            // Lấy phiếu giảm giá cá nhân CHƯA SỬ DỤNG
+            List<PhieuGiamGiaKhachHang> privateVoucherRelations = phieuGiamGiaKhachHangRepo
+                    .findByKhachHangAndTrangThaiAndDaSuDung(khachHang, true, false);
+
+            System.out.println(" DEBUG: Active unused private voucher relations: " + privateVoucherRelations.size());
+
+            // Lấy danh sách voucher từ service
+            List<Map<String, Object>> vouchers = phieuGiamGiaService
+                    .getAvailableVouchers(khachHang, orderAmount);
+
+            System.out.println(" DEBUG: Total vouchers returned: " + vouchers.size());
+
+            return ResponseEntity.ok(vouchers);
+
+        } catch (Exception e) {
+            System.err.println(" DEBUG: Error in getAvailableVouchers: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+    }
+
     // Tạo mã đơn hàng
     private String generateOrderCode() {
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        String random = String.format("%04d", new Random().nextInt(10000));
-        return "DH" + timestamp + random;
+        // Đếm tổng số hóa đơn hiện có và cộng thêm 1
+        Long count = hoaDonRepo.count() + 1;
+        return String.format("HD%03d", count);
     }
 }
