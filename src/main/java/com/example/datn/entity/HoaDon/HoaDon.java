@@ -35,10 +35,6 @@ public class HoaDon {
     @JoinColumn(name = "id_phieu_giam_gia")
     PhieuGiamGia phieuGiamGia;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_dia_chi")
-    DiaChi diaChi;
-
     @Column(name = "ma")
     String ma;
 
@@ -74,6 +70,18 @@ public class HoaDon {
 
     @Column(name = "trang_thai")
     Integer trangThai;
+
+    @Column(name = "xa")
+    String xa;
+
+    @Column(name = "huyen")
+    String huyen;
+
+    @Column(name = "tinh")
+    String tinh;
+
+    @Column(name = "so_nha_ngo_duong")
+    String soNhaNgoDuong;
 
     @Column(name = "phuong_thuc_thanh_toan")
     String phuongThucThanhToan;
