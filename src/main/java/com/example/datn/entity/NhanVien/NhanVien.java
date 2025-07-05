@@ -25,7 +25,7 @@ public class NhanVien {
 
     @ManyToOne
     @JoinColumn(name = "id_chuc_vu")
-    private ChucVu chucVu=new ChucVu();
+    private ChucVu chucVu;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tai_khoan")
