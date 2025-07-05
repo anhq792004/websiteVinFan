@@ -50,3 +50,49 @@ $(document).ready(function() {
         });
     });
 });
+
+$('.changeStatusKhachHang').on('click', function () {
+    const id = $(this).data('id');
+
+    $.ajax({
+        url: '/khach-hang/change-status',
+        type: 'POST',
+        data: {id: id},
+        success: function (response) {
+            if (response === "Cập nhật trạng thái thành công.") {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: response,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    toast: true,
+                    icon: 'error',
+                    title: response,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            }
+        },
+        error: function (xhr) {
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: "Có lỗi xảy ra khi cập nhật trạng thái khách hàng",
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+    });
+});

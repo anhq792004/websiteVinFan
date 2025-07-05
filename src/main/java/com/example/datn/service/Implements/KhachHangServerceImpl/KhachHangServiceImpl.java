@@ -13,6 +13,7 @@ import com.example.datn.service.KhachHangService.KhachHangService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -98,6 +99,17 @@ public class KhachHangServiceImpl implements KhachHangService {
     @Override
     public long count() {
         return khachHangRepo.count();
+    }
+
+    @Override
+    public ResponseEntity<?> changeStatus(Long id) {
+        KhachHang khachHang = khachHangRepo.findById(id).orElse(null);
+        if (khachHang == null) {
+            return ResponseEntity.badRequest().body("Không tìm thấy khách hàng.");
+        }
+        khachHang.setTrangThai(!khachHang.getTrangThai());
+        khachHangRepo.save(khachHang);
+        return ResponseEntity.ok("Cập nhật trạng thái thành công.");
     }
 
 }
