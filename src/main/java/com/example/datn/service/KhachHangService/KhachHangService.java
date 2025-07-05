@@ -5,6 +5,7 @@ import com.example.datn.entity.KhachHang;
 import com.example.datn.entity.TaiKhoan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 
 public interface KhachHangService {
@@ -31,7 +32,7 @@ public interface KhachHangService {
      */
     long count();
 
-
+    ResponseEntity<?> changeStatus(Long id);
 
 
 }

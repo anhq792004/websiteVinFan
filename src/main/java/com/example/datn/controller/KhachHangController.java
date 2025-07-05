@@ -66,5 +66,10 @@ public class KhachHangController {
         }
     }
 
+    @PostMapping("/change-status")
+    public ResponseEntity<?> thayDoiTrangThai(@RequestParam(value = "id", required = true) Long id) {
+        return khachHangService.changeStatus(id);
+    }
+
 
 }
