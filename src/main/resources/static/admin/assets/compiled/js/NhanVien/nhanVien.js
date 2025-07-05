@@ -1,204 +1,267 @@
-// Đảm bảo jQuery được tải trước khi chạy mã
-if (typeof jQuery === "undefined") {
-    console.error("jQuery is not loaded. Please include jQuery before running this script.");
-} else {
-    $(document).ready(function () {
-        // Load chức vụ
-        function loadChucVu() {
-            $.ajax({
-                url: "/admin/nhan-vien/api/chuc-vu",
-                type: "GET",
-                success: function (data) {
-                    let options = '<option value="">-- Chọn chức vụ --</option>';
-                    data.forEach(function (item) {
-                        options += `<option value="${item.id}">${item.viTri}</option>`;
-                    });
-                    $("#chucVu").html(options);
-                    if ($("#chucVu").data("selected")) {
-                        $("#chucVu").val($("#chucVu").data("selected"));
-                    }
-                },
-                error: function (error) {
-                    console.error("Error loading chức vụ", error);
-                    showToast('error', "Lỗi khi tải danh sách chức vụ");
-                }
-            });
-        }
-        loadChucVu();
+// if (typeof jQuery === "undefined") {
+//     console.error("jQuery is not loaded. Please include jQuery before running this script.");
+// } else
 
-        // Thêm nhân viên mới
-        $("#saveNhanVienBtn").click(function () {
-            const $form = $("#addNhanVienForm");
-            if (!$form[0].checkValidity()) {
-                $form[0].reportValidity();
-                return;
-            }
-            const formData = getFormData($form);
+//
+//         // Xử lý submit form
+//         $("#addNhanVienForm").submit(function (event) {
+//             event.preventDefault();
+//             const $form = $(this);
+//             if (!$form[0].checkValidity()) {
+//                 $form[0].reportValidity();
+//                 return;
+//             }
+//
+//             const formData = new FormData($form[0]);
+//             // Validate fields
+//             const email = formData.get("email");
+//             const soDienThoai = formData.get("soDienThoai");
+//             const soCCCD = formData.get("soCCCD");
+//             const gioiTinh = formData.get("gioiTinh");
+//             const city = formData.get("tinhThanhPho");
+//             const district = formData.get("quanHuyen");
+//             const ward = formData.get("xaPhuong");
+//
+//             if (!gioiTinh) {
+//                 showToast("error", "Vui lòng chọn giới tính");
+//                 return;
+//             }
+//             if (!city || !district || !ward) {
+//                 showToast("error", "Vui lòng chọn đầy đủ địa chỉ (tỉnh/thành phố, quận/huyện, xã/phường)");
+//                 return;
+//             }
+//
+//             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//             if (!emailRegex.test(email)) {
+//                 showToast("error", "Email không hợp lệ");
+//                 return;
+//             }
+//             const phoneRegex = /^0[0-9]{9}$/;
+//             if (!phoneRegex.test(soDienThoai)) {
+//                 showToast("error", "Số điện thoại không hợp lệ (phải bắt đầu bằng 0 và có 10 chữ số)");
+//                 return;
+//             }
+//             const cccdRegex = /^[0-9]{9,12}$/;
+//             if (!cccdRegex.test(soCCCD)) {
+//                 showToast("error", "Số CCCD không hợp lệ (phải có 9-12 chữ số)");
+//                 return;
+//             }
+//
+//             // Convert FormData to plain object for JSON
+//             const formDataObj = {};
+//             formData.forEach((value, key) => {
+//                 formDataObj[key] = value;
+//             });
+//             // Add default values if needed
+//             formDataObj.trangThai = formDataObj.trangThai || true;
+//             formDataObj.matKhau = formDataObj.matKhau || "defaultPassword123"; // Cảnh báo: Xử lý mật khẩu an toàn hơn
+//
+//             $.ajax({
+//                 url: "/admin/nhan-vien/them",
+//                 type: "POST",
+//                 processData: false, // Không xử lý dữ liệu
+//                 contentType: false, // Để server tự phát hiện content type
+//                 data: formData, // Gửi FormData trực tiếp
+//                 success: function (response) {
+//                     $("#addNhanVienModal").modal("hide");
+//                     showToast("success", response.message || "Thêm nhân viên thành công");
+//
+//                     const newRow = {
+//                         id: response.id || 'N/A',
+//                         anh: response.anh || 'N/A',
+//                         ma: response.ma || 'N/A',
+//                         hoVaTen: formData.get("hoVaTen") || 'N/A',
+//                         email: formData.get("email") || 'N/A',
+//                         ngaySinh: formData.get("ngaySinh") || 'N/A',
+//                         gioiTinh: formData.get("gioiTinh") === "true" ? 'Nam' : 'Nữ',
+//                         diaChi: `${formData.get("tinhThanhPho") || 'N/A'} - ${formData.get("quanHuyen") || 'N/A'}`
+//                     };
+//                     if ($.fn.DataTable && $.fn.DataTable.isDataTable('table.dataTable-table')) {
+//                         $('table.dataTable-table').DataTable().row.add([
+//                             newRow.id,
+//                             newRow.anh,
+//                             newRow.ma,
+//                             newRow.hoVaTen,
+//                             newRow.email,
+//                             newRow.ngaySinh,
+//                             newRow.gioiTinh,
+//                             newRow.diaChi,
+//                             '<button class="btn btn-sm btn-warning">Sửa</button>'
+//                         ]).draw();
+//                     } else {
+//                         $("table.dataTable-table tbody").append(`
+//                 <tr>
+//                     <td>${newRow.id}</td>
+//                     <td>${newRow.anh}</td>
+//                     <td>${newRow.ma}</td>
+//                     <td>${newRow.hoVaTen}</td>
+//                     <td>${newRow.email}</td>
+//                     <td>${newRow.ngaySinh}</td>
+//                     <td>${newRow.gioiTinh}</td>
+//                     <td>${newRow.diaChi}</td>
+//                     <td><button class="btn btn-sm btn-warning">Sửa</button></td>
+//                 </tr>
+//             `);
+//                     }
+//                 },
+//                 error: function (xhr, status, error) {
+//                     console.error("Error saving nhan vien", xhr.responseText, status, error);
+//                     let errorMessage = "Lỗi khi thêm nhân viên";
+//                     if (xhr.responseJSON) {
+//                         if (xhr.responseJSON.message) {
+//                             errorMessage = xhr.responseJSON.message;
+//                         } else if (xhr.responseJSON.errors) {
+//                             errorMessage = Object.values(xhr.responseJSON.errors).flat().join(", ");
+//                         }
+//                     } else if (xhr.responseText) {
+//                         errorMessage = xhr.responseText;
+//                     } else if (xhr.status) {
+//                         errorMessage += ` (HTTP ${xhr.status})`;
+//                     }
+//                     showToast("error", errorMessage);
+//                 }
+//             });
+//         });
+//
+//         function showToast(icon, title) {
+//             Swal.fire({
+//                 toast: true,
+//                 icon: icon,
+//                 title: title,
+//                 position: 'top-end',
+//                 showConfirmButton: false,
+//                 timer: 3000,
+//                 timerProgressBar: true,
+//                 didOpen: (toast) => {
+//                     toast.addEventListener('mouseenter', Swal.stopTimer);
+//                     toast.addEventListener('mouseleave', Swal.resumeTimer);
+//                 }
+//             });
+//         }
+// // Xử lý dropdown địa chỉ
+//         let citis = document.getElementById("city");
+//         let districts = document.getElementById("district");
+//         let wards = document.getElementById("ward");
+//
+//         if (!citis || !districts || !wards) {
+//             console.error("Một hoặc nhiều phần tử địa chỉ (city, district, ward) không tồn tại trong DOM!");
+//             showToast("error", "Lỗi tải giao diện địa chỉ");
+//             return;
+//         }
+//
+//         axios.get("https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json")
+//             .then(function (response) {
+//                 let data = response.data;
+//                 renderCity(data);
+//             })
+//             .catch(function (error) {
+//                 console.error("Lỗi tải dữ liệu:", error);
+//                 showToast("error", "Lỗi tải dữ liệu địa chỉ");
+//             });
+//
+//         function renderCity(data) {
+//             if (!citis) {
+//                 console.error("Phần tử city không tồn tại!");
+//                 return;
+//             }
+//             for (const x of data) {
+//                 citis.options[citis.options.length] = new Option(x.Name, x.Id);
+//             }
+//
+//             citis.onchange = function () {
+//                 districts.length = 1;
+//                 wards.length = 1;
+//                 let selectedCity = data.find(n => n.Id === citis.value);
+//                 if (selectedCity) {
+//                     for (const k of selectedCity.Districts) {
+//                         districts.options[districts.options.length] = new Option(k.Name, k.Id);
+//                     }
+//                 }
+//             };
+//
+//             districts.onchange = function () {
+//                 wards.length = 1;
+//                 let selectedCity = data.find(n => n.Id === citis.value);
+//                 if (selectedCity) {
+//                     let selectedDistrict = selectedCity.Districts.find(n => n.Id === districts.value);
+//                     if (selectedDistrict) {
+//                         for (const w of selectedDistrict.Wards) {
+//                             wards.options[wards.options.length] = new Option(w.Name, w.Id);
+//                         }
+//                     }
+//                 }
+//             };
+//         }
+//     });
+// }
+$(document).ready(function() {
+    // let tinhMap = {}; // Lưu ánh xạ ID -> tên tỉnh
+    // axios.get('https://api.example.com/tinh').then(response => {
+    //     response.data.forEach(tinh => {
+    //         tinhMap[tinh.id] = tinh.name;
+    //         $('#city').append(`<option value="${tinh.id}">${tinh.name}</option>`);
+    //     });
+    // });
+    // let huyenMap = {}; // Lưu ánh xạ ID -> tên huyện
+    // axios.get('https://api.example.com/huyen').then(response => {
+    //     response.data.forEach(huyen => {
+    //         huyenMap[huyen.id] = tinh.name;
+    //         $('#city').append(`<option value="${huyen.id}">${huyen.name}</option>`);
+    //     });
+    // });
+    // let xaMap = {}; // Lưu ánh xạ ID -> tên xã
+    // axios.get('https://api.example.com/xa').then(response => {
+    //     response.data.forEach(xa => {
+    //         xaMap[xa.id] = xa.name;
+    //         $('#city').append(`<option value="${xa.id}">${xa.name}</option>`);
+    //     });
+    // });
+    $('#addNhanVienForm').on('submit', function(event) {
+        event.preventDefault();
 
-            // Kiểm tra dữ liệu trước khi gửi
-            if (!formData.gioiTinh) {
-                showToast("error", "Vui lòng chọn giới tính");
-                return;
-            }
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(formData.email)) {
-                showToast("error", "Email không hợp lệ");
-                return;
-            }
-            const phoneRegex = /^0[0-9]{9}$/;
-            if (!phoneRegex.test(formData.soDienThoai)) {
-                showToast("error", "Số điện thoại không hợp lệ (phải bắt đầu bằng 0 và có 10 chữ số)");
-                return;
-            }
-            const cccdRegex = /^[0-9]{9,12}$/;
-            if (!cccdRegex.test(formData.soCCCD)) {
-                showToast("error", "Số CCCD không hợp lệ (phải có 9-12 chữ số)");
-                return;
-            }
+        const formData = {
+            ten: $('#ten').val(),
+            cccd: $('#cccd').val(),
+            email: $('#email').val(),
+            soDienThoai: $('#sdt').val(),
+            ngaySinh: $('#ngaySinh').val(),
+            gioiTinh: $('input[name="gioiTinh"]:checked').val(),
+            tinhThanhPho: $('#city').val(),
+            quanHuyen: $('#district').val(),
+            xaPhuong: $('#ward').val(),
+            soNhaNgoDuong: $('#diaChiCuThe').val()
+        };
 
-            // Thêm các trường bắt buộc mà server có thể yêu cầu
-            formData.chucVu = formData.chucVu || { id: 1, viTri: "Nhân viên" };
-            formData.trangThai = formData.trangThai !== undefined ? formData.trangThai : true;
-            formData.matKhau = formData.matKhau || "defaultPassword123";
-
-            $.ajax({
-                url: "/admin/nhan-vien/them",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(formData),
-                success: function (response) {
-                    $("#addNhanVienModal").modal("hide");
-                    let message = "Thêm nhân viên thành công";
-                    if (response && typeof response === "object") {
-                        message = response.message || message;
-                    }
-                    showToast("success", message);
-
-                    const newRow = `
-                        <tr>
-                            <td>${response && response.stt ? response.stt : 'N/A'}</td>
-                            <td>${response && response.anh ? response.anh : 'N/A'}</td>
-                            <td>${response && response.ma ? response.ma : 'N/A'}</td>
-                            <td>${formData.hoVaTen || 'N/A'}</td>
-                            <td>${formData.email || 'N/A'}</td>
-                            <td>${formData.ngaySinh || 'N/A'}</td>
-                            <td>${formData.gioiTinh === true ? 'Nam' : 'Nữ'}</td>
-                            <td>${formData.chucVu && formData.chucVu.viTri ? formData.chucVu.viTri : 'N/A'}</td>
-                            <td>${formData.tinhThanhPho || 'N/A'} - ${formData.quanHuyen || 'N/A'}</td>
-                            <td><button class="btn btn-sm btn-warning">Sửa</button></td>
-                        </tr>`;
-                    $("table.dataTable-table tbody").append(newRow);
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error saving nhan vien", xhr, status, error);
-                    let errorMessage = "Lỗi khi thêm nhân viên";
-                    if (xhr.responseJSON) {
-                        if (xhr.responseJSON.message) {
-                            errorMessage = xhr.responseJSON.message;
-                        } else if (xhr.responseJSON.errors) {
-                            errorMessage = Object.values(xhr.responseJSON.errors).join(", ");
-                        }
-                    } else if (xhr.responseText) {
-                        errorMessage = xhr.responseText;
-                    } else if (xhr.status) {
-                        errorMessage += ` (HTTP ${xhr.status})`;
-                    }
-                    showToast("error", errorMessage);
-                }
-            });
-        });
-
-        function getFormData($form) {
-            let unindexed_array = $form.serializeArray();
-            let indexed_array = {};
-
-            $.map(unindexed_array, function(n, i) {
-                if (n['name'].includes('.')) {
-                    const parts = n['name'].split('.');
-                    if (!indexed_array[parts[0]]) {
-                        indexed_array[parts[0]] = {};
-                    }
-                    indexed_array[parts[0]][parts[1]] = n['value'];
-                } else {
-                    indexed_array[n['name']] = n['value'];
-                }
-            });
-
-            // Chuyển đổi gioiTinh từ String sang Boolean
-            const gioiTinhValue = $form.find('input[name="gioiTinh"]:checked').val();
-            if (gioiTinhValue) {
-                indexed_array['gioiTinh'] = gioiTinhValue === "Nam" ? true : false; // true: Nam, false: Nữ
-            }
-
-            return indexed_array;
-        }
-
-        function showToast(icon, title) {
-            Swal.fire({
-                toast: true,
-                icon: icon,
-                title: title,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer);
-                    toast.addEventListener('mouseleave', Swal.resumeTimer);
-                }
-            });
-        }
-
-    }
-
-
-    );
-    document.addEventListener("DOMContentLoaded", function () {
-            let citis = document.getElementById("city");
-            let districts = document.getElementById("district");
-            let wards = document.getElementById("ward");
-
-            axios.get("https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json")
-                .then(function (response) {
-                    let
-                        data = response.data;
-                    renderCity(data);
-                })
-                .catch(function (error) {
-                    console.error("Lỗi tải dữ liệu:", error);
+        $.ajax({
+            url: '/admin/nhan-vien/them',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: response.message || 'Thêm nhân viên thành công',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                }).then(() => {
+                    window.location.href = '/admin/nhan-vien/index';
                 });
-
-            function renderCity(data) {
-                for (const x of data) {
-                    citis.options[citis.options.length] = new Option(x.Name, x.Id);
-                }
-
-                citis.onchange = function () {
-                    districts.length = 1;
-                    wards.length = 1;
-
-                    let selectedCity = data.find(n => n.Id === citis.value);
-                    if (selectedCity) {
-                        for (const k of selectedCity.Districts) {
-                            districts.options[districts.options.length] = new Option(k.Name, k.Id);
-                        }
-                    }
-                };
-
-                districts.onchange = function () {
-                    wards.length = 1;
-
-                    let selectedCity = data.find(n => n.Id === citis.value);
-                    if (selectedCity) {
-                        let selectedDistrict = selectedCity.Districts.find(n => n.Id === districts.value);
-                        if (selectedDistrict) {
-                            for (const w of selectedDistrict.Wards) {
-                                wards.options[wards.options.length] = new Option(w.Name, w.Id);
-                            }
-                        }
-                    }
-                };
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    toast: true,
+                    icon: 'error',
+                    title: xhr.responseText || 'Lỗi khi thêm nhân viên',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
             }
-        }
-    );
-}
+        });
+    });
+});
+
