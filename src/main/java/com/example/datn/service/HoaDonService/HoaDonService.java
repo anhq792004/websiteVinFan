@@ -29,6 +29,9 @@ public interface HoaDonService {
 
     List<HoaDon> getHoaDonByIdKH(Long idKH);
 
+    void truSoLuongSanPham(Long idHD);
+
+    void hoanSoLuongSanPham(Long idHD);
     //hoaDonChiTiet
 
     List<HoaDonChiTiet> listHoaDonChiTiets(Long id);

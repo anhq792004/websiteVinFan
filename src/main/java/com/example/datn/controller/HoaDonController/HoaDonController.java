@@ -81,6 +81,7 @@ public class HoaDonController {
                                                 @RequestParam("ghiChu") String ghiChu) {
         try {
             hoaDonService.xacNhan(id, ghiChu);
+
             return ResponseEntity.ok("Đơn hàng đã được xác nhận !");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Số lượng sản phẩm không đủ");
@@ -91,6 +92,7 @@ public class HoaDonController {
     @ResponseBody
     public ResponseEntity<String> giaoHang(@RequestParam("id") Long id) {
         hoaDonService.giaoHang(id);
+        hoaDonService.truSoLuongSanPham(id);
         return ResponseEntity.ok("Đơn hàng đã được giao thành công !");
     }
 

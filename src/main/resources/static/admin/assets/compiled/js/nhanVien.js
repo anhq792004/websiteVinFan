@@ -1,49 +1,47 @@
-
-
 $(document).ready(function() {
-    $('#addKHForm').on('submit', function(event) {
-        event.preventDefault(); // Ngăn form submit mặc định
 
-        // Thu thập dữ liệu từ form
+    $('#addNhanVienForm').on('submit', function(event) {
+        event.preventDefault();
+
         const formData = {
-            ten: $('#name').val(),
+            ten: $('#ten').val(),
+            cccd: $('#cccd').val(),
             email: $('#email').val(),
-            soDienThoai: $('#soDienThoai').val(),
+            soDienThoai: $('#sdt').val(),
             ngaySinh: $('#ngaySinh').val(),
-            gioiTinh: $('#gioiTinh').val(),
+            gioiTinh: $('input[name="gioiTinh"]:checked').val(),
             tinhThanhPho: $('#city').val(),
             quanHuyen: $('#district').val(),
             xaPhuong: $('#ward').val(),
             soNhaNgoDuong: $('#diaChiCuThe').val()
         };
 
-        // Gửi Ajax request
         $.ajax({
-            url: '/khach-hang/add',
+            url: '/admin/nhan-vien/them',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(formData),
-            success: function (response) {
+            success: function(response) {
                 Swal.fire({
                     toast: true,
                     icon: 'success',
-                    title: response,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 500,
-                    timerProgressBar: true
-                }).then(() => {
-                    window.location.href = '/khach-hang/index';
-                });
-            },
-            error: function (xhr) {
-                Swal.fire({
-                    toast: true,
-                    icon: 'error',
-                    title: xhr.responseText,
+                    title: response.message || 'Thêm nhân viên thành công',
                     position: 'top-end',
                     showConfirmButton: false,
                     timer: 1000,
+                    timerProgressBar: true
+                }).then(() => {
+                    window.location.href = '/admin/nhan-vien/index';
+                });
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    toast: true,
+                    icon: 'error',
+                    title: xhr.responseText || 'Lỗi khi thêm nhân viên',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
                     timerProgressBar: true
                 });
             }
@@ -51,11 +49,12 @@ $(document).ready(function() {
     });
 });
 
-$('.changeStatusKhachHang').on('click', function () {
+
+$('.changeStatusNhanVien').on('click', function () {
     const id = $(this).data('id');
 
     $.ajax({
-        url: '/khach-hang/change-status',
+        url: '/admin/nhan-vien/change-status',
         type: 'POST',
         data: {id: id},
         success: function (response) {
@@ -87,7 +86,7 @@ $('.changeStatusKhachHang').on('click', function () {
             Swal.fire({
                 toast: true,
                 icon: 'error',
-                title: "Có lỗi xảy ra khi cập nhật trạng thái khách hàng",
+                title: "Có lỗi xảy ra khi cập nhật trạng thái nhân viên",
                 position: 'top-end',
                 showConfirmButton: false,
                 timer: 3000,
@@ -96,3 +95,5 @@ $('.changeStatusKhachHang').on('click', function () {
         }
     });
 });
+
+

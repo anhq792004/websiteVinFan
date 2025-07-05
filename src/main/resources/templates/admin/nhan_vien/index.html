@@ -12,7 +12,6 @@
 
     <!-- Main -->
     <div id="main">
-        <p>Nhân viên</p>
         <header th:replace="/admin/fragments/header :: header"></header>
         <div class="page-content">
             <section class="row">
@@ -35,8 +34,8 @@
                                     <div class="col-3">
                                         <select class="form-select" id="trangThai" name="trangThai">
                                             <option value="">Tất cả trạng thái</option>
-                                            <option value="true">Đang làm việc</option>
-                                            <option value="false">Đã nghỉ việc</option>
+                                            <option value="true">...</option>
+                                            <option value="false">...</option>
                                         </select>
                                     </div>
                                     <div class="col-2 d-flex">
@@ -58,9 +57,11 @@
                         </div>
                         <div class="dataTable-container mt-3">
                             <div class="d-flex justify-content-between mb-3">
-                                <h5 class="card-title">Danh sách nhân viên (<span
-                                        th:text="${nhanVienPage.totalElements}"></span> Nhân viên)</h5>
-                                <a th:href="@{/admin/nhan-vien/view-them}" class="btn btn-primary" role="button" aria-label="Thêm nhân viên">
+                                <h5 class="card-title">Danh sách nhân viên
+                                    <!--                                    <span th:text="${listNV.totalElements}"></span> Nhân viên)-->
+                                </h5>
+                                <a th:href="@{/admin/nhan-vien/view-them}" class="btn btn-primary" role="button"
+                                   aria-label="Thêm nhân viên">
                                     <i class="bi bi-plus-circle"></i> Thêm nhân viên
                                 </a>
                             </div>
@@ -68,58 +69,55 @@
                                 <thead>
                                 <tr>
                                     <th style="width: 5%;">STT</th>
-                                    <th style="width: 5%;">Ảnh</th>
                                     <th style="width: 5%;">Mã</th>
                                     <th style="width: 5%;">Họ và tên</th>
-                                    <th style="width: 5%;">Email</th>
+<!--                                    <th style="width: 5%;">Email</th>-->
                                     <th style="width: 5%;">Ngày sinh</th>
                                     <th style="width: 5%;">Giới tính</th>
-                                    <th style="width: 5%;">Chức vụ</th>
                                     <th style="width: 5%;">Trạng thái</th>
                                     <th style="width: 5%;">Hành động</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="nhanVien, iterStat : ${nhanVienPage.content}">
+                                <tr th:each="nhanVien, iterStat : ${listNV}">
                                     <td th:text="${iterStat.count}"></td>
-                                    <td>
-<!--                                        <img th:src="@{'/path/to/images/' + ${nhanVien.anh}}" alt="Ảnh nhân viên" width="50" height="50"-->
-<!--                                             th:unless="${nhanVien.anh == null}" />-->
-                                        <span th:if="${nhanVien.anh == null}">Không có ảnh</span>
-                                    </td>
                                     <td th:text="${nhanVien.ma}"></td>
                                     <td th:text="${nhanVien.ten}"></td>
-                                    <td th:text="${nhanVien.email}"></td>
+                                    <!-- <td th:text="${nhanVien.taiKhoan.email}"></td>-->
                                     <td th:text="${nhanVien.ngaySinh}"></td>
                                     <td th:text="${nhanVien.gioiTinh ? 'Nam' : 'Nữ'}"></td>
-                                    <td th:text="${nhanVien.chucVu.viTri}"></td>
-<!--                                    <td th:text="${nhanVien.trangThai ? 'Đang làm việc' : 'Đã nghỉ việc'}"></td>-->
+                                    <td th:text="${nhanVien.trangThai ? 'Đang làm việc' : 'Đã nghỉ việc'}"></td>
                                     <td>
-                                        <a th:href="@{/nhan-vien/detail/{id}(id=${nhanVien.id})}" class="btn btn-sm btn-primary">Chi tiết</a>
-                                        <a th:href="@{|/nhan-vien/delete?id=${nhanVien.id}|}" class="btn btn-sm btn-info">Delete</a>
+                                        <a th:href="@{/admin/nhan-vien/detail(id=${nhanVien.id})}"
+                                           class="btn btn-sm btn-primary">Chi tiết</a>
+                                        <button class="btn btn-outline-primary changeStatusNhanVien"
+                                                th:attr="data-id=${nhanVien.id}">
+                                            <i class="bi bi-arrow-left-right"></i>
+                                        </button>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
-                            <!-- Pagination -->
-                            <div th:if="${nhanVienPage.totalPages > 1}">
-                                <nav aria-label="Page navigation">
-                                    <ul class="pagination">
-                                        <li th:each="i : ${#numbers.sequence(0, nhanVienPage.totalPages - 1)}"
-                                            th:class="${i == currentPage} ? 'page-item active' : 'page-item'">
-                                            <a class="page-link"
-                                               th:href="@{/admin/nhan-vien/index(page=${i}, search=${search}, chucVu=${chucVu}, trangThai=${trangThai})}"
-                                               th:text="${i + 1}"></a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
+
+<!--                            <div th:if="${listNV.totalPages > 1}">-->
+<!--                                <nav aria-label="Page navigation">-->
+<!--                                    <ul class="pagination">-->
+<!--                                        <li th:each="i : ${#numbers.sequence(0, listNV.totalPages - 1)}"-->
+<!--                                            th:class="${i == currentPage} ? 'page-item active' : 'page-item'">-->
+<!--                                            <a class="page-link"-->
+<!--                                               th:href="@{/admin/nhan-vien/index(page=${i}, search=${search}, chucVu=${chucVu}, trangThai=${trangThai})}"-->
+<!--                                               th:text="${i + 1}"></a>-->
+<!--                                        </li>-->
+<!--                                    </ul>-->
+<!--                                </nav>-->
+<!--                            </div>-->
                         </div>
                     </div>
                     <div class="card-body"></div>
                 </div>
             </section>
         </div>
+        </form>
     </div>
     <!-- Footer -->
     <div>
@@ -129,7 +127,8 @@
 <div>
     <script th:replace="/admin/fragments/script :: script"></script>
 </div>
-<script th:src="@{/admin/assets/compiled/js/NhanVien/nhanVien.js}"></script>
+<script th:src="@{/admin/assets/compiled/js/nhanVien.js}"></script>
+
 <!-- hienthitendangnhap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
