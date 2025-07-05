@@ -1,30 +1,40 @@
 package com.example.datn.controller;
 
+import com.example.datn.dto.request.AddNhanVienRequest;
 import com.example.datn.entity.ChucVu;
 import com.example.datn.entity.DiaChi;
+import com.example.datn.entity.KhachHang;
 import com.example.datn.entity.NhanVien.NhanVien;
 import com.example.datn.repository.DiaChiRepo;
+import com.example.datn.repository.NhanVienRepo;
 import com.example.datn.service.ChucVuService.ChucVuService;
+import com.example.datn.service.DiaChiService;
 import com.example.datn.service.NhanVienService.NhanVienService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/nhan-vien")
 public class NhanVienController {
     private final NhanVienService nhanVienService;
+    private final NhanVienRepo nhanVienRepo;
     private final ChucVuService chucVuService;
     private final DiaChiRepo diaChiRepo;
+    private final DiaChiService diaChiService;
 
     @ModelAttribute("listDiaChi")
     List<DiaChi> getListDiaChi() {
@@ -33,25 +43,17 @@ public class NhanVienController {
 
     @GetMapping("/index")
     public String getAllNhanVien(
-            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-            @RequestParam(value = "size", required = false, defaultValue = "5") int size,
-            @RequestParam(value = "search", required = false) String search,
-            @RequestParam(name = "chucVu", required = false) Long chucVuId,
-            @RequestParam(name = "trangThai", required = false) Boolean trangThai,
-            Model model
-    ) {
-        Page<NhanVien> nhanVienPage = nhanVienService.findAllNhanVien(page, size, search, chucVuId, trangThai);
-        System.out.println("Số lượng nhân viên: " + nhanVienPage.getTotalElements());
-        System.out.println("Tổng số trang: " + nhanVienPage.getTotalPages());
-        model.addAttribute("nhanVienPage", nhanVienPage);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPage", nhanVienPage.getTotalPages()); // Fixed: Use getTotalPages() instead of getTotalElements()
-        model.addAttribute("search", search);
-        model.addAttribute("chucVu", chucVuId);
-        model.addAttribute("trangThai", trangThai);
-        if (!nhanVienPage.getContent().isEmpty()) {
-            System.out.println("Nhân viên đầu tiên: " + nhanVienPage.getContent().get(0));
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size,
+            @RequestParam(value = "search", defaultValue = "") String search,
+            @RequestParam(name = "trangThai", defaultValue = "") Boolean trangThai,
+            Model model) {
+        if (page < 0) {
+            page = 0;
         }
+        PageRequest pageable = PageRequest.of(page, size);
+        Page<NhanVien> listNV = nhanVienService.findAll(search, trangThai, pageable);
+        model.addAttribute("listNV", listNV);
         return "admin/nhan_vien/index";
     }
 
@@ -63,21 +65,13 @@ public class NhanVienController {
     }
 
     @PostMapping("/them")
-    public String addNhanVien(
-            @ModelAttribute("nhanVien") @Valid  NhanVien nhanVien,
-            BindingResult bindingResult, Model model){
-    if (bindingResult.hasErrors()) {
-            return "admin/nhan_vien/view-them";
+    public ResponseEntity<?>add(@RequestBody AddNhanVienRequest nhanVien){
+        try {
+            nhanVienService.addNhanVien(nhanVien);
+            return ResponseEntity.ok().body("Thêm thanh công");
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        ChucVu defaultChucVu = chucVuService.findChucVuByViTri("Nhân viên"); // Assuming this method exists
-         if (defaultChucVu == null) {
-            // Handle case where "Nhân viên" role doesn't exist
-            model.addAttribute("error", "Chức vụ 'Nhân viên' không tồn tại. Vui lòng tạo chức vụ này trước.");
-            return "admin/nhan_vien/view-them";
-        }
-        nhanVien.setChucVu(defaultChucVu);
-        nhanVienService.saveNhanVien(nhanVien);
-        return "redirect:/admin/nhan_vien/index";
     }
 
     @PostMapping("/update")
@@ -87,10 +81,12 @@ public class NhanVienController {
         return ResponseEntity.ok("Sửa nhân viên thành công");
     }
 
-    @GetMapping("/detail/{id}")
-    public String detailNhanVienById(@PathVariable("id") Long id, Model model) {
-         model.addAttribute("nhanVien",nhanVienService.findNhanVienById(id));
-        return "/admin/nhan_vien/detail";
+    @GetMapping("/detail")
+    public String detail(@RequestParam Long id, Model model){
+        NhanVien nhanVien=nhanVienService.findNhanVienById(id);
+        model.addAttribute("nhanVien",nhanVien);
+
+        return "admin/nhan_vien/detail";
     }
 
     @GetMapping("/api/chuc-vu")
@@ -99,10 +95,10 @@ public class NhanVienController {
         List<ChucVu> chucVuList = chucVuService.findAllChucVu();
         return ResponseEntity.ok(chucVuList);
     }
-//    @GetMapping("/delete")
-//    public String deletaNhanVien(@RequestParam("id")NhanVien nhanVien){
-//        nhanVienService.deleteNhanVien(nhanVien.getId());
-//        return "admin/nhan_vien/index";
-//
-//    }
+
+    @PostMapping("/change-status")
+    public ResponseEntity<?> thayDoiTrangThai(@RequestParam(value = "id", required = true) Long id) {
+        return nhanVienService.changeStatus(id);
+    }
+
 }
