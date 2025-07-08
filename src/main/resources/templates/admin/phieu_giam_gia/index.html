@@ -20,11 +20,71 @@
                         <h1>Quản lý phiếu giảm giá</h1>
                     </div>
                     <div class="card-body">
-                        <a class="btn btn-primary mb-3" th:href="@{/admin/phieu-giam-gia/create}">Thêm mới</a>
+                        <!-- Form tìm kiếm và lọc -->
+                        <form method="GET" th:action="@{/admin/phieu-giam-gia/index}" class="mb-4">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="form-label">Tìm kiếm (Mã/Tên):</label>
+                                    <input type="text" name="search" class="form-control"
+                                           th:value="${search}" placeholder="Nhập mã hoặc tên phiếu giảm giá">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Trạng thái:</label>
+                                    <select name="trangThai" class="form-select">
+                                        <option value="">Tất cả</option>
+                                        <option value="true" th:selected="${trangThai != null && trangThai}">Hoạt động</option>
+                                        <option value="false" th:selected="${trangThai != null && !trangThai}">Không hoạt động</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Từ ngày:</label>
+                                    <input type="date" name="ngayBatDau" class="form-control"
+                                           th:value="${ngayBatDau != null ? #dates.format(ngayBatDau, 'yyyy-MM-dd') : ''}">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Đến ngày:</label>
+                                    <input type="date" name="ngayKetThuc" class="form-control"
+                                           th:value="${ngayKetThuc != null ? #dates.format(ngayKetThuc, 'yyyy-MM-dd') : ''}">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">&nbsp;</label>
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-search"></i> Tìm kiếm
+                                        </button>
+                                        <a href="/admin/phieu-giam-gia/index" class="btn btn-secondary">
+                                            <i class="fas fa-refresh"></i> Làm mới
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Hiển thị thông báo -->
+                        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                            <span th:text="${success}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <span th:text="${error}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+
+                        <!-- Nút thêm mới và thông tin kết quả -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <a class="btn btn-primary" th:href="@{/admin/phieu-giam-gia/create}">
+                                <i class="fas fa-plus"></i> Thêm mới
+                            </a>
+                            <div class="text-muted">
+                                <i class="fas fa-info-circle"></i>
+                                Tìm thấy <span th:text="${#lists.size(dsPhieuGiamGia)}">0</span> phiếu giảm giá
+                            </div>
+                        </div>
+
                         <!-- Bảng hiển thị dữ liệu -->
                         <div class="table-responsive">
-                            <table class="table table-bordered">
-                                <thead>
+                            <table class="table table-bordered table-striped">
+                                <thead class="table-dark">
                                 <tr>
                                     <th>Mã</th>
                                     <th>Tên</th>
@@ -42,31 +102,60 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+                                <tr th:if="${#lists.isEmpty(dsPhieuGiamGia)}">
+                                    <td colspan="13" class="text-center text-muted">
+                                        <i class="fas fa-search"></i> Không tìm thấy phiếu giảm giá nào
+                                    </td>
+                                </tr>
                                 <tr th:each="pgg : ${dsPhieuGiamGia}">
-                                    <td th:text="${pgg.ma}"></td>
+                                    <td>
+                                        <span class="badge bg-info" th:text="${pgg.ma}"></span>
+                                    </td>
                                     <td th:text="${pgg.ten}"></td>
-                                    <td th:text="${#dates.format(pgg.ngayBatDau, 'yyyy-MM-dd')}"></td>
-                                    <td th:text="${#dates.format(pgg.ngayKetThuc, 'yyyy-MM-dd')}"></td>
+                                    <td th:text="${#dates.format(pgg.ngayBatDau, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${#dates.format(pgg.ngayKetThuc, 'dd/MM/yyyy')}"></td>
                                     <td>
                                         <!-- Nếu loại giảm là phần trăm (true), hiển thị dấu % -->
-                                        <span th:if="${pgg.loaiGiamGia}" th:text="${pgg.giaTriGiam} + ' %'"></span>
+                                        <span th:if="${pgg.loaiGiamGia}" class="text-success fw-bold" th:text="${pgg.giaTriGiam} + ' %'"></span>
                                         <!-- Nếu loại giảm là tiền mặt (false), hiển thị VND -->
-                                        <span th:unless="${pgg.loaiGiamGia}" class="giaVND" th:text="${pgg.giaTriGiam}"></span>
+                                        <span th:unless="${pgg.loaiGiamGia}" class="giaVND text-success fw-bold" th:text="${pgg.giaTriGiam}"></span>
                                     </td>
-                                    <td th:text="${pgg.loaiGiamGia ? 'Phần trăm' : 'Tiền mặt'}"></td>
-                                    <td th:text="${pgg.soLuong}"></td>
-                                    <td th:text="${pgg.soLuongDaSuDung}"></td>
+                                    <td>
+                                        <span th:if="${pgg.loaiGiamGia}" class="badge bg-warning">Phần trăm</span>
+                                        <span th:unless="${pgg.loaiGiamGia}" class="badge bg-primary">Tiền mặt</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary" th:text="${pgg.soLuong}"></span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-dark" th:text="${pgg.soLuongDaSuDung}"></span>
+                                    </td>
                                     <td class="giaVND" th:text="${pgg.giaTriDonHangToiThieu}"></td>
-                                    <td th:text="${pgg.loaiPhieu ? 'Công khai' : 'Riêng tư'}"></td>
+                                    <td>
+                                        <span th:if="${pgg.loaiPhieu}" class="badge bg-success">Công khai</span>
+                                        <span th:unless="${pgg.loaiPhieu}" class="badge bg-warning">Riêng tư</span>
+                                    </td>
                                     <td th:text="${pgg.nguoiTao}"></td>
                                     <td>
-                                        <span th:if="${pgg.trangThai}" class="badge bg-success">Hoạt động</span>
-                                        <span th:unless="${pgg.trangThai}" class="badge bg-danger">Không hoạt động</span>
+                                        <span th:if="${pgg.trangThai}" class="badge bg-success">
+                                            <i class="fas fa-check"></i> Hoạt động
+                                        </span>
+                                        <span th:unless="${pgg.trangThai}" class="badge bg-danger">
+                                            <i class="fas fa-times"></i> Không hoạt động
+                                        </span>
                                     </td>
                                     <td>
-                                        <a th:href="@{'/admin/phieu-giam-gia/edit/' + ${pgg.id}}" class="btn btn-warning btn-sm">Sửa</a>
-                                        <a th:href="@{'/admin/phieu-giam-gia/delete/' + ${pgg.id}}" class="btn btn-danger btn-sm"
-                                           onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>
+                                        <div class="btn-group" role="group">
+                                            <a th:href="@{'/admin/phieu-giam-gia/edit/' + ${pgg.id}}"
+                                               class="btn btn-warning btn-sm" title="Sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a th:href="@{'/admin/phieu-giam-gia/delete/' + ${pgg.id}}"
+                                               class="btn btn-danger btn-sm" title="Xóa"
+                                               onclick="return confirm('Bạn có chắc chắn muốn xóa phiếu giảm giá này?');">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -102,10 +191,83 @@
             }
         });
 
+        // Auto-submit form khi chọn trạng thái
+        const statusSelect = document.querySelector('select[name="trangThai"]');
+        if (statusSelect) {
+            statusSelect.addEventListener('change', function() {
+                this.form.submit();
+            });
+        }
+
+        // Xử lý enter key cho ô tìm kiếm
+        const searchInput = document.querySelector('input[name="search"]');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    this.form.submit();
+                }
+            });
+        }
+
+        // Validate date range
+        const startDateInput = document.querySelector('input[name="ngayBatDau"]');
+        const endDateInput = document.querySelector('input[name="ngayKetThuc"]');
+
+        if (startDateInput && endDateInput) {
+            function validateDateRange() {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+
+                if (startDateInput.value && endDateInput.value && startDate > endDate) {
+                    alert('Ngày bắt đầu không thể lớn hơn ngày kết thúc!');
+                    endDateInput.value = '';
+                }
+            }
+
+            startDateInput.addEventListener('change', validateDateRange);
+            endDateInput.addEventListener('change', validateDateRange);
+        }
+
+        // Highlight search term in results
+        const searchTerm = document.querySelector('input[name="search"]').value;
+        if (searchTerm && searchTerm.trim() !== '') {
+            const regex = new RegExp(`(${searchTerm.trim()})`, 'gi');
+            document.querySelectorAll('tbody td:nth-child(1), tbody td:nth-child(2)').forEach(cell => {
+                if (cell.textContent.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    cell.innerHTML = cell.innerHTML.replace(regex, '<mark>$1</mark>');
+                }
+            });
+        }
+
         // Debug để kiểm tra dữ liệu
         console.log("Số lượng phiếu giảm giá:", document.querySelectorAll('tbody tr').length);
+
+        // Tooltip cho các nút hành động
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
     });
+
+    // Hàm reset form
+    function resetForm() {
+        document.querySelector('input[name="search"]').value = '';
+        document.querySelector('select[name="trangThai"]').value = '';
+        document.querySelector('input[name="ngayBatDau"]').value = '';
+        document.querySelector('input[name="ngayKetThuc"]').value = '';
+        document.querySelector('form').submit();
+    }
+
+    // Hàm export dữ liệu (có thể thêm sau)
+    function exportData() {
+        // Placeholder cho chức năng export
+        alert('Chức năng export sẽ được phát triển trong tương lai');
+    }
 </script>
+
+<!-- CSS để cải thiện giao diện -->
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.min.js"></script>
