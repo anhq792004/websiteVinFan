@@ -20,13 +20,18 @@ public interface PhieuGiamGiaRepo extends JpaRepository<PhieuGiamGia,Long> {
      */
     Optional<PhieuGiamGia> findByMa(String ma);
 
-    List<PhieuGiamGia> findByLoaiPhieuAndTrangThaiAndNgayBatDauBeforeAndNgayKetThucAfter(
-            Boolean loaiPhieu,
-            Boolean trangThai,
-            LocalDateTime ngayBatDau,
-            LocalDateTime ngayKetThuc
-    );
+    @Query("SELECT p FROM PhieuGiamGia p WHERE p.ngayKetThuc < :currentDate AND p.trangThai = true")
+    List<PhieuGiamGia> findExpiredCoupons(@Param("currentDate") Date currentDate);
 
-
+    @Query("SELECT pgg FROM PhieuGiamGia pgg WHERE " +
+            "(:search IS NULL OR :search = '' OR LOWER(pgg.ma) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(pgg.ten) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
+            "(:trangThai IS NULL OR pgg.trangThai = :trangThai) AND " +
+            "(:ngayBatDau IS NULL OR pgg.ngayBatDau >= :ngayBatDau) AND " +
+            "(:ngayKetThuc IS NULL OR pgg.ngayKetThuc <= :ngayKetThuc) " +
+            "ORDER BY pgg.ngayTao DESC")
+    List<PhieuGiamGia> findWithFilters(@Param("search") String search,
+                                       @Param("trangThai") Boolean trangThai,
+                                       @Param("ngayBatDau") Date ngayBatDau,
+                                       @Param("ngayKetThuc") Date ngayKetThuc);
 
 }

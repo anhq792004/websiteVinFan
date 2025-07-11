@@ -7,6 +7,7 @@ import com.example.datn.repository.PhieuGiamGiaKhachHangRepo;
 import com.example.datn.repository.PhieuGiamGiaRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +31,47 @@ public class PhieuGiamGiaController {
     private KhachHangRepo khachHangRepo;
 
     @GetMapping("/index")
-    public String hienThiDanhSach(Model model) {
-        model.addAttribute("dsPhieuGiamGia", phieuGiamGiaRepo.findAll());
+    public String hienThiDanhSach(Model model,
+                                  @RequestParam(value = "search", required = false) String search,
+                                  @RequestParam(value = "trangThai", required = false) Boolean trangThai,
+                                  @RequestParam(value = "ngayBatDau", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayBatDau,
+                                  @RequestParam(value = "ngayKetThuc", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayKetThuc) {
+
+        List<PhieuGiamGia> dsPhieuGiamGia;
+        Date currentDate = new Date();
+
+        // Tìm kiếm và lọc dữ liệu
+        if ((search != null && !search.trim().isEmpty()) ||
+                trangThai != null ||
+                ngayBatDau != null ||
+                ngayKetThuc != null) {
+
+            dsPhieuGiamGia = phieuGiamGiaRepo.findWithFilters(
+                    search != null ? search.trim() : null,
+                    trangThai,
+                    ngayBatDau,
+                    ngayKetThuc
+            );
+        } else {
+            dsPhieuGiamGia = phieuGiamGiaRepo.findAll();
+        }
+
+        // Cập nhật trạng thái cho các phiếu hết hạn
+        for (PhieuGiamGia pgg : dsPhieuGiamGia) {
+            if (pgg.getNgayKetThuc() != null && pgg.getNgayKetThuc().before(currentDate) && pgg.isTrangThai()) {
+                pgg.setTrangThai(false);
+                phieuGiamGiaRepo.save(pgg);
+            }
+        }
+
+        model.addAttribute("dsPhieuGiamGia", dsPhieuGiamGia);
+
+        // Thêm các giá trị tìm kiếm vào model để giữ trong form
+        model.addAttribute("search", search);
+        model.addAttribute("trangThai", trangThai);
+        model.addAttribute("ngayBatDau", ngayBatDau);
+        model.addAttribute("ngayKetThuc", ngayKetThuc);
+
         return "admin/phieu_giam_gia/index";
     }
 
@@ -39,7 +79,7 @@ public class PhieuGiamGiaController {
     public String hienThiFormTao(Model model) {
         PhieuGiamGia phieuGiamGia = new PhieuGiamGia();
         phieuGiamGia.setMa(generateNextCode());
-
+        phieuGiamGia.setTrangThai(true);
         model.addAttribute("phieuGiamGia", phieuGiamGia);
         model.addAttribute("dsKhachHang", khachHangRepo.findByTrangThai(true));
         return "admin/phieu_giam_gia/create";
