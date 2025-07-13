@@ -16,6 +16,7 @@ import com.example.datn.repository.SanPhamRepo.SanPhamChiTietRepo;
 import com.example.datn.service.PhieuGiamGiaSercvice;
 import com.example.datn.service.gioHangService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -55,6 +56,9 @@ public class ThanhToanOnlController {
     @Autowired
     private PhieuGiamGiaKhachHangRepo phieuGiamGiaKhachHangRepo;
 
+    @Autowired
+    private SanPhamChiTietRepo sanPhamChiTietRepo;
+
     // Hiển thị trang checkout
     @GetMapping("")
     public String checkout(HttpSession session, Model model) {
@@ -85,6 +89,7 @@ public class ThanhToanOnlController {
     // Xử lý đặt hàng
     @PostMapping("/process")
     @ResponseBody
+    @Transactional
     public ResponseEntity<Map<String, Object>> processOrder(
             @RequestParam String hoTen,
             @RequestParam String soDienThoai,
@@ -123,9 +128,10 @@ public class ThanhToanOnlController {
 
             BigDecimal totalAmount = (BigDecimal) cartInfo.get("totalAmount");
             BigDecimal finalAmount = totalAmount;
+            BigDecimal discountAmount = BigDecimal.ZERO;
+            PhieuGiamGia usedVoucher = null;
 
             // Xử lý phiếu giảm giá
-            BigDecimal discountAmount = BigDecimal.ZERO;
             if (voucherId != null) {
                 Optional<PhieuGiamGia> voucherOpt = phieuGiamGiaRepo.findById(voucherId);
                 if (voucherOpt.isPresent()) {
@@ -133,7 +139,6 @@ public class ThanhToanOnlController {
                     System.out.println("DEBUG: Voucher - ID: " + voucher.getId() +
                             ", loaiGiamGia: " + voucher.getLoaiGiamGia() +
                             ", giaTriGiam: " + voucher.getGiaTriGiam());
-                    // Kiểm tra private voucher
                     if (!voucher.getLoaiPhieu()) {
                         Optional<PhieuGiamGiaKhachHang> pggkhOpt = phieuGiamGiaKhachHangRepo
                                 .findByPhieuGiamGiaAndKhachHang(voucher, khachHang);
@@ -142,7 +147,15 @@ public class ThanhToanOnlController {
                             response.put("message", "Phiếu giảm giá không hợp lệ hoặc không thuộc về bạn");
                             return ResponseEntity.ok(response);
                         }
+                        // Cập nhật trạng thái đã sử dụng cho phiếu giảm giá cá nhân
+                        PhieuGiamGiaKhachHang pggkh = pggkhOpt.get();
+                        pggkh.setDaSuDung(true);
+                        phieuGiamGiaKhachHangRepo.save(pggkh);
                     }
+                    // Tăng số lượng đã sử dụng cho phiếu giảm giá
+                    voucher.setSoLuongDaSuDung(voucher.getSoLuongDaSuDung() + 1);
+                    phieuGiamGiaRepo.save(voucher);
+                    usedVoucher = voucher;
                     discountAmount = phieuGiamGiaService.calculateDiscountAmount(voucher, totalAmount);
                     finalAmount = totalAmount.subtract(discountAmount);
                     System.out.println("DEBUG: Calculated - totalAmount: " + totalAmount +
@@ -166,7 +179,10 @@ public class ThanhToanOnlController {
             hoaDon.setKhachHang(khachHang);
             hoaDon.setTenNguoiNhan(hoTen);
             hoaDon.setSdtNguoiNhan(soDienThoai);
-//            hoaDon.setDiaChi(savedDiaChi);
+            hoaDon.setTinh(tinhThanh);
+            hoaDon.setHuyen(quanHuyen);
+            hoaDon.setXa(phuongXa);
+            hoaDon.setSoNhaNgoDuong(diaChiChiTiet);
             hoaDon.setPhuongThucThanhToan(phuongThucThanhToan);
             hoaDon.setGhiChu(ghiChu);
             hoaDon.setLoaiHoaDon(false);
@@ -176,8 +192,49 @@ public class ThanhToanOnlController {
             hoaDon.setTongTien(totalAmount);
             hoaDon.setTongTienSauGiamGia(finalAmount);
             hoaDon.setPhiVanChuyen(BigDecimal.ZERO);
+            hoaDon.setPhieuGiamGia(usedVoucher); // Lưu phiếu giảm giá vào hóa đơn
 
             HoaDon savedHoaDon = hoaDonRepo.save(hoaDon);
+            System.out.println("DEBUG: Saved HoaDon - ID: " + savedHoaDon.getId() +
+                    ", tongTien: " + savedHoaDon.getTongTien() +
+                    ", tongTienSauGiamGia: " + savedHoaDon.getTongTienSauGiamGia() +
+                    ", phieuGiamGiaId: " + (savedHoaDon.getPhieuGiamGia() != null ? savedHoaDon.getPhieuGiamGia().getId() : "null"));
+
+            List<Map<String, Object>> cartItems = (List<Map<String, Object>>) cartInfo.get("items");
+            if (cartItems == null || cartItems.isEmpty()) {
+                throw new RuntimeException("Giỏ hàng không chứa sản phẩm để lưu chi tiết hóa đơn");
+            }
+
+            for (Map<String, Object> item : cartItems) {
+                HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
+                hoaDonChiTiet.setHoaDon(savedHoaDon);
+
+                Long sanPhamChiTietId = ((Number) item.get("sanPhamChiTietId")).longValue();
+                Optional<SanPhamChiTiet> sanPhamChiTietOpt = sanPhamChiTietRepo.findById(sanPhamChiTietId);
+                if (!sanPhamChiTietOpt.isPresent()) {
+                    throw new RuntimeException("Không tìm thấy sản phẩm với ID: " + sanPhamChiTietId);
+                }
+                SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietOpt.get();
+
+                // Validate stock
+                int soLuong = ((Number) item.get("soLuong")).intValue();
+                if (sanPhamChiTiet.getSoLuong() < soLuong) {
+                    throw new RuntimeException("Sản phẩm " + sanPhamChiTiet.getSanPham().getTen() + " không đủ số lượng tồn kho");
+                }
+
+                hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
+                hoaDonChiTiet.setSoLuong(soLuong);
+                hoaDonChiTiet.setGia(sanPhamChiTiet.getGia());
+                hoaDonChiTiet.setGiaSauGiam(sanPhamChiTiet.getGia());
+                hoaDonChiTiet.setThanhTien(sanPhamChiTiet.getGia().multiply(new BigDecimal(soLuong)));
+                hoaDonChiTiet.setTrangThai(1);
+
+                // Update stock
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuong);
+                sanPhamChiTietRepo.save(sanPhamChiTiet);
+
+                hoaDonChiTietRepo.save(hoaDonChiTiet);
+            }
 
             LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
             lichSuHoaDon.setHoaDon(savedHoaDon);
@@ -186,6 +243,9 @@ public class ThanhToanOnlController {
             lichSuHoaDon.setMoTa("Đơn hàng được tạo bởi khách hàng: " + khachHang.getTen());
             lichSuHoaDon.setNguoiTao(khachHang.getTen());
             lichSuHoaDonRepo.save(lichSuHoaDon);
+
+            // Clear the cart after successful order
+            gioHangService.clearCart(session);
 
             response.put("success", true);
             response.put("orderId", savedHoaDon.getId());

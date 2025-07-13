@@ -23,22 +23,26 @@ public class PhieuGiamGiaSercvice {
 
     public List<Map<String, Object>> getAvailableVouchers(KhachHang khachHang, BigDecimal orderAmount) {
         List<Map<String, Object>> availableVouchers = new ArrayList<>();
-        Date now = new Date(); //  Sử dụng Date thống nhất
+        Date now = new Date();
 
         try {
             // 1. Lấy phiếu giảm giá CÔNG KHAI (loaiPhieu = true)
             List<PhieuGiamGia> publicVouchers = phieuGiamGiaRepo.findAll();
 
             for (PhieuGiamGia voucher : publicVouchers) {
-                // Lọc phiếu công khai
+                System.out.println("Checking public voucher: " + voucher.getMa() +
+                        ", Start Date: " + voucher.getNgayBatDau() +
+                        ", End Date: " + voucher.getNgayKetThuc() +
+                        ", Status: " + voucher.isTrangThai() +
+                        ", Current Time: " + now);
+
                 if (voucher.getLoaiPhieu() == true && // công khai
                         voucher.isTrangThai() && // active
-                        voucher.getNgayBatDau().before(now) && // đã bắt đầu
-                        voucher.getNgayKetThuc().after(now) && // chưa kết thúc
+                        voucher.getNgayBatDau() != null && voucher.getNgayBatDau().before(now) && // đã bắt đầu
+                        voucher.getNgayKetThuc() != null && voucher.getNgayKetThuc().after(now) && // chưa kết thúc
                         isVoucherValid(voucher, orderAmount)) {
-
                     availableVouchers.add(createVoucherMap(voucher, "public"));
-                    System.out.println(" Added public voucher: " + voucher.getMa());
+                    System.out.println("Added public voucher: " + voucher.getMa());
                 }
             }
 
@@ -46,27 +50,25 @@ public class PhieuGiamGiaSercvice {
             List<PhieuGiamGiaKhachHang> privateVoucherRelations = phieuGiamGiaKhachHangRepo
                     .findByKhachHangAndTrangThaiAndDaSuDung(khachHang, true, false);
 
-            System.out.println(" DEBUG: Found " + privateVoucherRelations.size() + " private voucher relations");
+            System.out.println("DEBUG: Found " + privateVoucherRelations.size() + " private voucher relations");
 
             for (PhieuGiamGiaKhachHang relation : privateVoucherRelations) {
                 PhieuGiamGia voucher = relation.getPhieuGiamGia();
 
-                System.out.println(" Checking private voucher: " + voucher.getMa());
-                System.out.println("   - Active: " + voucher.isTrangThai());
-                System.out.println("   - Start date: " + voucher.getNgayBatDau());
-                System.out.println("   - End date: " + voucher.getNgayKetThuc());
-                System.out.println("   - Current date: " + now);
-                System.out.println("   - loaiPhieu: " + voucher.getLoaiPhieu());
+                System.out.println("Checking private voucher: " + voucher.getMa() +
+                        ", Start Date: " + voucher.getNgayBatDau() +
+                        ", End Date: " + voucher.getNgayKetThuc() +
+                        ", Status: " + voucher.isTrangThai() +
+                        ", Current Time: " + now);
 
                 if (voucher.isTrangThai() && // voucher active
-                        voucher.getNgayBatDau().before(now) && // đã bắt đầu
-                        voucher.getNgayKetThuc().after(now) && // chưa kết thúc
+                        voucher.getNgayBatDau() != null && voucher.getNgayBatDau().before(now) && // đã bắt đầu
+                        voucher.getNgayKetThuc() != null && voucher.getNgayKetThuc().after(now) && // chưa kết thúc
                         isVoucherValid(voucher, orderAmount)) { // đủ điều kiện đơn hàng
-
                     availableVouchers.add(createVoucherMap(voucher, "private"));
-                    System.out.println(" Added private voucher: " + voucher.getMa());
+                    System.out.println("Added private voucher: " + voucher.getMa());
                 } else {
-                    System.out.println(" Private voucher " + voucher.getMa() + " not valid");
+                    System.out.println("Private voucher " + voucher.getMa() + " not valid");
                 }
             }
 
@@ -77,10 +79,10 @@ public class PhieuGiamGiaSercvice {
                 return value2.compareTo(value1);
             });
 
-            System.out.println(" FINAL RESULT: Total available vouchers: " + availableVouchers.size());
+            System.out.println("FINAL RESULT: Total available vouchers: " + availableVouchers.size());
 
         } catch (Exception e) {
-            System.err.println(" ERROR in getAvailableVouchers: " + e.getMessage());
+            System.err.println("ERROR in getAvailableVouchers: " + e.getMessage());
             e.printStackTrace();
         }
 

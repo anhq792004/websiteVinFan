@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:insert="~{/admin/fragments/head :: head}"></head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thanh Toán - Checkout</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-</head>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
 <body class="bg-light">
 
 <!-- Header -->
@@ -100,10 +101,6 @@
                                     <div class="invalid-feedback">Vui lòng nhập số điện thoại</div>
                                 </div>
                             </div>
-<!--                            <div class="mb-3">-->
-<!--                                <label for="email" class="form-label">Email</label>-->
-<!--                                <input type="email" class="form-control" id="email" name="email">-->
-<!--                            </div>-->
                         </div>
 
                         <!-- Address -->
@@ -294,6 +291,9 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="clearVoucherBtn">
+                    <i class="fas fa-trash-alt me-1"></i> Bỏ chọn
+                </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
         </div>
@@ -301,6 +301,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     // Cập nhật lại class CheckoutPage với các method mới
@@ -341,6 +342,16 @@
             document.getElementById('voucherModal').addEventListener('shown.bs.modal', () => {
                 this.loadAvailableVouchers();
             });
+
+            // Clear voucher button
+            document.getElementById('clearVoucherBtn').addEventListener('click', () => {
+                this.clearVoucher();
+            });
+        }
+
+        // Format currency to VND (e.g., 10000 -> 10.000 đ)
+        formatCurrency(amount) {
+            return amount.toLocaleString('vi-VN', { style: 'decimal', minimumFractionDigits: 0 }) + ' đ';
         }
 
         async loadCartData() {
@@ -381,8 +392,8 @@
                         <small class="text-muted">SL: ${item.soLuong}</small>
                     </div>
                     <div class="text-end">
-                        <div class="fw-bold text-danger small">${item.tongTien}</div>
-                        <small class="text-muted">${item.gia}/cái</small>
+                        <div class="fw-bold text-danger small">${this.formatCurrency(item.tongTien)}</div>
+                        <small class="text-muted">${this.formatCurrency(item.gia)}/cái</small>
                     </div>
                 </div>
             </div>
@@ -390,7 +401,7 @@
         }
 
         updateSummary(data) {
-            document.getElementById('subtotal').textContent = data.totalAmount;
+            document.getElementById('subtotal').textContent = this.formatCurrency(data.totalAmount);
 
             // Tính số tiền được giảm
             const discountAmount = this.calculateDiscountAmount(data.totalAmount);
@@ -399,8 +410,8 @@
             const finalAmount = data.totalAmount - discountAmount;
 
             // Cập nhật UI
-            document.getElementById('discount').textContent = -discountAmount;
-            document.getElementById('totalAmount').textContent = finalAmount;
+            document.getElementById('discount').textContent = this.formatCurrency(-discountAmount);
+            document.getElementById('totalAmount').textContent = this.formatCurrency(finalAmount);
         }
 
         updatePaymentUI() {
@@ -586,7 +597,7 @@
                         <div class="col-md-3 text-center">
                             <div class="bg-gradient bg-primary text-white rounded-3 p-3 shadow-sm">
                                 <div class="h5 mb-0 fw-bold">
-                                    ${voucher.loaiGiam === 'PERCENT' ? voucher.giaTriGiam : voucher.giaTriGiam}
+                                    ${voucher.loaiGiam === 'PERCENT' ? voucher.giaTriGiam : this.formatCurrency(voucher.giaTriGiam)}
                                 </div>
                                 <small class="opacity-75">
                                     ${voucher.loaiGiam === 'PERCENT' ? 'Giảm %' : 'Giảm tiền'}
@@ -605,12 +616,12 @@
                             <div class="small">
                                 <div class="mb-1">
                                     <i class="fas fa-shopping-cart text-info me-1"></i>
-                                    <span class="text-success">Đơn tối thiểu: ${voucher.giaTriDonHangToiThieu || 0}</span>
+                                    <span class="text-success">Đơn tối thiểu: ${this.formatCurrency(voucher.giaTriDonHangToiThieu || 0)}</span>
                                 </div>
                                 ${voucher.giaTriGiamToiDa ? `
                                     <div class="mb-1">
                                         <i class="fas fa-arrow-up text-warning me-1"></i>
-                                        <span class="text-warning">Giảm tối đa: ${voucher.giaTriGiamToiDa}</span>
+                                        <span class="text-warning">Giảm tối đa: ${this.formatCurrency(voucher.giaTriGiamToiDa)}</span>
                                     </div>
                                 ` : ''}
                                 <div>
@@ -631,14 +642,6 @@
             </div>
         `;
             }).join('');
-
-            document.querySelectorAll('.select-voucher').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const voucherData = JSON.parse(e.target.closest('.select-voucher').dataset.voucher);
-                    this.selectVoucher(voucherData);
-                });
-            });
         }
 
         selectVoucher(voucher) {
@@ -652,16 +655,20 @@
 
             // Update voucher list UI
             document.querySelectorAll('.voucher-item').forEach(item => {
-                item.classList.remove('border-primary');
+                item.classList.remove('border-primary', 'bg-light');
             });
 
             document.querySelectorAll('.select-voucher').forEach(btn => {
                 const btnVoucher = JSON.parse(btn.dataset.voucher);
                 if (btnVoucher.id === voucher.id) {
-                    btn.textContent = 'Đã chọn';
-                    btn.closest('.voucher-item').classList.add('border-primary');
+                    btn.classList.remove('btn-outline-primary');
+                    btn.classList.add('btn-success');
+                    btn.innerHTML = '<i class="fas fa-check me-1"></i>Đã chọn';
+                    btn.closest('.voucher-item').classList.add('border-primary', 'bg-light');
                 } else {
-                    btn.textContent = 'Chọn';
+                    btn.classList.remove('btn-success');
+                    btn.classList.add('btn-outline-primary');
+                    btn.innerHTML = '<i class="fas fa-plus me-1"></i>Chọn';
                 }
             });
 
@@ -670,6 +677,33 @@
             modal.hide();
 
             this.showAlert('Đã chọn phiếu giảm giá thành công!', 'success');
+        }
+
+        clearVoucher() {
+            this.selectedVoucher = null;
+
+            // Clear voucher input
+            document.getElementById('voucherCode').value = '';
+
+            // Update summary
+            this.updateSummary(this.cartData);
+
+            // Update voucher list UI
+            document.querySelectorAll('.voucher-item').forEach(item => {
+                item.classList.remove('border-primary', 'bg-light');
+            });
+
+            document.querySelectorAll('.select-voucher').forEach(btn => {
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-outline-primary');
+                btn.innerHTML = '<i class="fas fa-plus me-1"></i>Chọn';
+            });
+
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('voucherModal'));
+            modal.hide();
+
+            this.showAlert('Đã bỏ chọn phiếu giảm giá!', 'info');
         }
 
         calculateDiscountAmount(originalAmount) {
@@ -699,7 +733,6 @@
 
             return discountAmount;
         }
-
 
         validateForm() {
             const form = document.getElementById('checkoutForm');
@@ -736,8 +769,8 @@
 
                 if (result.success) {
                     this.showAlert('Đặt hàng thành công!', 'success');
-                    document.getElementById('discount').textContent = -result.discountAmount; // Cập nhật giảm giá
-                    document.getElementById('totalAmount').textContent = result.finalAmount; // Cập nhật tổng cộng
+                    document.getElementById('discount').textContent = this.formatCurrency(-result.discountAmount); // Cập nhật giảm giá
+                    document.getElementById('totalAmount').textContent = this.formatCurrency(result.finalAmount); // Cập nhật tổng cộng
                     setTimeout(() => {
                         window.location.href = result.redirectUrl || '/checkout/success?id=' + result.orderId;
                     }, 2000);
@@ -750,21 +783,17 @@
         }
 
         showAlert(message, type) {
-            const container = document.getElementById('alertContainer');
-            const id = 'alert-' + Date.now();
-
-            container.insertAdjacentHTML('beforeend', `
-            <div id="${id}" class="alert alert-${type} alert-dismissible fade show">
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `);
-
-            setTimeout(() => {
-                const alert = document.getElementById(id);
-                if (alert) alert.remove();
-            }, 5000);
+            Swal.fire({
+                position: 'top-end',
+                icon: type, // success, info, warning, error (maps to danger)
+                title: message,
+                showConfirmButton: false,
+                timer: 2000,
+                toast: true,
+                background: type === 'success' ? '#d4edda' : type === 'info' ? '#d1ecf1' : type === 'warning' ? '#fff3cd' : '#f8d7da',
+                color: type === 'success' ? '#155724' : type === 'info' ? '#0c5460' : type === 'warning' ? '#856404' : '#721c24',
+                iconColor: type === 'success' ? '#28a745' : type === 'info' ? '#17a2b8' : type === 'warning' ? '#ffc107' : '#dc3545'
+            });
         }
     }
 
