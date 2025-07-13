@@ -1,9 +1,6 @@
 package com.example.datn.service.Implements.SanPhamImpl;
 
-import com.example.datn.dto.request.AddMultipleVariantsRequest;
-import com.example.datn.dto.request.AddMultipleVariantsRequestV2;
 import com.example.datn.entity.HinhAnh;
-import com.example.datn.entity.SanPham.SanPham;
 import com.example.datn.entity.SanPham.SanPhamChiTiet;
 import com.example.datn.entity.ThuocTinh.CongSuat;
 import com.example.datn.entity.ThuocTinh.Hang;
@@ -11,23 +8,25 @@ import com.example.datn.entity.ThuocTinh.MauSac;
 import com.example.datn.entity.ThuocTinh.NutBam;
 import com.example.datn.repository.HinhAnhRepo;
 import com.example.datn.repository.SanPhamRepo.SanPhamChiTietRepository;
-import com.example.datn.repository.SanPhamRepo.SanPhamRepo;
 import com.example.datn.repository.ThuocTinhRepo.CongSuatRepository;
 import com.example.datn.repository.ThuocTinhRepo.HangRepository;
 import com.example.datn.repository.ThuocTinhRepo.MauSacRepository;
 import com.example.datn.repository.ThuocTinhRepo.NutBamRepository;
-import com.example.datn.service.FileUploadService;
 import com.example.datn.service.SanPhamSerivce.SanPhamChiTietService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @Slf4j
 @Service
@@ -35,82 +34,15 @@ import java.util.List;
 public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
 
     private final SanPhamChiTietRepository sanPhamChiTietRepository;
-    private final SanPhamRepo sanPhamRepo;
     private final MauSacRepository mauSacRepository;
     private final CongSuatRepository congSuatRepository;
     private final HangRepository hangRepository;
     private final NutBamRepository nutBamRepository;
     private final HinhAnhRepo hinhAnhRepo;
-    private final FileUploadService fileUploadService;
 
     @Override
     public SanPhamChiTiet findById(Long id) {
         return sanPhamChiTietRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    @Transactional
-    public List<SanPhamChiTiet> addMultipleVariants(AddMultipleVariantsRequest request) {
-        log.info("=== BẮT ĐẦU THÊM NHIỀU BIẾN THỂ ===");
-        log.info("Sản phẩm ID: {}", request.getSanPhamId());
-        log.info("Màu sắc IDs: {}", request.getMauSacIds());
-        log.info("Công suất IDs: {}", request.getCongSuatIds());
-
-        // Kiểm tra sản phẩm tồn tại
-        SanPham sanPham = sanPhamRepo.findById(request.getSanPhamId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
-
-        // Lấy thông tin hãng và nút bấm
-        Hang hang = hangRepository.findById(request.getHangId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy hãng"));
-        
-        NutBam nutBam = nutBamRepository.findById(request.getNutBamId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy nút bấm"));
-
-        List<SanPhamChiTiet> createdVariants = new ArrayList<>();
-
-        // Tạo biến thể cho mỗi kết hợp màu sắc và công suất
-        for (Long mauSacId : request.getMauSacIds()) {
-            MauSac mauSac = mauSacRepository.findById(mauSacId)
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy màu sắc với ID: " + mauSacId));
-
-            for (Long congSuatId : request.getCongSuatIds()) {
-                CongSuat congSuat = congSuatRepository.findById(congSuatId)
-                        .orElseThrow(() -> new RuntimeException("Không tìm thấy công suất với ID: " + congSuatId));
-
-                // Kiểm tra biến thể đã tồn tại chưa
-                boolean exists = sanPhamChiTietRepository.existsBySanPhamIdAndMauSacIdAndCongSuatIdAndHangIdAndNutBamId(
-                        request.getSanPhamId(), mauSacId, congSuatId, request.getHangId(), request.getNutBamId());
-
-                if (exists) {
-                    log.warn("Biến thể đã tồn tại: SP={}, Màu={}, Công suất={}", 
-                            request.getSanPhamId(), mauSac.getTen(), congSuat.getTen());
-                    continue;
-                }
-
-                // Tạo biến thể mới
-                SanPhamChiTiet variant = new SanPhamChiTiet();
-                variant.setSanPham(sanPham);
-                variant.setMauSac(mauSac);
-                variant.setCongSuat(congSuat);
-                variant.setHang(hang);
-                variant.setNutBam(nutBam);
-                variant.setSoLuong(request.getSoLuong());
-                variant.setGia(request.getGia());
-                variant.setCanNang(request.getCanNang());
-                variant.setMoTa(request.getMoTa());
-                variant.setTrangThai(request.getTrangThai());
-
-                SanPhamChiTiet savedVariant = sanPhamChiTietRepository.save(variant);
-                createdVariants.add(savedVariant);
-
-                log.info("Đã tạo biến thể: {} - {} - {}", 
-                        sanPham.getTen(), mauSac.getTen(), congSuat.getTen());
-            }
-        }
-
-        log.info("=== HOÀN THÀNH THÊM {} BIẾN THỂ ===", createdVariants.size());
-        return createdVariants;
     }
 
     @Override
@@ -185,12 +117,26 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
         // Xử lý hình ảnh
         if (hinhAnh != null && !hinhAnh.isEmpty()) {
             log.info("=== XỬ LÝ HÌNH ẢNH ===");
-            log.info("File name: {}", hinhAnh.getOriginalFilename());
+            String fileName = StringUtils.cleanPath(hinhAnh.getOriginalFilename());
+            String uploadDir = "src/main/resources/static/admin/assets/images/products";
+            String filePath = uploadDir + "/" + fileName;
+            log.info("File name: {}", fileName);
+            log.info("Upload dir: {}", uploadDir);
 
             try {
-                // Sử dụng FileUploadService để lưu file
-                String imagePath = fileUploadService.saveFile(hinhAnh);
-                log.info("Đã lưu file tại: {}", imagePath);
+                // Tạo thư mục nếu chưa tồn tại
+                Path uploadPath = Paths.get(uploadDir);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                    log.info("Đã tạo thư mục: {}", uploadPath);
+                }
+
+                // Lưu file
+                try (InputStream inputStream = hinhAnh.getInputStream()) {
+                    Path path = Paths.get(filePath);
+                    Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
+                    log.info("Đã lưu file: {}", filePath);
+                }
 
                 // Cập nhật hoặc tạo mới HinhAnh
                 HinhAnh hinhAnhEntity = spct.getHinhAnh();
@@ -199,21 +145,15 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
                     log.info("Tạo mới HinhAnh entity");
                 } else {
                     log.info("Cập nhật HinhAnh entity có ID: {}", hinhAnhEntity.getId());
-                    // Xóa hình ảnh cũ
-                    String oldImagePath = hinhAnhEntity.getHinhAnh();
-                    if (oldImagePath != null && !oldImagePath.isEmpty()) {
-                        fileUploadService.deleteFile(oldImagePath);
-                        log.info("Đã xóa hình ảnh cũ: {}", oldImagePath);
-                    }
                 }
-                hinhAnhEntity.setHinhAnh(imagePath);
+                hinhAnhEntity.setHinhAnh("/admin/assets/images/products/" + fileName);
                 // Lưu HinhAnh trước
                 hinhAnhEntity = hinhAnhRepo.save(hinhAnhEntity);
                 log.info("Đã lưu HinhAnh với ID: {}", hinhAnhEntity.getId());
                 spct.setHinhAnh(hinhAnhEntity);
             } catch (IOException e) {
-                log.error("Lỗi khi lưu file: {}", hinhAnh.getOriginalFilename(), e);
-                throw new RuntimeException("Không thể lưu file: " + hinhAnh.getOriginalFilename(), e);
+                log.error("Lỗi khi lưu file: {}", fileName, e);
+                throw new RuntimeException("Không thể lưu file: " + fileName, e);
             }
         } else {
             log.info("Không có hình ảnh mới để cập nhật");
@@ -269,19 +209,31 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
 
         // Xử lý hình ảnh
         if (hinhAnh != null && !hinhAnh.isEmpty()) {
+            String fileName = StringUtils.cleanPath(hinhAnh.getOriginalFilename());
+            String uploadDir = "src/main/resources/static/admin/assets/images/products";
+            String filePath = uploadDir + "/" + fileName;
+
             try {
-                // Sử dụng FileUploadService để lưu file
-                String imagePath = fileUploadService.saveFile(hinhAnh);
-                log.info("Đã lưu file tại: {}", imagePath);
+                // Tạo thư mục nếu chưa tồn tại
+                Path uploadPath = Paths.get(uploadDir);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                // Lưu file
+                try (InputStream inputStream = hinhAnh.getInputStream()) {
+                    Path path = Paths.get(filePath);
+                    Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
+                }
 
                 // Tạo HinhAnh entity
                 HinhAnh hinhAnhEntity = new HinhAnh();
-                hinhAnhEntity.setHinhAnh(imagePath);
+                hinhAnhEntity.setHinhAnh("/admin/assets/images/products/" + fileName);
                 // Lưu HinhAnh trước
                 hinhAnhEntity = hinhAnhRepo.save(hinhAnhEntity);
                 spct.setHinhAnh(hinhAnhEntity);
             } catch (IOException e) {
-                throw new RuntimeException("Không thể lưu file: " + hinhAnh.getOriginalFilename(), e);
+                throw new RuntimeException("Không thể lưu file: " + fileName, e);
             }
         }
 
@@ -319,72 +271,6 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
             log.error("=== LỖI KHI LƯU INLINE UPDATE ===", e);
             throw e;
         }
-    }
-
-    @Override
-    @Transactional
-    public List<SanPhamChiTiet> addMultipleVariantsV2(AddMultipleVariantsRequestV2 request) {
-        log.info("=== BẮT ĐẦU THÊM NHIỀU BIẾN THỂ V2 ===");
-        log.info("Sản phẩm ID: {}", request.getSanPhamId());
-        log.info("Số lượng biến thể: {}", request.getVariants().size());
-
-        // Kiểm tra sản phẩm tồn tại
-        SanPham sanPham = sanPhamRepo.findById(request.getSanPhamId())
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
-
-        List<SanPhamChiTiet> createdVariants = new ArrayList<>();
-
-        // Tạo từng biến thể từ danh sách chi tiết
-        for (AddMultipleVariantsRequestV2.VariantDetail variant : request.getVariants()) {
-            log.info("Đang xử lý biến thể: MauSac={}, CongSuat={}", 
-                    variant.getMauSacId(), variant.getCongSuatId());
-
-            // Lấy các entity cần thiết
-            MauSac mauSac = mauSacRepository.findById(variant.getMauSacId())
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy màu sắc với ID: " + variant.getMauSacId()));
-
-            CongSuat congSuat = congSuatRepository.findById(variant.getCongSuatId())
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy công suất với ID: " + variant.getCongSuatId()));
-
-            Hang hang = hangRepository.findById(variant.getHangId())
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy hãng với ID: " + variant.getHangId()));
-
-            NutBam nutBam = nutBamRepository.findById(variant.getNutBamId())
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy nút bấm với ID: " + variant.getNutBamId()));
-
-            // Kiểm tra biến thể đã tồn tại chưa
-            boolean exists = sanPhamChiTietRepository.existsBySanPhamIdAndMauSacIdAndCongSuatIdAndHangIdAndNutBamId(
-                    request.getSanPhamId(), variant.getMauSacId(), variant.getCongSuatId(), 
-                    variant.getHangId(), variant.getNutBamId());
-
-            if (exists) {
-                log.warn("Biến thể đã tồn tại: SP={}, Màu={}, Công suất={}", 
-                        request.getSanPhamId(), mauSac.getTen(), congSuat.getTen());
-                continue;
-            }
-
-            // Tạo biến thể mới
-            SanPhamChiTiet newVariant = new SanPhamChiTiet();
-            newVariant.setSanPham(sanPham);
-            newVariant.setMauSac(mauSac);
-            newVariant.setCongSuat(congSuat);
-            newVariant.setHang(hang);
-            newVariant.setNutBam(nutBam);
-            newVariant.setSoLuong(variant.getSoLuong());
-            newVariant.setGia(variant.getGia() != null ? BigDecimal.valueOf(variant.getGia()) : BigDecimal.ZERO);
-            newVariant.setCanNang(variant.getCanNang() != null ? variant.getCanNang().floatValue() : null);
-            newVariant.setMoTa(variant.getMoTa());
-            newVariant.setTrangThai(variant.getTrangThai());
-
-            SanPhamChiTiet savedVariant = sanPhamChiTietRepository.save(newVariant);
-            createdVariants.add(savedVariant);
-
-            log.info("Đã tạo biến thể: {} - {} - {}", 
-                    sanPham.getTen(), mauSac.getTen(), congSuat.getTen());
-        }
-
-        log.info("=== HOÀN THÀNH THÊM {} BIẾN THỂ V2 ===", createdVariants.size());
-        return createdVariants;
     }
 
     @Override

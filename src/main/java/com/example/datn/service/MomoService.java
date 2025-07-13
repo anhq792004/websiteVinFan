@@ -12,14 +12,6 @@ public interface MomoService {
     MomoTransaction createTransaction(HoaDon hoaDon);
     
     /**
-     * Tạo giao dịch Momo mới với context cụ thể
-     * @param hoaDon Hóa đơn cần thanh toán
-     * @param context Context: "admin" hoặc "user"
-     * @return Thông tin giao dịch Momo
-     */
-    MomoTransaction createTransaction(HoaDon hoaDon, String context);
-    
-    /**
      * Xác nhận giao dịch đã hoàn tất
      * @param hoaDonId ID của hóa đơn
      * @return true nếu xác nhận thành công, false nếu không

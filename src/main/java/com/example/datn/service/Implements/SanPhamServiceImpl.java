@@ -6,7 +6,6 @@ import com.example.datn.entity.SanPham.SanPhamChiTiet;
 import com.example.datn.repository.HinhAnhRepo;
 import com.example.datn.repository.SanPhamRepo.SanPhamChiTietRepo;
 import com.example.datn.repository.SanPhamRepo.SanPhamRepo;
-import com.example.datn.service.FileUploadService;
 import com.example.datn.service.SanPhamSerivce.SanPhamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,11 +14,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +31,7 @@ public class SanPhamServiceImpl implements SanPhamService {
     private final SanPhamRepo sanPhamRepo;
     private final SanPhamChiTietRepo sanPhamChiTietRepo;
     private final HinhAnhRepo hinhAnhRepo;
-    private final FileUploadService fileUploadService;
+    private final String UPLOAD_DIR = "src/main/resources/static/uploads/";
 
     @Override
     public Page<SanPham> findAllSanPham(int page, int size, String search, Long kieuQuatId, Boolean trangThai) {
@@ -81,11 +85,24 @@ public class SanPhamServiceImpl implements SanPhamService {
         SanPham savedSanPham = sanPhamRepo.save(sanPham);
 
         try {
-            // Sử dụng FileUploadService để lưu file
-            String imagePath = fileUploadService.saveFile(imageFile);
+            // Tạo thư mục nếu chưa tồn tại
+            File uploadDir = new File(UPLOAD_DIR);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+
+            // Tạo tên file duy nhất
+            String originalFilename = imageFile.getOriginalFilename();
+            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            String fileName = UUID.randomUUID() + fileExtension;
+
+            // Lưu file
+            Path filePath = Paths.get(UPLOAD_DIR + fileName);
+            Files.write(filePath, imageFile.getBytes());
+
             // Tạo đối tượng HinhAnh
             HinhAnh hinhAnh = new HinhAnh();
-            hinhAnh.setHinhAnh(imagePath);
+            hinhAnh.setHinhAnh("/uploads/" + fileName);
             HinhAnh savedHinhAnh = hinhAnhRepo.save(hinhAnh);
 
             // Tạo SanPhamChiTiet mới với ảnh
@@ -102,7 +119,6 @@ public class SanPhamServiceImpl implements SanPhamService {
             sanPhamChiTietRepo.save(spct);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Lỗi khi lưu hình ảnh: " + e.getMessage());
         }
     }
 
@@ -134,8 +150,21 @@ public class SanPhamServiceImpl implements SanPhamService {
             sanPhamRepo.save(sanPham);
 
             try {
-                // Sử dụng FileUploadService để lưu file
-                String imagePath = fileUploadService.saveFile(imageFile);
+                // Tạo thư mục nếu chưa tồn tại
+                File uploadDir = new File(UPLOAD_DIR);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs();
+                }
+
+                // Tạo tên file duy nhất
+                String originalFilename = imageFile.getOriginalFilename();
+                String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                String fileName = UUID.randomUUID() + fileExtension;
+
+                // Lưu file
+                Path filePath = Paths.get(UPLOAD_DIR + fileName);
+                Files.write(filePath, imageFile.getBytes());
+
                 // Kiểm tra xem sản phẩm đã có hình ảnh chưa
                 boolean hasImage = false;
                 HinhAnh existingImage = null;
@@ -145,14 +174,9 @@ public class SanPhamServiceImpl implements SanPhamService {
                         if (spct.getHinhAnh() != null) {
                             hasImage = true;
                             existingImage = spct.getHinhAnh();
-                            
-                            // Xóa hình ảnh cũ và cập nhật hình ảnh mới
-                            String oldImagePath = existingImage.getHinhAnh();
-                            if (oldImagePath != null && !oldImagePath.isEmpty()) {
-                                fileUploadService.deleteFile(oldImagePath);
-                            }
-                            
-                            existingImage.setHinhAnh(imagePath);
+
+                            // Cập nhật hình ảnh hiện có
+                            existingImage.setHinhAnh("/uploads/" + fileName);
                             hinhAnhRepo.save(existingImage);
                             break;
                         }
@@ -163,7 +187,7 @@ public class SanPhamServiceImpl implements SanPhamService {
                 if (!hasImage) {
                     // Tạo đối tượng HinhAnh mới
                     HinhAnh hinhAnh = new HinhAnh();
-                    hinhAnh.setHinhAnh(imagePath);
+                    hinhAnh.setHinhAnh("/uploads/" + fileName);
                     HinhAnh savedHinhAnh = hinhAnhRepo.save(hinhAnh);
 
                     // Tạo SanPhamChiTiet mới với ảnh
@@ -181,7 +205,6 @@ public class SanPhamServiceImpl implements SanPhamService {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                throw new RuntimeException("Lỗi khi lưu hình ảnh: " + e.getMessage());
             }
         }
     }

@@ -768,80 +768,17 @@
                 console.log('Process order response:', result); // Thêm log để kiểm tra
 
                 if (result.success) {
-                    // Cập nhật UI
-                    document.getElementById('discount').textContent = -result.discountAmount; // Cập nhật giảm giá
-                    document.getElementById('totalAmount').textContent = result.finalAmount; // Cập nhật tổng cộng
-                    
-                    // Xử lý theo phương thức thanh toán
-                    if (result.paymentMethod === 'MOMO') {
-                        // Thanh toán MoMo
-                        this.handleMomoPayment(result);
-                    } else {
-                        // Thanh toán COD
-                        this.showAlert('Đặt hàng thành công!', 'success');
-                        setTimeout(() => {
-                            window.location.href = result.redirectUrl || '/checkout/success?id=' + result.orderId;
-                        }, 2000);
-                    }
-
+                    this.showAlert('Đặt hàng thành công!', 'success');
+                    document.getElementById('discount').textContent = this.formatCurrency(-result.discountAmount); // Cập nhật giảm giá
+                    document.getElementById('totalAmount').textContent = this.formatCurrency(result.finalAmount); // Cập nhật tổng cộng
+                    setTimeout(() => {
+                        window.location.href = result.redirectUrl || '/checkout/success?id=' + result.orderId;
+                    }, 2000);
                 } else {
                     this.showAlert(result.message || 'Có lỗi xảy ra', 'danger');
                 }
             } catch (error) {
                 this.showAlert('Lỗi kết nối', 'danger');
-            }
-        }
-
-        handleMomoPayment(result) {
-            if (result.payUrl) {
-                // Hiển thị modal xác nhận chuyển hướng
-                const confirmed = confirm('Bạn sẽ được chuyển hướng đến trang thanh toán MoMo. Bạn có muốn tiếp tục?');
-                if (confirmed) {
-                    // Lưu thông tin đơn hàng để kiểm tra sau
-                    sessionStorage.setItem('pending_momo_order', result.orderId);
-                    sessionStorage.setItem('return_url', window.location.href);
-                    
-                    // Chuyển hướng đến trang thanh toán MoMo
-                    window.location.href = result.payUrl;
-                } else {
-                    // Người dùng từ chối, có thể hủy đơn hàng hoặc chuyển về COD
-                    this.showAlert('Thanh toán bị hủy', 'warning');
-                }
-            } else {
-                // Không có payUrl, có thể là QR code hoặc lỗi
-                this.showAlert('Không thể tạo liên kết thanh toán MoMo', 'danger');
-            }
-        }
-
-        // Kiểm tra trạng thái thanh toán MoMo khi trang load
-        checkMomoPaymentStatus() {
-            const pendingOrderId = sessionStorage.getItem('pending_momo_order');
-            if (pendingOrderId) {
-                // Kiểm tra trạng thái thanh toán
-                fetch(`/checkout/check-momo-status?orderId=${pendingOrderId}`)
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.success) {
-                            // Thanh toán thành công
-                            sessionStorage.removeItem('pending_momo_order');
-                            sessionStorage.removeItem('return_url');
-                            this.showAlert('Thanh toán MoMo thành công!', 'success');
-                            setTimeout(() => {
-                                window.location.href = '/checkout/success?id=' + pendingOrderId;
-                            }, 2000);
-                        } else if (result.status === 0) {
-                            // Vẫn đang chờ thanh toán
-                            this.showAlert('Đơn hàng đang chờ thanh toán MoMo', 'info');
-                        } else {
-                            // Thanh toán thất bại
-                            sessionStorage.removeItem('pending_momo_order');
-                            sessionStorage.removeItem('return_url');
-                            this.showAlert('Thanh toán MoMo thất bại: ' + result.message, 'danger');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error checking MoMo status:', error);
-                    });
             }
         }
 
@@ -861,10 +798,7 @@
     }
 
     // Initialize
-    const checkoutPage = new CheckoutPage();
-    
-    // Kiểm tra trạng thái thanh toán MoMo khi trang load
-    checkoutPage.checkMomoPaymentStatus();
+    new CheckoutPage();
 </script>
 </body>
 </html>

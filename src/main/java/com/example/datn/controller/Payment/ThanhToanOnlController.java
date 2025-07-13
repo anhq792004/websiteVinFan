@@ -15,7 +15,6 @@ import com.example.datn.repository.PhieuGiamGiaRepo;
 import com.example.datn.repository.SanPhamRepo.SanPhamChiTietRepo;
 import com.example.datn.service.PhieuGiamGiaSercvice;
 import com.example.datn.service.gioHangService;
-import com.example.datn.service.MomoService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -34,7 +30,6 @@ import java.util.*;
 @Controller
 @RequestMapping("/checkout")
 public class ThanhToanOnlController {
-    private static final Logger logger = LoggerFactory.getLogger(ThanhToanOnlController.class);
     @Autowired
     private gioHangService gioHangService;
 
@@ -60,12 +55,6 @@ public class ThanhToanOnlController {
     private PhieuGiamGiaSercvice phieuGiamGiaService;
     @Autowired
     private PhieuGiamGiaKhachHangRepo phieuGiamGiaKhachHangRepo;
-    
-    @Autowired
-    private MomoService momoService;
-    
-    @Autowired
-    private SanPhamChiTietRepo sanPhamChiTietRepo;
 
     @Autowired
     private SanPhamChiTietRepo sanPhamChiTietRepo;
@@ -255,64 +244,14 @@ public class ThanhToanOnlController {
             lichSuHoaDon.setNguoiTao(khachHang.getTen());
             lichSuHoaDonRepo.save(lichSuHoaDon);
 
-            // Tạo chi tiết hóa đơn từ giỏ hàng
-            List<com.example.datn.dto.gioHangDTO> cartItems = gioHangService.getCart(session);
-            for (com.example.datn.dto.gioHangDTO cartItem : cartItems) {
-                Optional<SanPhamChiTiet> sanPhamChiTietOpt = sanPhamChiTietRepo.findById(cartItem.getSanPhamChiTietId());
-                if (sanPhamChiTietOpt.isPresent()) {
-                    SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietOpt.get();
-                    
-                    HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
-                    hoaDonChiTiet.setHoaDon(savedHoaDon);
-                    hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
-                    hoaDonChiTiet.setSoLuong(cartItem.getSoLuong());
-                    hoaDonChiTiet.setGia(cartItem.getGia());
-                    hoaDonChiTiet.setThanhTien(cartItem.getGia().multiply(BigDecimal.valueOf(cartItem.getSoLuong())));
-                    hoaDonChiTiet.setTrangThai(1);
-                    
-                    hoaDonChiTietRepo.save(hoaDonChiTiet);
-                }
-            }
-            
-            // Xóa giỏ hàng sau khi tạo đơn hàng
-            session.removeAttribute("cart");
+            // Clear the cart after successful order
+            gioHangService.clearCart(session);
 
-            // Xử lý thanh toán theo phương thức
-            if ("MOMO".equals(phuongThucThanhToan)) {
-                // Thanh toán MoMo
-                try {
-                    MomoTransaction transaction = momoService.createTransaction(savedHoaDon, "user");
-                    
-                    if (transaction.getTrangThai() == 2) { // Lỗi
-                        response.put("success", false);
-                        response.put("message", "Lỗi khi tạo thanh toán MoMo: " + transaction.getMessage());
-                        return ResponseEntity.ok(response);
-                    }
-                    
-                    // Trả về thông tin thanh toán MoMo
-                    response.put("success", true);
-                    response.put("orderId", savedHoaDon.getId());
-                    response.put("finalAmount", finalAmount);
-                    response.put("discountAmount", discountAmount);
-                    response.put("paymentMethod", "MOMO");
-                    response.put("payUrl", transaction.getPayUrl());
-                    response.put("transactionId", transaction.getId());
-                    
-                } catch (Exception e) {
-                    logger.error("Error creating MoMo payment", e);
-                    response.put("success", false);
-                    response.put("message", "Lỗi khi tạo thanh toán MoMo: " + e.getMessage());
-                    return ResponseEntity.ok(response);
-                }
-            } else {
-                // Thanh toán COD
-                response.put("success", true);
-                response.put("orderId", savedHoaDon.getId());
-                response.put("finalAmount", finalAmount);
-                response.put("discountAmount", discountAmount);
-                response.put("paymentMethod", "COD");
-                response.put("redirectUrl", "/checkout/success?id=" + savedHoaDon.getId());
-            }
+            response.put("success", true);
+            response.put("orderId", savedHoaDon.getId());
+            response.put("finalAmount", finalAmount);
+            response.put("discountAmount", discountAmount);
+            response.put("redirectUrl", "/checkout/success?id=" + savedHoaDon.getId());
 
         } catch (Exception e) {
             response.put("success", false);
@@ -423,115 +362,6 @@ public class ThanhToanOnlController {
             System.err.println(" DEBUG: Error in getAvailableVouchers: " + e.getMessage());
             e.printStackTrace();
             return ResponseEntity.status(500).build();
-        }
-    }
-
-    /**
-     * Endpoint để nhận IPN callback từ MoMo
-     */
-    @PostMapping("/momo-notify")
-    @ResponseBody
-    public ResponseEntity<String> momoNotify(@RequestBody Map<String, Object> payload) {
-        logger.info("Received MoMo IPN notification: {}", payload);
-        
-        try {
-            // Xử lý thông báo từ MoMo
-            if (payload.containsKey("orderId") && payload.containsKey("resultCode")) {
-                String orderId = payload.get("orderId").toString();
-                int resultCode = Integer.parseInt(payload.get("resultCode").toString());
-                
-                // Kiểm tra kết quả giao dịch
-                if (resultCode == 0) {
-                    // Giao dịch thành công
-                    MomoTransaction transaction = momoService.getTransactionByOrderId(orderId);
-                    if (transaction != null) {
-                        // Cập nhật trạng thái giao dịch
-                        momoService.confirmTransaction(transaction.getHoaDon().getId());
-                        return ResponseEntity.ok("Transaction processed successfully");
-                    }
-                }
-            }
-            
-            return ResponseEntity.ok("Transaction processing failed");
-        } catch (Exception e) {
-            logger.error("Error processing MoMo IPN: {}", e.getMessage());
-            return ResponseEntity.ok("Error processing transaction");
-        }
-    }
-    
-    /**
-     * Endpoint khi người dùng được redirect từ MoMo về
-     */
-    @GetMapping("/momo-return")
-    public String momoReturn(@RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
-        logger.info("User returned from MoMo payment: {}", params);
-        
-        try {
-            if (params.containsKey("orderId") && params.containsKey("resultCode")) {
-                String orderId = params.get("orderId");
-                int resultCode = Integer.parseInt(params.get("resultCode"));
-                
-                // Kiểm tra kết quả giao dịch
-                if (resultCode == 0) {
-                    // Giao dịch thành công
-                    MomoTransaction transaction = momoService.getTransactionByOrderId(orderId);
-                    if (transaction != null) {
-                        // Cập nhật trạng thái giao dịch
-                        momoService.confirmTransaction(transaction.getHoaDon().getId());
-                        redirectAttributes.addFlashAttribute("paymentStatus", "success");
-                        redirectAttributes.addFlashAttribute("paymentMessage", "Thanh toán MoMo thành công!");
-                        return "redirect:/checkout/success?id=" + transaction.getHoaDon().getId();
-                    }
-                } else {
-                    // Giao dịch thất bại
-                    redirectAttributes.addFlashAttribute("paymentStatus", "error");
-                    redirectAttributes.addFlashAttribute("paymentMessage", "Thanh toán MoMo thất bại!");
-                    return "redirect:/checkout";
-                }
-            }
-            
-            redirectAttributes.addFlashAttribute("paymentStatus", "error");
-            redirectAttributes.addFlashAttribute("paymentMessage", "Có lỗi xảy ra trong quá trình thanh toán!");
-            return "redirect:/checkout";
-            
-        } catch (Exception e) {
-            logger.error("Error processing MoMo return: {}", e.getMessage());
-            redirectAttributes.addFlashAttribute("paymentStatus", "error");
-            redirectAttributes.addFlashAttribute("paymentMessage", "Có lỗi xảy ra trong quá trình thanh toán!");
-            return "redirect:/checkout";
-        }
-    }
-    
-    /**
-     * Kiểm tra trạng thái thanh toán MoMo
-     */
-    @GetMapping("/check-momo-status")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> checkMomoStatus(@RequestParam("orderId") Long orderId) {
-        Map<String, Object> response = new HashMap<>();
-        
-        try {
-            MomoTransaction transaction = momoService.getTransactionByHoaDonId(orderId);
-            
-            if (transaction == null) {
-                response.put("success", false);
-                response.put("message", "Không tìm thấy giao dịch MoMo");
-                return ResponseEntity.ok(response);
-            }
-            
-            // Kiểm tra trạng thái giao dịch
-            // 0: Chờ thanh toán, 1: Đã thanh toán, 2: Lỗi, 3: Đã hủy
-            response.put("success", transaction.getTrangThai() == 1);
-            response.put("status", transaction.getTrangThai());
-            response.put("message", transaction.getMessage());
-            
-            return ResponseEntity.ok(response);
-            
-        } catch (Exception e) {
-            logger.error("Error checking MoMo status: {}", e.getMessage());
-            response.put("success", false);
-            response.put("message", "Lỗi khi kiểm tra trạng thái thanh toán");
-            return ResponseEntity.ok(response);
         }
     }
 
