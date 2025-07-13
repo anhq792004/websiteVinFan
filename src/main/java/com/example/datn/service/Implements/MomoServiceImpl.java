@@ -1,7 +1,9 @@
 package com.example.datn.service.Implements;
 
 import com.example.datn.entity.HoaDon.HoaDon;
+import com.example.datn.entity.HoaDon.LichSuHoaDon;
 import com.example.datn.entity.MomoTransaction;
+import com.example.datn.repository.HoaDonRepo.LichSuHoaDonRepo;
 import com.example.datn.repository.MomoTransactionRepository;
 import com.example.datn.service.BanHang.BanHangService;
 import com.example.datn.service.HoaDonService.HoaDonService;
@@ -31,6 +33,7 @@ public class MomoServiceImpl implements MomoService {
     private final MomoTransactionRepository momoTransactionRepository;
     private final HoaDonService hoaDonService;
     private final BanHangService banHangService;
+    private final LichSuHoaDonRepo lichSuHoaDonRepo;
     private final RestTemplate restTemplate = new RestTemplate();
     
     @Value("${momo.partner-code}")
@@ -53,6 +56,11 @@ public class MomoServiceImpl implements MomoService {
     
     @Override
     public MomoTransaction createTransaction(HoaDon hoaDon) {
+        return createTransaction(hoaDon, "admin");
+    }
+    
+    @Override
+    public MomoTransaction createTransaction(HoaDon hoaDon, String context) {
         try {
             // Kiểm tra xem đã có giao dịch cho hóa đơn này chưa
             Optional<MomoTransaction> existingTransaction = momoTransactionRepository.findByHoaDonId(hoaDon.getId());
@@ -76,8 +84,20 @@ public class MomoServiceImpl implements MomoService {
             
             transaction.setOrderInfo("Thanh toán đơn hàng " + hoaDon.getMa());
             transaction.setOrderType("momo_wallet");
-            transaction.setRedirectUrl(returnUrl);
-            transaction.setIpnUrl(notifyUrl);
+            
+            // Xác định URLs dựa trên context
+            String actualReturnUrl;
+            String actualNotifyUrl;
+            if ("user".equals(context)) {
+                actualReturnUrl = returnUrl.replace("/payment/", "/checkout/");
+                actualNotifyUrl = notifyUrl.replace("/payment/", "/checkout/");
+            } else {
+                actualReturnUrl = returnUrl;
+                actualNotifyUrl = notifyUrl;
+            }
+            
+            transaction.setRedirectUrl(actualReturnUrl);
+            transaction.setIpnUrl(actualNotifyUrl);
             transaction.setRequestType("captureWallet");
             transaction.setExtraData("");
             transaction.setNgayTao(LocalDateTime.now());
@@ -90,8 +110,8 @@ public class MomoServiceImpl implements MomoService {
             requestBody.put("amount", amount.longValue());
             requestBody.put("orderId", orderId);
             requestBody.put("orderInfo", transaction.getOrderInfo());
-            requestBody.put("redirectUrl", returnUrl);
-            requestBody.put("ipnUrl", notifyUrl);
+            requestBody.put("redirectUrl", actualReturnUrl);
+            requestBody.put("ipnUrl", actualNotifyUrl);
             requestBody.put("requestType", "captureWallet");
             requestBody.put("extraData", "");
             requestBody.put("lang", "vi");
@@ -101,11 +121,11 @@ public class MomoServiceImpl implements MomoService {
             rawSignature.append("accessKey=").append(accessKey)
                     .append("&amount=").append(amount.longValue())
                     .append("&extraData=")
-                    .append("&ipnUrl=").append(notifyUrl)
+                    .append("&ipnUrl=").append(actualNotifyUrl)
                     .append("&orderId=").append(orderId)
                     .append("&orderInfo=").append(transaction.getOrderInfo())
                     .append("&partnerCode=").append(partnerCode)
-                    .append("&redirectUrl=").append(returnUrl)
+                    .append("&redirectUrl=").append(actualReturnUrl)
                     .append("&requestId=").append(requestId)
                     .append("&requestType=captureWallet");
             
@@ -196,7 +216,19 @@ public class MomoServiceImpl implements MomoService {
         
         // Cập nhật trạng thái hóa đơn
         try {
-            banHangService.thanhToan(hoaDonId);
+            // Kiểm tra loại hóa đơn để xử lý phù hợp
+            Optional<HoaDon> hoaDonOpt = hoaDonService.findHoaDonById(hoaDonId);
+            if (hoaDonOpt.isPresent()) {
+                HoaDon hoaDon = hoaDonOpt.get();
+                
+                if (hoaDon.getLoaiHoaDon() != null && !hoaDon.getLoaiHoaDon()) {
+                    // Đây là hóa đơn online (false), xử lý riêng
+                    confirmOnlineOrder(hoaDon);
+                } else {
+                    // Đây là hóa đơn admin (true), dùng logic cũ
+                    banHangService.thanhToan(hoaDonId);
+                }
+            }
             return true;
         } catch (Exception e) {
             // Nếu có lỗi khi hoàn tất hóa đơn
@@ -243,6 +275,28 @@ public class MomoServiceImpl implements MomoService {
     @Override
     public MomoTransaction getTransactionByOrderId(String orderId) {
         return momoTransactionRepository.findByOrderId(orderId).orElse(null);
+    }
+    
+    /**
+     * Xử lý hoàn tất đơn hàng online mà không thay đổi loại hóa đơn
+     */
+    private void confirmOnlineOrder(HoaDon hoaDon) {
+        // Cập nhật trạng thái hóa đơn thành hoàn thành nhưng giữ nguyên loaiHoaDon = false
+        hoaDon.setNgaySua(LocalDateTime.now());
+        hoaDon.setTrangThai(hoaDonService.getTrangThaiHoaDon().getHoanThanh());
+        // Không thay đổi loaiHoaDon - giữ nguyên false (Online)
+        
+        // Tạo lịch sử hóa đơn
+        LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
+        lichSuHoaDon.setHoaDon(hoaDon);
+        lichSuHoaDon.setTrangThai(hoaDonService.getTrangThaiHoaDon().getHoanThanh());
+        lichSuHoaDon.setNgayTao(LocalDateTime.now());
+        lichSuHoaDon.setNguoiTao(hoaDon.getKhachHang() != null ? hoaDon.getKhachHang().getTen() : "Online Customer");
+        lichSuHoaDon.setMoTa("Thanh toán MoMo thành công - Đơn hàng online");
+        
+        // Lưu vào database
+        hoaDonService.saveHoaDon(hoaDon);
+        lichSuHoaDonRepo.save(lichSuHoaDon);
     }
     
     private String generateSignature(String message, String key) throws Exception {

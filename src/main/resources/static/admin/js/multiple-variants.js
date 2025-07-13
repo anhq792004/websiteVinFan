@@ -502,70 +502,111 @@ class VariantsManager {
     
     // Render bảng biến thể
     renderVariantsTable() {
-        const tbody = document.getElementById('variantsTableBody');
+        const container = document.getElementById('variantsTablesByColor');
         const countSpan = document.getElementById('variantsCount');
         
-        if (!tbody) return;
+        if (!container) return;
         
         countSpan.textContent = this.variantsList.length;
         
-        let html = '';
+        // Nhóm biến thể theo màu sắc
+        const variantsByColor = {};
         this.variantsList.forEach((variant, idx) => {
-            const colorCode = this.getColorFromName(variant.mauSacTen);
+            const colorKey = variant.mauSacTen;
+            if (!variantsByColor[colorKey]) {
+                variantsByColor[colorKey] = [];
+            }
+            variantsByColor[colorKey].push({...variant, actualIndex: idx});
+        });
+        
+        // Tạo HTML cho từng màu
+        let html = '';
+        Object.keys(variantsByColor).forEach(colorName => {
+            const variants = variantsByColor[colorName];
+            const colorCode = this.getColorFromName(colorName);
+            const textColor = this.getContrastColor(colorCode);
             
             html += `
-                <tr data-index="${idx}">
-                    <td class="text-center">${variant.index}</td>
-                    <td class="text-center">
-                        <div class="d-flex align-items-center justify-content-center gap-2">
-                            <div style="background-color: ${colorCode}; border: 2px solid #dee2e6; border-radius: 50%; width: 25px; height: 25px;" 
-                                 title="${variant.mauSacTen}"></div>
-                            <small>${variant.mauSacTen}</small>
-                        </div>
-                    </td>
-                    <td class="text-center">${variant.congSuatTen}</td>
-                    <td>
-                        <input type="number" class="form-control form-control-sm variant-input" 
-                               data-field="soLuong" value="${variant.soLuong}" min="0" disabled>
-                    </td>
-                    <td>
-                        <input type="number" class="form-control form-control-sm variant-input" 
-                               data-field="gia" value="${variant.gia}" min="0" step="1000" disabled>
-                    </td>
-                    <td>
-                        <input type="number" class="form-control form-control-sm variant-input" 
-                               data-field="canNang" value="${variant.canNang}" min="0" step="0.1" disabled>
-                    </td>
-                    <td>
-                        <textarea class="form-control form-control-sm variant-input" 
-                                  data-field="moTa" rows="2" disabled>${variant.moTa}</textarea>
-                    </td>
-                    <td>
-                        <div class="image-upload-container">
-                            <input type="file" class="form-control form-control-sm variant-image-input" 
-                                   accept="image/*" data-variant-index="${idx}" disabled style="margin-bottom: 5px;">
-                            <div class="image-preview-container" id="imagePreview_${idx}" style="min-height: 60px; border: 1px dashed #dee2e6; border-radius: 4px; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa;">
-                                <small class="text-muted">Chưa chọn ảnh</small>
+                <div class="color-table-container" data-color="${colorName}">
+                    <div class="color-table-header" style="background-color: ${colorCode}; color: ${textColor};">
+                        <div class="color-preview-circle" style="background-color: ${colorCode};"></div>
+                        <h6>Màu ${colorName} (${variants.length} biến thể)</h6>
+                    </div>
+                    <div class="color-table-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="6%">#</th>
+                                        <th width="12%">Công suất</th>
+                                        <th width="10%">Số lượng</th>
+                                        <th width="12%">Giá (VNĐ)</th>
+                                        <th width="10%">Cân nặng</th>
+                                        <th width="20%">Mô tả</th>
+                                        <th width="15%">Hình ảnh</th>
+                                        <th width="8%">Trạng thái</th>
+                                        <th width="7%">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+            `;
+            
+            variants.forEach((variant) => {
+                html += `
+                    <tr data-index="${variant.actualIndex}">
+                        <td class="text-center">${variant.index}</td>
+                        <td class="text-center">${variant.congSuatTen}</td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm variant-input" 
+                                   data-field="soLuong" value="${variant.soLuong}" min="0" disabled>
+                        </td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm variant-input" 
+                                   data-field="gia" value="${variant.gia}" min="0" step="1000" disabled>
+                        </td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm variant-input" 
+                                   data-field="canNang" value="${variant.canNang}" min="0" step="0.1" disabled>
+                        </td>
+                        <td>
+                            <textarea class="form-control form-control-sm variant-input" 
+                                      data-field="moTa" rows="2" disabled>${variant.moTa}</textarea>
+                        </td>
+                        <td>
+                            <div class="image-upload-container">
+                                <input type="file" class="form-control form-control-sm variant-image-input" 
+                                       accept="image/*" data-variant-index="${variant.actualIndex}" disabled style="margin-bottom: 5px;">
+                                <div class="image-preview-container" id="imagePreview_${variant.actualIndex}" style="min-height: 60px; border: 1px dashed #dee2e6; border-radius: 4px; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa;">
+                                    <small class="text-muted">Chưa chọn ảnh</small>
+                                </div>
                             </div>
+                        </td>
+                        <td class="text-center">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input variant-input" 
+                                       data-field="trangThai" ${variant.trangThai ? 'checked' : ''} disabled>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-sm btn-outline-danger remove-variant-btn" 
+                                    data-variant-index="${variant.actualIndex}" title="Xóa biến thể này" disabled>
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                                </tbody>
+                            </table>
                         </div>
-                    </td>
-                    <td class="text-center">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input variant-input" 
-                                   data-field="trangThai" ${variant.trangThai ? 'checked' : ''} disabled>
-                        </div>
-                    </td>
-                    <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-outline-danger remove-variant-btn" 
-                                data-variant-index="${idx}" title="Xóa biến thể này" disabled>
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             `;
         });
         
-        tbody.innerHTML = html;
+        container.innerHTML = html;
         
         // Bind events cho input fields
         this.bindVariantInputEvents();
@@ -738,10 +779,9 @@ class VariantsManager {
         // Cập nhật lại variantImages với index mới
         const newImageMap = new Map();
         this.variantImages.forEach((file, oldIndex) => {
-            // Tìm vị trí mới của biến thể này
-            const newIndex = this.variantsList.findIndex(v => v.index === oldIndex + 1);
-            if (newIndex !== -1) {
-                newImageMap.set(newIndex, file);
+            // Tìm vị trí mới của biến thể này trong danh sách
+            if (oldIndex < this.variantsList.length) {
+                newImageMap.set(oldIndex, file);
             }
         });
         this.variantImages = newImageMap;

@@ -167,6 +167,56 @@
         border-radius: 8px;
         text-align: center;
     }
+    
+    /* Styles cho bảng theo màu */
+    .color-table-container {
+        margin-bottom: 2rem;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .color-table-header {
+        padding: 1rem;
+        font-weight: bold;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .color-preview-circle {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 2px solid rgba(255,255,255,0.3);
+        display: inline-block;
+    }
+    
+    .color-table-header h6 {
+        margin: 0;
+        font-size: 1.1rem;
+    }
+    
+    .color-table-body {
+        background: white;
+    }
+    
+    .color-table-body .table {
+        margin-bottom: 0;
+    }
+    
+    .color-table-body .table td {
+        vertical-align: middle;
+        padding: 0.5rem;
+    }
+    
+    .color-table-body .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        vertical-align: middle;
+        font-weight: 600;
+    }
 </style>
 <body>
 <!-- Site wrapper -->
@@ -377,26 +427,9 @@
                                 </button>
                             </div>
                             
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover" id="variantsTable">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th width="4%">#</th>
-                                            <th width="8%">Màu sắc</th>
-                                            <th width="10%">Công suất</th>
-                                            <th width="8%">Số lượng</th>
-                                            <th width="12%">Giá (VNĐ)</th>
-                                            <th width="8%">Cân nặng</th>
-                                            <th width="20%">Mô tả</th>
-                                            <th width="15%">Hình ảnh</th>
-                                            <th width="8%">Trạng thái</th>
-                                            <th width="7%">Thao tác</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="variantsTableBody">
-                                        
-                                    </tbody>
-                                </table>
+                            <!-- Container cho các bảng theo màu -->
+                            <div id="variantsTablesByColor">
+                                <!-- Các bảng theo màu sẽ được tạo động ở đây -->
                             </div>
                         </div>
                     </div>
