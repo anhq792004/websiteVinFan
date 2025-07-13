@@ -245,12 +245,19 @@ public class PhieuGiamGiaController {
      * Phương thức validate dữ liệu phiếu giảm giá
      */
     private boolean validatePhieuGiamGia(PhieuGiamGia phieuGiamGia, RedirectAttributes redirectAttributes) {
+        Date currentDate = new Date();
+
         // Kiểm tra ngày bắt đầu và kết thúc
         if (phieuGiamGia.getNgayBatDau() != null && phieuGiamGia.getNgayKetThuc() != null) {
             if (phieuGiamGia.getNgayBatDau().after(phieuGiamGia.getNgayKetThuc())) {
                 redirectAttributes.addFlashAttribute("error",
                         "Ngày bắt đầu không thể sau ngày kết thúc!");
                 return false;
+            }
+            // Nếu ngày bắt đầu trong tương lai, đặt trạng thái thành false
+            if (phieuGiamGia.getNgayBatDau().after(currentDate)) {
+                phieuGiamGia.setTrangThai(false);
+                System.out.println("Set trangThai to false for voucher " + phieuGiamGia.getMa() + " due to future start date");
             }
         }
 
