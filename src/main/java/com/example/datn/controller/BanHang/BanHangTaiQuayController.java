@@ -47,7 +47,7 @@ public class BanHangTaiQuayController {
         //hiển thị danh sách hóa đơn chờ
         List<HoaDon> listHoaDon = banHangService.findHoaDon();
         model.addAttribute("listHoaDon", listHoaDon);
-
+        System.out.println();
         return "admin/sale/index";
     }
 
