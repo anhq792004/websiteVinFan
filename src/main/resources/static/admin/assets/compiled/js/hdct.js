@@ -232,13 +232,15 @@ $(".btn-add-sanPham").click(function () {
 
 
 $(".btn-xoa-sanPham").click(function () {
-    const sanPhamId = $(this).data("id");
+    const sanPhamId = $(this).data("id-sp");
+    const hoaDonId = $(this).data("id-hd");
 
     $.ajax({
         url: '/hoa-don/xoa',
         type: 'POST',
         data: {
-            idSP: sanPhamId
+            idSP: sanPhamId,
+            idHD: hoaDonId
         },
         success: function (response) {
             Swal.fire({
