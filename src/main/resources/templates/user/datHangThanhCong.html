@@ -29,6 +29,16 @@
 </div>
 
 <div class="container">
+    <!-- Payment Status Alert -->
+    <div th:if="${paymentStatus}" class="row justify-content-center mb-3">
+        <div class="col-lg-8">
+            <div th:class="${paymentStatus == 'success' ? 'alert alert-success' : 'alert alert-danger'}" role="alert">
+                <i th:class="${paymentStatus == 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'}" class="me-2"></i>
+                <span th:text="${paymentMessage}">Payment status message</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Success Message -->
     <div class="row justify-content-center mb-5">
         <div class="col-lg-8">
