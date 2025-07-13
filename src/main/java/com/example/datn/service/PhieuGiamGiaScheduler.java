@@ -16,12 +16,20 @@ public class PhieuGiamGiaScheduler {
 
     @Scheduled(fixedRate = 60000) // Chạy mỗi 60 giây
     public void checkAndUpdateExpiredCoupons() {
-        Date currentDate = new Date(); // 10:17 AM +07, 08/07/2025
-        List<PhieuGiamGia> expiredCoupons = phieuGiamGiaRepo.findExpiredCoupons(currentDate);
+        Date currentDate = new Date();
+        // Lấy tất cả phiếu giảm giá để kiểm tra
+        List<PhieuGiamGia> coupons = phieuGiamGiaRepo.findAll();
 
-        for (PhieuGiamGia pgg : expiredCoupons) {
-            pgg.setTrangThai(false);
-            phieuGiamGiaRepo.save(pgg);
+        for (PhieuGiamGia pgg : coupons) {
+            // Nếu phiếu chưa bắt đầu hoặc đã hết hạn
+            if ((pgg.getNgayBatDau() != null && pgg.getNgayBatDau().after(currentDate)) ||
+                    (pgg.getNgayKetThuc() != null && pgg.getNgayKetThuc().before(currentDate))) {
+                if (pgg.isTrangThai()) { // Chỉ cập nhật nếu đang active
+                    pgg.setTrangThai(false);
+                    phieuGiamGiaRepo.save(pgg);
+                    System.out.println("Updated voucher " + pgg.getMa() + " to inactive (trangThai=false)");
+                }
+            }
         }
     }
 

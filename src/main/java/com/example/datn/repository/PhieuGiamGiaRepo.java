@@ -20,7 +20,7 @@ public interface PhieuGiamGiaRepo extends JpaRepository<PhieuGiamGia,Long> {
      */
     Optional<PhieuGiamGia> findByMa(String ma);
 
-    @Query("SELECT p FROM PhieuGiamGia p WHERE p.ngayKetThuc < :currentDate AND p.trangThai = true")
+    @Query("SELECT p FROM PhieuGiamGia p WHERE p.trangThai = true AND (p.ngayKetThuc < :currentDate OR p.ngayBatDau > :currentDate)")
     List<PhieuGiamGia> findExpiredCoupons(@Param("currentDate") Date currentDate);
 
     @Query("SELECT pgg FROM PhieuGiamGia pgg WHERE " +
