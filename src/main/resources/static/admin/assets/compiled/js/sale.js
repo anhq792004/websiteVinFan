@@ -167,7 +167,7 @@ $(document).ready(function () {
         $.ajax({
             url: '/sale/update-trang-thai',
             type: 'POST',
-            data:{
+            data: {
                 id: hoaDonId,
                 loaiHoaDon: loaiHoaDon
             },
@@ -202,19 +202,6 @@ $(".quantity-btn").click(function () {
     const idSP = $(this).closest("form").data("idsp");  // lấy từ data-idsp
     const idHD = $(this).closest("form").data("idhd");  // lấy từ data-idhd
 
-    // const soLuongHienTai = parseInt($(this).closest('form').find('.quantity-input').val()) || 0;
-    // Tìm sản phẩm tương ứng trong bảng sản phẩm (nếu đang hiển thị)
-    // const productRow = $(`#modalThemSanPham tr:has(button[data-id-sp="${idSP}"])`);
-    // if (productRow.length) {
-    //     const soLuongElement = productRow.find('td:eq(5)');
-    //     const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
-    //
-    //     // Giảm số lượng hiển thị trong bảng (chỉ trên UI)
-    //     if (soLuongTrongKho > 0) {
-    //         soLuongElement.text(soLuongTrongKho - 1);
-    //     }
-    // }
-
     $.ajax({
         url: '/sale/tangSoLuong',
         type: 'POST',
@@ -233,12 +220,6 @@ $(".quantity-btn").click(function () {
             }).then(() => location.reload());
         },
         error: function (xhr) {
-            // Khôi phục số lượng hiển thị trong trường hợp lỗi
-            // if (productRow.length) {
-            //     const soLuongElement = productRow.find('td:eq(5)');
-            //     const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
-            //     soLuongElement.text(soLuongTrongKho + 1);
-            // }
 
             Swal.fire({
                 toast: true,
@@ -255,17 +236,6 @@ $(".quantity-btn").click(function () {
 $(".quantity-btn-1").click(function () {
     const idSP = $(this).closest("form").data("idsp");  // lấy từ data-idsp
     const idHD = $(this).closest("form").data("idhd");  // lấy từ data-idhd
-
-    // const soLuongHienTai = parseInt($(this).closest('form').find('.quantity-input').val()) || 0;
-    // // Tìm sản phẩm tương ứng trong bảng sản phẩm (nếu đang hiển thị)
-    // const productRow = $(`#modalThemSanPham tr:has(button[data-id-sp="${idSP}"])`);
-    // if (productRow.length) {
-    //     const soLuongElement = productRow.find('td:eq(5)');
-    //     const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
-    //
-    //     // Tăng số lượng hiển thị trong bảng (chỉ trên UI) khi giảm số lượng trong giỏ
-    //     soLuongElement.text(soLuongTrongKho + 1);
-    // }
 
     $.ajax({
         url: '/sale/giamSoLuong',
@@ -285,12 +255,6 @@ $(".quantity-btn-1").click(function () {
             }).then(() => location.reload());
         },
         error: function (xhr) {
-            // Khôi phục số lượng hiển thị trong trường hợp lỗi
-            // if (productRow.length) {
-            //     const soLuongElement = productRow.find('td:eq(5)');
-            //     const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
-            //     soLuongElement.text(soLuongTrongKho - 1);
-            // }
 
             Swal.fire({
                 toast: true,
@@ -484,8 +448,8 @@ function checkMomoPaymentStatus(hoaDonId) {
     $.ajax({
         url: '/sale/check-momo-payment-status',
         type: 'GET',
-        data: { idHD: hoaDonId },
-        success: function(response) {
+        data: {idHD: hoaDonId},
+        success: function (response) {
             console.log("Kiểm tra trạng thái thanh toán:", response);
 
             if (response.success) {
@@ -553,7 +517,7 @@ function checkMomoPaymentStatus(hoaDonId) {
                 });
             }
         },
-        error: function(xhr) {
+        error: function (xhr) {
             console.error('Lỗi khi kiểm tra trạng thái thanh toán:', xhr);
         }
     });
@@ -570,7 +534,7 @@ function startPaymentStatusCheck(hoaDonId) {
     checkMomoPaymentStatus(hoaDonId);
 
     // Thiết lập kiểm tra định kỳ mỗi 3 giây
-    window.paymentCheckInterval = setInterval(function() {
+    window.paymentCheckInterval = setInterval(function () {
         checkMomoPaymentStatus(hoaDonId);
     }, 3000);
 }
@@ -619,8 +583,8 @@ function confirmMomoPayment(hoaDonId) {
     $.ajax({
         url: '/sale/confirm-momo-payment',
         type: 'POST',
-        data: { idHD: hoaDonId },
-        success: function(response) {
+        data: {idHD: hoaDonId},
+        success: function (response) {
             Swal.fire({
                 toast: true,
                 icon: 'success',
@@ -633,7 +597,7 @@ function confirmMomoPayment(hoaDonId) {
                 window.location.href = '/sale/index';
             });
         },
-        error: function(xhr) {
+        error: function (xhr) {
             Swal.fire({
                 icon: 'error',
                 title: 'Lỗi xác nhận thanh toán',
@@ -649,8 +613,8 @@ function cancelMomoPayment(hoaDonId) {
     $.ajax({
         url: '/sale/cancel-momo-payment',
         type: 'POST',
-        data: { idHD: hoaDonId },
-        success: function(response) {
+        data: {idHD: hoaDonId},
+        success: function (response) {
             Swal.fire({
                 toast: true,
                 icon: 'info',
@@ -661,7 +625,7 @@ function cancelMomoPayment(hoaDonId) {
                 timerProgressBar: true
             });
         },
-        error: function(xhr) {
+        error: function (xhr) {
             console.error('Lỗi khi hủy thanh toán:', xhr);
         }
     });
@@ -833,7 +797,7 @@ function formatCurrency() {
 }
 
 // Thêm code xử lý cho nút thêm sản phẩm
-$(document).ready(function() {
+$(document).ready(function () {
     console.log("Document ready - checking btn-add-sanPham elements");
     const addButtons = $('.btn-add-sanPham');
     console.log("Found " + addButtons.length + " add product buttons");
@@ -842,7 +806,7 @@ $(document).ready(function() {
     $('.btn-add-sanPham').off('click');
 
     // Thêm event listener mới
-    $('.btn-add-sanPham').on('click', function(e) {
+    $('.btn-add-sanPham').on('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -850,20 +814,10 @@ $(document).ready(function() {
         const hoaDonId = $(this).data("id-hd");
         const sanPhamId = $(this).data("id-sp");
         const gia = $(this).data("gia");
-        // const rowElement = $(this).closest('tr');
-        // const soLuongElement = rowElement.find('td:eq(5)');
-        // const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
-        //
-        // console.log("Data: ", { hoaDonId, sanPhamId, gia, soLuongTrongKho });
 
         // Vô hiệu hóa nút để tránh nhấn nhiều lần
         const button = $(this);
         button.prop('disabled', true);
-
-        // Giảm số lượng hiển thị trong bảng (chỉ trên UI)
-        // if (soLuongTrongKho > 0) {
-        //     soLuongElement.text(soLuongTrongKho - 1);
-        // }
 
         $.ajax({
             url: '/sale/addSP',
@@ -876,24 +830,14 @@ $(document).ready(function() {
                 soLuong: 1
             }),
             success: function (response) {
-                // Kiểm tra nếu số lượng sản phẩm trong giỏ vượt quá số lượng trong kho
-                // Chúng ta sẽ hiển thị thông báo cảnh báo, nhưng vẫn cho phép thêm vào giỏ
-                let warningMessage = "";
-                // const itemInCart = $('#product-list').find(`[data-idsp="${sanPhamId}"]`).closest('form');
-                // if (itemInCart.length > 0) {
-                //     const soLuongTrongGio = parseInt(itemInCart.find('.quantity-input').val()) || 0;
-                //     if (soLuongTrongGio >= soLuongTrongKho) {
-                //         warningMessage = `Cảnh báo: Số lượng sản phẩm trong giỏ (${soLuongTrongGio}) đã vượt quá số lượng trong kho (${soLuongTrongKho}). Vẫn có thể mua nhưng sẽ kiểm tra lại khi thanh toán.`;
-                //     }
-                // }
 
                 Swal.fire({
                     toast: true,
-                    icon: warningMessage ? 'warning' : 'success',
-                    title: warningMessage || response,
+                    icon:  'success',
+                    title:  response,
                     position: 'top-end',
                     showConfirmButton: false,
-                    timer: warningMessage ? 3000 : 500,
+                    timer:  1000,
                     timerProgressBar: true
                 }).then(() => {
                     location.reload();
@@ -903,9 +847,6 @@ $(document).ready(function() {
                 console.error("Error: ", xhr);
                 // Kích hoạt lại nút trong trường hợp lỗi
                 button.prop('disabled', false);
-
-                // Khôi phục số lượng hiển thị trong trường hợp lỗi
-                // soLuongElement.text(soLuongTrongKho);
 
                 Swal.fire({
                     toast: true,
@@ -999,7 +940,7 @@ function renderPhieuGiamGia(data) {
 }
 
 // Sự kiện khi click vào nút áp dụng phiếu giảm giá
-$(document).on('click', '#phieuGiamGiaList button', function() {
+$(document).on('click', '#phieuGiamGiaList button', function () {
     const idPGG = $(this).data('id');
     const loaiGiamGia = $(this).data('loai'); // true: phần trăm, false: tiền mặt
     const giaTriGiam = $(this).data('giatri');
@@ -1039,7 +980,7 @@ function applyDiscount(idHD, idPGG) {
             idHD: idHD,
             idPGG: idPGG
         },
-        success: function(response) {
+        success: function (response) {
             Swal.fire({
                 toast: true,
                 icon: 'success',
@@ -1052,7 +993,7 @@ function applyDiscount(idHD, idPGG) {
             // Cập nhật UI
             updateDiscountDisplay();
         },
-        error: function(xhr) {
+        error: function (xhr) {
             console.error("Lỗi khi áp dụng phiếu giảm giá:", xhr);
 
             // Đảm bảo modal được đóng và backdrop được xóa
@@ -1163,157 +1104,131 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Tải lại dữ liệu sản phẩm khi mở modal
-$(document).ready(function() {
-    // Xử lý khi modal sản phẩm được mở
-    $('#modalThemSanPham').on('show.bs.modal', function (e) {
-        // Lấy ID hóa đơn hiện tại
-        const idHD = $('#btnThanhToan').data('id');
-
-        // Sử dụng AJAX để tải dữ liệu sản phẩm mới nhất
-        $.ajax({
-            url: '/sale/api/san-pham',
-            type: 'GET',
-            data: { idHD: idHD },
-            success: function(data) {
-                // Xóa dữ liệu cũ trong bảng
-                const tableBody = $('#modalThemSanPham table tbody');
-                tableBody.empty();
-
-                // Thêm dữ liệu mới vào bảng
-                data.forEach(function(sp, index) {
-                    // Kiểm tra dữ liệu trước khi truy cập
-                    const tenSanPham = sp.sanPham && sp.sanPham.ten ? sp.sanPham.ten : 'Không có tên';
-                    const tenMauSac = sp.mauSac && sp.mauSac.ten ? sp.mauSac.ten : '';
-                    const tenKichThuoc = sp.kichThuoc && sp.kichThuoc.ten ? sp.kichThuoc.ten : '';
-                    const soLuong = sp.soLuong || 0;
-                    const gia = sp.gia || 0;
-
-                    let row = `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${tenSanPham}</td>
-                            <td>${formatNumberToVND(gia)}</td>
-                            <td>${tenMauSac}</td>
-                            <td>${tenKichThuoc}</td>
-                            <td>${soLuong}</td>
-                            <td>
-                                <button
-                                    type="button"
-                                    class="btn btn-outline-success btn-add-sanPham"
-                                    data-id-hd="${idHD}"
-                                    data-id-sp="${sp.id}"
-                                    data-gia="${gia}">
-                                    Thêm
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                    tableBody.append(row);
-                });
-
-                // Khởi tạo lại sự kiện cho các nút thêm sản phẩm
-                initAddProductButtons();
-            },
-            error: function(xhr) {
-                console.error('Lỗi khi tải dữ liệu sản phẩm:', xhr);
-                Swal.fire({
-                    toast: true,
-                    icon: 'error',
-                    title: 'Không thể tải danh sách sản phẩm',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000
-                });
-            }
-        });
-    });
-});
+// $(document).ready(function () {
+//     // Xử lý khi modal sản phẩm được mở
+//     $('#modalThemSanPham').on('show.bs.modal', function (e) {
+//         // Lấy ID hóa đơn hiện tại
+//         const idHD = $('#btnThanhToan').data('id');
+//
+//         // Sử dụng AJAX để tải dữ liệu sản phẩm mới nhất
+//         $.ajax({
+//             url: '/sale/api/san-pham',
+//             type: 'GET',
+//             data: {idHD: idHD},
+//             success: function (data) {
+//                 // Xóa dữ liệu cũ trong bảng
+//                 const tableBody = $('#modalThemSanPham table tbody');
+//                 tableBody.empty();
+//
+//                 // Thêm dữ liệu mới vào bảng
+//                 data.forEach(function (sp, index) {
+//                     // Kiểm tra dữ liệu trước khi truy cập
+//                     const tenSanPham = sp.sanPham && sp.sanPham.ten ? sp.sanPham.ten : '';
+//                     const tenMauSac = sp.mauSac && sp.mauSac.ten ? sp.mauSac.ten : '';
+//                     const tenKichThuoc = sp.kichThuoc && sp.kichThuoc.ten ? sp.kichThuoc.ten : '';
+//                     const soLuong = sp.soLuong || 0;
+//                     const gia = sp.gia || 0;
+//
+//                     let row = `
+//                         <tr>
+//                             <td>${index + 1}</td>
+//                             <td>${tenSanPham}</td>
+//                             <td>${formatNumberToVND(gia)}</td>
+//                             <td>${tenMauSac}</td>
+//                             <td>${tenKichThuoc}</td>
+//                             <td>${soLuong}</td>
+//                             <td>
+//                                 <button
+//                                     type="button"
+//                                     class="btn btn-outline-success btn-add-sanPham"
+//                                     data-id-hd="${idHD}"
+//                                     data-id-sp="${sp.id}"
+//                                     data-gia="${gia}">
+//                                     Thêm
+//                                 </button>
+//                             </td>
+//                         </tr>
+//                     `;
+//                     tableBody.append(row);
+//                 });
+//
+//                 // Khởi tạo lại sự kiện cho các nút thêm sản phẩm
+//                 initAddProductButtons();
+//             },
+//             error: function (xhr) {
+//                 console.error('Lỗi khi tải dữ liệu sản phẩm:', xhr);
+//                 Swal.fire({
+//                     toast: true,
+//                     icon: 'error',
+//                     title: 'Không thể tải danh sách sản phẩm',
+//                     position: 'top-end',
+//                     showConfirmButton: false,
+//                     timer: 2000
+//                 });
+//             }
+//         });
+//     });
+// });
 
 // Hàm khởi tạo sự kiện cho các nút thêm sản phẩm
-function initAddProductButtons() {
-    // Xóa tất cả event handlers cũ để tránh trùng lặp
-    $('.btn-add-sanPham').off('click');
-
-    // Thêm event listener mới
-    $('.btn-add-sanPham').on('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        console.log("Add product button clicked");
-        const hoaDonId = $(this).data("id-hd");
-        const sanPhamId = $(this).data("id-sp");
-        const gia = $(this).data("gia");
-        const rowElement = $(this).closest('tr');
-        const soLuongElement = rowElement.find('td:eq(5)');
-        const soLuongTrongKho = parseInt(soLuongElement.text()) || 0;
-
-        console.log("Data: ", { hoaDonId, sanPhamId, gia, soLuongTrongKho });
-
-        // Vô hiệu hóa nút để tránh nhấn nhiều lần
-        const button = $(this);
-        button.prop('disabled', true);
-
-        // Giảm số lượng hiển thị trong bảng (chỉ trên UI)
-        if (soLuongTrongKho > 0) {
-            soLuongElement.text(soLuongTrongKho - 1);
-        }
-
-        $.ajax({
-            url: '/sale/addSP',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                idHD: hoaDonId,
-                idSP: sanPhamId,
-                gia: gia,
-                soLuong: 1
-            }),
-            success: function (response) {
-                console.log("Success: ", response);
-                // Kiểm tra nếu số lượng sản phẩm trong giỏ vượt quá số lượng trong kho
-                // Chúng ta sẽ hiển thị thông báo cảnh báo, nhưng vẫn cho phép thêm vào giỏ
-                let warningMessage = "";
-                const itemInCart = $('#product-list').find(`[data-idsp="${sanPhamId}"]`).closest('form');
-                if (itemInCart.length > 0) {
-                    const soLuongTrongGio = parseInt(itemInCart.find('.quantity-input').val()) || 0;
-                    if (soLuongTrongGio >= soLuongTrongKho) {
-                        warningMessage = `Cảnh báo: Số lượng sản phẩm trong giỏ (${soLuongTrongGio}) đã vượt quá số lượng trong kho (${soLuongTrongKho}). Vẫn có thể mua nhưng sẽ kiểm tra lại khi thanh toán.`;
-                    }
-                }
-
-                Swal.fire({
-                    toast: true,
-                    icon: warningMessage ? 'warning' : 'success',
-                    title: warningMessage || response,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: warningMessage ? 3000 : 500,
-                    timerProgressBar: true
-                }).then(() => {
-                    location.reload();
-                });
-            },
-            error: function (xhr) {
-                console.error("Error: ", xhr);
-                // Kích hoạt lại nút trong trường hợp lỗi
-                button.prop('disabled', false);
-
-                // Khôi phục số lượng hiển thị trong trường hợp lỗi
-                soLuongElement.text(soLuongTrongKho);
-
-                Swal.fire({
-                    toast: true,
-                    icon: 'error',
-                    title: xhr.responseText,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 1000,
-                    timerProgressBar: true
-                });
-            }
-        });
-    });
-}
+// function initAddProductButtons() {
+//     // Xóa tất cả event handlers cũ để tránh trùng lặp
+//     $('.btn-add-sanPham').off('click');
+//
+//     // Thêm event listener mới
+//     $('.btn-add-sanPham').on('click', function (e) {
+//         e.preventDefault();
+//         e.stopPropagation();
+//
+//         console.log("Add product button clicked");
+//         const hoaDonId = $(this).data("id-hd");
+//         const sanPhamId = $(this).data("id-sp");
+//         const gia = $(this).data("gia");
+//         // Vô hiệu hóa nút để tránh nhấn nhiều lần
+//         const button = $(this);
+//         button.prop('disabled', true);
+//
+//         $.ajax({
+//             url: '/sale/addSP',
+//             type: 'POST',
+//             contentType: 'application/json',
+//             data: JSON.stringify({
+//                 idHD: hoaDonId,
+//                 idSP: sanPhamId,
+//                 gia: gia,
+//                 soLuong: 1
+//             }),
+//             success: function (response) {
+//                 Swal.fire({
+//                     toast: true,
+//                     icon: 'success',
+//                     title: response,
+//                     position: 'top-end',
+//                     showConfirmButton: false,
+//                     timer: 1000,
+//                     timerProgressBar: true
+//                 }).then(() => {
+//                     location.reload();
+//                 });
+//             },
+//             error: function (xhr) {
+//                 console.error("Error: ", xhr);
+//                 // Kích hoạt lại nút trong trường hợp lỗi
+//                 button.prop('disabled', false);
+//
+//                 Swal.fire({
+//                     toast: true,
+//                     icon: 'error',
+//                     title: xhr.responseText,
+//                     position: 'top-end',
+//                     showConfirmButton: false,
+//                     timer: 1000,
+//                     timerProgressBar: true
+//                 });
+//             }
+//         });
+//     });
+// }
 
 // Hàm mở modal phiếu giảm giá
 function openDiscountModal(hoaDonId) {
@@ -1351,7 +1266,7 @@ function openDiscountModal(hoaDonId) {
 
             // Xóa event listener sau khi đã xử lý
             modalElement.removeEventListener('hidden.bs.modal', arguments.callee);
-        }, { once: true });
+        }, {once: true});
     } else {
         console.error("Không tìm thấy modal phiếu giảm giá");
         // Nếu không tìm thấy modal, hiển thị dialog thử lại ngay
@@ -1374,7 +1289,7 @@ function openDiscountModal(hoaDonId) {
     }
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
     // Định dạng tiền tệ ban đầu
     formatCurrency();
 

@@ -28,7 +28,7 @@
                             <!-- Nút Thêm Hóa Đơn -->
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5>Bán hàng</h5>
-                                <form id="taoHoaDon" method="post" action="/sale/tao-tao-don">
+                                <form id="taoHoaDon" method="post" >
                                     <button type="submit" class="btn btn-success"
                                             style="width: 60px; text-align: center">
                                         <i class="bi bi-patch-plus-fill"></i>
@@ -426,8 +426,6 @@
 <script th:replace="/admin/fragments/script :: script"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script th:src="@{/admin/assets/compiled/js/sale.js}"></script>
-<!-- hienthitendangnhap -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.min.js"></script>
 <script>
     const input = document.getElementById('name');
     const span = document.getElementById('tenHienThi');
