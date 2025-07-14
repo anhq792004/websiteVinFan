@@ -144,7 +144,7 @@ public class BanHangTaiQuayController {
     public ResponseEntity<String> deleteChiTiet(@RequestParam("idSP") Long idSP,
                                                 @RequestParam("idHD") Long idHD) {
         try {
-            hoaDonService.deleteSPInHD(idSP);
+            hoaDonService.deleteSPInHD(idSP, idHD);
             banHangService.updateTongTienHoaDon(idHD);
             return ResponseEntity.ok("Xóa thành công");
         } catch (Exception e) {
@@ -224,7 +224,6 @@ public class BanHangTaiQuayController {
             hoaDon.setPhuongThucThanhToan(phuongThucThanhToan);
             hoaDonService.saveHoaDon(hoaDon);
 
-            hoaDonService.truSoLuongSanPham(idHD);
             // Xử lý thanh toán dựa trên phương thức
             if ("MOMO".equals(phuongThucThanhToan)) {
                 // Tạo QR code thanh toán Momo
