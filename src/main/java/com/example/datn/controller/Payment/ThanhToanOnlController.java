@@ -67,9 +67,6 @@ public class ThanhToanOnlController {
     @Autowired
     private SanPhamChiTietRepo sanPhamChiTietRepo;
 
-    @Autowired
-    private SanPhamChiTietRepo sanPhamChiTietRepo;
-
     // Hiển thị trang checkout
     @GetMapping("")
     public String checkout(HttpSession session, Model model) {
@@ -255,27 +252,8 @@ public class ThanhToanOnlController {
             lichSuHoaDon.setNguoiTao(khachHang.getTen());
             lichSuHoaDonRepo.save(lichSuHoaDon);
 
-            // Tạo chi tiết hóa đơn từ giỏ hàng
-            List<com.example.datn.dto.gioHangDTO> cartItems = gioHangService.getCart(session);
-            for (com.example.datn.dto.gioHangDTO cartItem : cartItems) {
-                Optional<SanPhamChiTiet> sanPhamChiTietOpt = sanPhamChiTietRepo.findById(cartItem.getSanPhamChiTietId());
-                if (sanPhamChiTietOpt.isPresent()) {
-                    SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietOpt.get();
-                    
-                    HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
-                    hoaDonChiTiet.setHoaDon(savedHoaDon);
-                    hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
-                    hoaDonChiTiet.setSoLuong(cartItem.getSoLuong());
-                    hoaDonChiTiet.setGia(cartItem.getGia());
-                    hoaDonChiTiet.setThanhTien(cartItem.getGia().multiply(BigDecimal.valueOf(cartItem.getSoLuong())));
-                    hoaDonChiTiet.setTrangThai(1);
-                    
-                    hoaDonChiTietRepo.save(hoaDonChiTiet);
-                }
-            }
-            
-            // Xóa giỏ hàng sau khi tạo đơn hàng
-            session.removeAttribute("cart");
+            // Clear the cart after successful order
+            gioHangService.clearCart(session);
 
             // Xử lý thanh toán theo phương thức
             if ("MOMO".equals(phuongThucThanhToan)) {
