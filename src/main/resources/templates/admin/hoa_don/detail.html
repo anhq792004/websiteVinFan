@@ -257,14 +257,14 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder" for="city">Thành phố</label>
-                                <select class="form-control" id="city" name="tinhThanhPho"
+                                <select class="form-control" id="city" name="tinh_thanh_pho"
                                         th:disabled="${hoaDon.trangThai == 4 || hoaDon.trangThai == 5 || hoaDon.trangThai == 3}">
                                     <option value="" selected>Chọn tỉnh thành</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder" for="district">Quận huyện</label>
-                                <select class="form-control" id="district" name="quanHuyen"
+                                <select class="form-control" id="district" name="quan_huyen"
                                         th:disabled="${hoaDon.trangThai == 4 || hoaDon.trangThai == 5 || hoaDon.trangThai == 3}">
                                     <option value="" selected>Chọn quận huyện</option>
                                 </select>
@@ -273,7 +273,7 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-bolder" for="district">Phường xã</label>
-                                <select class="form-control" id="ward" name="xaPhuong"
+                                <select class="form-control" id="ward" name="xa_phuong"
                                         th:disabled="${hoaDon.trangThai == 4 || hoaDon.trangThai == 5 || hoaDon.trangThai == 3}">
                                     <option value="" selected>Chọn phường xã</option>
                                 </select>
@@ -450,6 +450,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.min.js"></script>
+
 
 </body>
 </html>
