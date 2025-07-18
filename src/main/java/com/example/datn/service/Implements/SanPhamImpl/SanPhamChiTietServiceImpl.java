@@ -391,4 +391,30 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService {
     public void delete(Long id) {
         sanPhamChiTietRepository.deleteById(id);
     }
+    
+    @Override
+    @Transactional
+    public void toggleStatus(Long id) {
+        log.info("=== BẮT ĐẦU THAY ĐỔI TRẠNG THÁI SPCT ===");
+        log.info("ID: {}", id);
+        
+        SanPhamChiTiet spct = sanPhamChiTietRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm chi tiết với ID: " + id));
+        
+        Boolean currentStatus = spct.getTrangThai();
+        Boolean newStatus = currentStatus == null ? false : !currentStatus;
+        
+        log.info("Trạng thái hiện tại: {}, Trạng thái mới: {}", currentStatus, newStatus);
+        
+        spct.setTrangThai(newStatus);
+        
+        try {
+            SanPhamChiTiet saved = sanPhamChiTietRepository.save(spct);
+            log.info("=== THAY ĐỔI TRẠNG THÁI THÀNH CÔNG ===");
+            log.info("SPCT ID: {}, Trạng thái mới: {}", saved.getId(), saved.getTrangThai());
+        } catch (Exception e) {
+            log.error("=== LỖI KHI THAY ĐỔI TRẠNG THÁI ===", e);
+            throw new RuntimeException("Không thể thay đổi trạng thái: " + e.getMessage(), e);
+        }
+    }
 } 

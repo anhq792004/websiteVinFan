@@ -31,4 +31,9 @@ public interface SanPhamChiTietService {
     List<SanPhamChiTiet> addMultipleVariantsV2(AddMultipleVariantsRequestV2 request);
                 
     void delete(Long id);
+    
+    /**
+     * Thay đổi trạng thái sản phẩm chi tiết (tắt/bật) thay vì xóa
+     */
+    void toggleStatus(Long id);
 } 

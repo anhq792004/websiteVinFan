@@ -98,6 +98,19 @@ public class SanPhamChiTietController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    
+    /**
+     * Thay đổi trạng thái sản phẩm chi tiết (tắt/bật) thay vì xóa
+     */
+    @PutMapping("/{id}/toggle-status")
+    public ResponseEntity<?> toggleStatus(@PathVariable Long id) {
+        try {
+            sanPhamChiTietService.toggleStatus(id);
+            return ResponseEntity.ok("Thay đổi trạng thái thành công");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @PutMapping("/{id}/test")
     public ResponseEntity<?> testUpdate(@PathVariable Long id,
