@@ -67,9 +67,6 @@ public class ThanhToanOnlController {
     @Autowired
     private SanPhamChiTietRepo sanPhamChiTietRepo;
 
-    @Autowired
-    private SanPhamChiTietRepo sanPhamChiTietRepo;
-
     // Hiển thị trang checkout
     @GetMapping("")
     public String checkout(HttpSession session, Model model) {
@@ -255,40 +252,18 @@ public class ThanhToanOnlController {
             lichSuHoaDon.setNguoiTao(khachHang.getTen());
             lichSuHoaDonRepo.save(lichSuHoaDon);
 
-            // Tạo chi tiết hóa đơn từ giỏ hàng
-            List<com.example.datn.dto.gioHangDTO> cartItems = gioHangService.getCart(session);
-            for (com.example.datn.dto.gioHangDTO cartItem : cartItems) {
-                Optional<SanPhamChiTiet> sanPhamChiTietOpt = sanPhamChiTietRepo.findById(cartItem.getSanPhamChiTietId());
-                if (sanPhamChiTietOpt.isPresent()) {
-                    SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietOpt.get();
-                    
-                    HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
-                    hoaDonChiTiet.setHoaDon(savedHoaDon);
-                    hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
-                    hoaDonChiTiet.setSoLuong(cartItem.getSoLuong());
-                    hoaDonChiTiet.setGia(cartItem.getGia());
-                    hoaDonChiTiet.setThanhTien(cartItem.getGia().multiply(BigDecimal.valueOf(cartItem.getSoLuong())));
-                    hoaDonChiTiet.setTrangThai(1);
-                    
-                    hoaDonChiTietRepo.save(hoaDonChiTiet);
-                }
-            }
-            
-            // Xóa giỏ hàng sau khi tạo đơn hàng
-            session.removeAttribute("cart");
-
             // Xử lý thanh toán theo phương thức
             if ("MOMO".equals(phuongThucThanhToan)) {
                 // Thanh toán MoMo
                 try {
                     MomoTransaction transaction = momoService.createTransaction(savedHoaDon, "user");
-                    
+
                     if (transaction.getTrangThai() == 2) { // Lỗi
                         response.put("success", false);
                         response.put("message", "Lỗi khi tạo thanh toán MoMo: " + transaction.getMessage());
                         return ResponseEntity.ok(response);
                     }
-                    
+
                     // Trả về thông tin thanh toán MoMo
                     response.put("success", true);
                     response.put("orderId", savedHoaDon.getId());
@@ -297,7 +272,7 @@ public class ThanhToanOnlController {
                     response.put("paymentMethod", "MOMO");
                     response.put("payUrl", transaction.getPayUrl());
                     response.put("transactionId", transaction.getId());
-                    
+
                 } catch (Exception e) {
                     logger.error("Error creating MoMo payment", e);
                     response.put("success", false);
@@ -306,6 +281,8 @@ public class ThanhToanOnlController {
                 }
             } else {
                 // Thanh toán COD
+                // Clear cart for COD since no further payment confirmation is needed
+                gioHangService.clearCart(session);
                 response.put("success", true);
                 response.put("orderId", savedHoaDon.getId());
                 response.put("finalAmount", finalAmount);
@@ -463,21 +440,21 @@ public class ThanhToanOnlController {
      * Endpoint khi người dùng được redirect từ MoMo về
      */
     @GetMapping("/momo-return")
-    public String momoReturn(@RequestParam Map<String, String> params, RedirectAttributes redirectAttributes) {
+    public String momoReturn(@RequestParam Map<String, String> params, RedirectAttributes redirectAttributes, HttpSession session) {
         logger.info("User returned from MoMo payment: {}", params);
-        
+
         try {
             if (params.containsKey("orderId") && params.containsKey("resultCode")) {
                 String orderId = params.get("orderId");
                 int resultCode = Integer.parseInt(params.get("resultCode"));
-                
-                // Kiểm tra kết quả giao dịch
+
                 if (resultCode == 0) {
-                    // Giao dịch thành công
                     MomoTransaction transaction = momoService.getTransactionByOrderId(orderId);
                     if (transaction != null) {
                         // Cập nhật trạng thái giao dịch
                         momoService.confirmTransaction(transaction.getHoaDon().getId());
+                        // Xóa giỏ hàng khi giao dịch thành công
+                        gioHangService.clearCart(session);
                         redirectAttributes.addFlashAttribute("paymentStatus", "success");
                         redirectAttributes.addFlashAttribute("paymentMessage", "Thanh toán MoMo thành công!");
                         return "redirect:/checkout/success?id=" + transaction.getHoaDon().getId();
@@ -489,11 +466,11 @@ public class ThanhToanOnlController {
                     return "redirect:/checkout";
                 }
             }
-            
+
             redirectAttributes.addFlashAttribute("paymentStatus", "error");
             redirectAttributes.addFlashAttribute("paymentMessage", "Có lỗi xảy ra trong quá trình thanh toán!");
             return "redirect:/checkout";
-            
+
         } catch (Exception e) {
             logger.error("Error processing MoMo return: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("paymentStatus", "error");
