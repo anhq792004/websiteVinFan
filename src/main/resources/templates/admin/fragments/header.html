@@ -1,4 +1,4 @@
-<div class="header mb-3" th:fragment="header" xmlns:th="http://www.thymeleaf.org">
+<div class="header mb-3 " th:fragment="header" xmlns:th="http://www.thymeleaf.org">
     <div class="d-flex justify-content-between align-items-center">
         <a href="#" class="burger-btn d-block d-xl-none">
             <i class="bi bi-justify fs-3"></i>
@@ -13,8 +13,8 @@
         -->
 
         <!-- Thông tin người dùng -->
-        <div class="user-info d-flex align-items-center" th:if="${isLoggedIn and currentUser != null}">
-            <div class="dropdown">
+        <div class="user-info d-flex align-items-center ms-auto" th:if="${isLoggedIn and currentUser != null}">
+        <div class="dropdown">
                 <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center"
                         type="button"
                         id="userDropdown"
@@ -68,11 +68,11 @@
         </div>
 
         <!-- Nút đăng nhập khi chưa đăng nhập -->
-        <div class="login-btn" th:if="${!isLoggedIn or currentUser == null}">
-            <a href="/login" class="btn btn-primary">
-                <i class="fas fa-sign-in-alt me-2"></i>
-                Đăng nhập
-            </a>
-        </div>
+<!--        <div class="login-btn" th:if="${!isLoggedIn or currentUser == null}">-->
+<!--            <a href="/login" class="btn btn-primary">-->
+<!--                <i class="fas fa-sign-in-alt me-2"></i>-->
+<!--                Đăng nhập-->
+<!--            </a>-->
+<!--        </div>-->
     </div>
 </div>

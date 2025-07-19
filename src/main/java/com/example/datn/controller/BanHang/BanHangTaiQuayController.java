@@ -47,7 +47,7 @@ public class BanHangTaiQuayController {
         //hiển thị danh sách hóa đơn chờ
         List<HoaDon> listHoaDon = banHangService.findHoaDon();
         model.addAttribute("listHoaDon", listHoaDon);
-
+        System.out.println();
         return "admin/sale/index";
     }
 
@@ -144,7 +144,7 @@ public class BanHangTaiQuayController {
     public ResponseEntity<String> deleteChiTiet(@RequestParam("idSP") Long idSP,
                                                 @RequestParam("idHD") Long idHD) {
         try {
-            hoaDonService.deleteSPInHD(idSP);
+            hoaDonService.deleteSPInHD(idSP, idHD);
             banHangService.updateTongTienHoaDon(idHD);
             return ResponseEntity.ok("Xóa thành công");
         } catch (Exception e) {
@@ -223,7 +223,7 @@ public class BanHangTaiQuayController {
             // Cập nhật phương thức thanh toán
             hoaDon.setPhuongThucThanhToan(phuongThucThanhToan);
             hoaDonService.saveHoaDon(hoaDon);
-            
+
             // Xử lý thanh toán dựa trên phương thức
             if ("MOMO".equals(phuongThucThanhToan)) {
                 // Tạo QR code thanh toán Momo
@@ -326,7 +326,7 @@ public class BanHangTaiQuayController {
             BigDecimal tongTien = hoaDon.getTongTien();
             BigDecimal giaTriGiam;
             
-            if (phieuGiamGia.isLoaiGiamGia()) {
+            if (phieuGiamGia.getLoaiGiamGia()) {
                 // Giảm theo phần trăm
                 giaTriGiam = tongTien.multiply(phieuGiamGia.getGiaTriGiam())
                                     .divide(new BigDecimal(100), 0, BigDecimal.ROUND_HALF_UP);

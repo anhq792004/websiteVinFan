@@ -78,6 +78,44 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     @Override
+    public void truSoLuongSanPham(Long idHD) {
+        List<HoaDonChiTiet> listHDCT = hoaDonChiTietRepo.findByHoaDon_Id(idHD);
+        for (HoaDonChiTiet hdct : listHDCT) {
+            SanPhamChiTiet spct = hdct.getSanPhamChiTiet();
+            int soLuongTon = spct.getSoLuong(); // Số lượng hiện tại trong kho
+            int soLuongBan = hdct.getSoLuong();    // Số lượng trong hóa đơn chi tiết
+
+            if (soLuongTon >= soLuongBan) {
+                spct.setSoLuong(soLuongTon - soLuongBan); // Trừ số lượng
+                sanPhamChiTietRepo.save(spct);
+            } else {
+                throw new RuntimeException("Số lượng tồn kho không đủ cho sản phẩm: " + spct.getSanPham().getTen());
+            }
+        }
+    }
+
+    @Override
+    public void hoanSoLuongSanPham(Long idHD) {
+//        HoaDon hoaDon = hoaDonRepo.findById(idHD).orElse(null);
+//        if (hoaDon == null) {
+//            return; // Hóa đơn không tồn tại, không làm gì cả
+//        }
+//        List<HoaDonChiTiet> listHDCT = hoaDonChiTietRepo.findByHoaDon_Id(idHD);
+//        if (hoaDon.getTrangThai() != getTrangThaiHoaDon().getChoXacNhan()) {
+//            for (HoaDonChiTiet hdct : listHDCT) {
+//                SanPhamChiTiet spct = hdct.getSanPhamChiTiet();
+//                int soLuongTon = spct.getSoLuong();   // Số lượng hiện tại trong kho
+//                int soLuongHoan = hdct.getSoLuong();  // Số lượng cần hoàn lại
+//
+//                spct.setSoLuong(soLuongTon + soLuongHoan); // Cộng lại số lượng
+//                sanPhamChiTietRepo.save(spct);
+//            }
+//        }
+
+    }
+
+
+    @Override
     public List<HoaDonChiTiet> listHoaDonChiTiets(Long id) {
         return hoaDonChiTietRepo.findByHoaDon_Id(id);
     }
@@ -90,6 +128,7 @@ public class HoaDonServiceImpl implements HoaDonService {
                 PhuongThucThanhToan phuongThuc = PhuongThucThanhToan.valueOf(response.getHinhThucThanhToan());
                 response.setHinhThucThanhToan(phuongThuc.getDisplayName());
             } catch (IllegalArgumentException e) {
+                e.printStackTrace();
             }
         }
         return response;
@@ -101,20 +140,32 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     @Override
-    public void deleteSPInHD(Long idSPCT) {
+    public void deleteSPInHD(Long idSPCT, Long idHD) {
         // Tìm hóa đơn chi tiết chứa sản phẩm cần xóa thông qua query
         List<HoaDonChiTiet> listHDCT = hoaDonChiTietRepo.findAll();
+        Optional<HoaDon> hoaDonOptional = hoaDonRepo.findById(idHD);
+        HoaDon hoaDon = hoaDonOptional.get();
         HoaDonChiTiet hdctToDelete = null;
-        
+
         for (HoaDonChiTiet hdct : listHDCT) {
             if (hdct.getSanPhamChiTiet() != null && hdct.getSanPhamChiTiet().getId().equals(idSPCT)) {
                 hdctToDelete = hdct;
                 break;
             }
         }
-        
-        if (hdctToDelete != null) {
 
+        if (hdctToDelete != null) {
+            // Lấy thông tin sản phẩm chi tiết
+            SanPhamChiTiet sanPhamChiTiet = hdctToDelete.getSanPhamChiTiet();
+
+            // Lấy số lượng sản phẩm trong giỏ
+            int soLuongTrongGio = hdctToDelete.getSoLuong();
+
+            // Hoàn trả số lượng vào kho
+            if (hoaDon.getTrangThai() != getTrangThaiHoaDon().getChoXacNhan()) {
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + soLuongTrongGio);
+                sanPhamChiTietRepo.save(sanPhamChiTiet);
+            }
             // Xóa sản phẩm khỏi giỏ hàng
             hoaDonChiTietRepo.deleteSanPhamChiTiet_Id(idSPCT);
         } else {
@@ -124,7 +175,7 @@ public class HoaDonServiceImpl implements HoaDonService {
 
 
     @Override
-    public void xacNhan(Long id,String ghiChu) {
+    public void xacNhan(Long id, String ghiChu) {
         // Tìm kiếm HoaDon dựa trên ID
         Optional<HoaDon> hoaDonOptional = hoaDonRepo.findById(id);
         List<HoaDonChiTiet> listHDCT = hoaDonChiTietRepo.findByHoaDon_Id(id);
@@ -155,6 +206,42 @@ public class HoaDonServiceImpl implements HoaDonService {
             lichSuHoaDon.setNgayTao(LocalDateTime.now());
 
             lichSuHoaDon.setMoTa(ghiChu);
+
+            lichSuHoaDonRepo.save(lichSuHoaDon);
+        }
+    }
+
+    @Override
+    public void returnTrangThai(Long id) {
+        Optional<HoaDon> hoaDonOptional = hoaDonRepo.findById(id);
+        List<HoaDonChiTiet> listHDCT = hoaDonChiTietRepo.findByHoaDon_Id(id);
+
+        for (HoaDonChiTiet hdct : listHDCT) {
+            SanPhamChiTiet spct = hdct.getSanPhamChiTiet();
+            int soLuongTon = spct.getSoLuong();   // Số lượng hiện tại trong kho
+            int soLuongHoan = hdct.getSoLuong();  // Số lượng cần hoàn lại
+
+            spct.setSoLuong(soLuongTon + soLuongHoan); // Cộng lại số lượng
+            sanPhamChiTietRepo.save(spct);
+        }
+
+        if (hoaDonOptional.isPresent()) {
+
+            HoaDon hoaDon = hoaDonOptional.get();
+
+            // Cập nhật trạng thái của HoaDon
+            hoaDon.setTrangThai(getTrangThaiHoaDon().getChoXacNhan());
+            hoaDon.setGhiChu("");
+            hoaDon.setNgaySua(LocalDateTime.now());
+            hoaDonRepo.save(hoaDon);
+
+            // Tạo lịch sử cập nhật
+            LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
+            lichSuHoaDon.setHoaDon(hoaDon);
+            lichSuHoaDon.setTrangThai(getTrangThaiHoaDon().getChoXacNhan());
+            lichSuHoaDon.setNgayTao(LocalDateTime.now());
+
+            lichSuHoaDon.setMoTa("");
 
             lichSuHoaDonRepo.save(lichSuHoaDon);
         }
@@ -205,13 +292,25 @@ public class HoaDonServiceImpl implements HoaDonService {
         Optional<HoaDon> optionalHoaDon = hoaDonRepo.findById(id);
         if (optionalHoaDon.isPresent()) {
             HoaDon hoaDon = optionalHoaDon.get();
-            
+            List<HoaDonChiTiet> listHDCT = hoaDonChiTietRepo.findByHoaDon_Id(id);
+
+            if (hoaDon.getTrangThai() != getTrangThaiHoaDon().getChoXacNhan()) {
+                for (HoaDonChiTiet hdct : listHDCT) {
+                    SanPhamChiTiet spct = hdct.getSanPhamChiTiet();
+                    int soLuongTon = spct.getSoLuong();   // Số lượng hiện tại trong kho
+                    int soLuongHoan = hdct.getSoLuong();  // Số lượng cần hoàn lại
+
+                    spct.setSoLuong(soLuongTon + soLuongHoan); // Cộng lại số lượng
+                    sanPhamChiTietRepo.save(spct);
+                }
+            }
+
             // Cập nhật trạng thái hóa đơn sang HỦY
             hoaDon.setGhiChu(ghiChu);
             hoaDon.setTrangThai(getTrangThaiHoaDon().getHuy());
             hoaDon.setNgaySua(LocalDateTime.now());
             hoaDonRepo.save(hoaDon);
-            
+
             // Tạo một bản ghi lịch sử cho HoaDon hủy
             LichSuHoaDon lichSuHoaDon = new LichSuHoaDon();
             lichSuHoaDon.setHoaDon(hoaDon);
@@ -239,6 +338,11 @@ public class HoaDonServiceImpl implements HoaDonService {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietOptional.get();
         HoaDon hoaDon = hoaDonOptional.get();
 
+        // Kiểm tra số lượng trong kho
+        if (sanPhamChiTiet.getSoLuong() <= 0) {
+            throw new RuntimeException("Sản phẩm " + sanPhamChiTiet.getSanPham().getTen() + " đã hết hàng!");
+        }
+
         //check sp tồn tại trong hóa đơn
         Optional<HoaDonChiTiet> existingHDCT = hoaDonChiTietRepo.
                 findByHoaDonIdAndSanPhamChiTietId(hoaDon.getId(), sanPhamChiTiet.getId());
@@ -251,6 +355,12 @@ public class HoaDonServiceImpl implements HoaDonService {
             BigDecimal thanhTienMoi = hoaDonChiTiet.getGia().multiply(BigDecimal.valueOf(soLuongMoi));
             hoaDonChiTiet.setThanhTien(thanhTienMoi);
 
+            // Giảm số lượng sản phẩm trong kho
+            if (hoaDon.getTrangThai() != getTrangThaiHoaDon().getChoXacNhan()) {
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
+                sanPhamChiTietRepo.save(sanPhamChiTiet);
+            }
+
             hoaDonChiTietRepo.save(hoaDonChiTiet);
         } else {
             HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
@@ -260,6 +370,12 @@ public class HoaDonServiceImpl implements HoaDonService {
             hoaDonChiTiet.setSoLuong(addSPToHDCTRequest.getSoLuong());
             BigDecimal thanhTien = addSPToHDCTRequest.getGia().multiply(BigDecimal.valueOf(addSPToHDCTRequest.getSoLuong()));
             hoaDonChiTiet.setThanhTien(thanhTien);
+
+            // Giảm số lượng sản phẩm trong kho
+            if (hoaDon.getTrangThai() != getTrangThaiHoaDon().getChoXacNhan()) {
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
+                sanPhamChiTietRepo.save(sanPhamChiTiet);
+            }
 
             hoaDonChiTietRepo.save(hoaDonChiTiet);
         }
@@ -322,7 +438,8 @@ public class HoaDonServiceImpl implements HoaDonService {
     @Override
     public void tangSoLuong(Long idHD, Long idSPCT) {
         HoaDonChiTiet hdct = hoaDonChiTietRepo.findByHoaDon_IdAndSanPhamChiTiet_Id(idHD, idSPCT);
-
+        Optional<HoaDon> hoaDonOptional = hoaDonRepo.findById(idHD);
+        HoaDon hoaDon = hoaDonOptional.get();
         if (hdct != null) {
             // Lấy thông tin sản phẩm chi tiết
             SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(idSPCT)
@@ -340,6 +457,11 @@ public class HoaDonServiceImpl implements HoaDonService {
             BigDecimal gia = hdct.getGia();
             hdct.setThanhTien(gia.multiply(BigDecimal.valueOf(hdct.getSoLuong())));
 
+            // Giảm số lượng sản phẩm trong kho
+            if (hoaDon.getTrangThai() != getTrangThaiHoaDon().getChoXacNhan()) {
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
+                sanPhamChiTietRepo.save(sanPhamChiTiet);
+            }
             // Lưu lại bản ghi HoaDonChiTiet đã cập nhật
             hoaDonChiTietRepo.save(hdct);
         } else {
@@ -351,6 +473,8 @@ public class HoaDonServiceImpl implements HoaDonService {
     public void giamSoLuong(Long idHD, Long idSPCT) {
         // Lấy HoaDonChiTiet theo idHoaDon và idSanPhamChiTiet
         HoaDonChiTiet hdct = hoaDonChiTietRepo.findByHoaDon_IdAndSanPhamChiTiet_Id(idHD, idSPCT);
+        Optional<HoaDon> hoaDonOptional = hoaDonRepo.findById(idHD);
+        HoaDon hoaDon = hoaDonOptional.get();
 
         // Kiểm tra nếu không có bản ghi nào tìm thấy
         if (hdct != null) {
@@ -359,12 +483,21 @@ public class HoaDonServiceImpl implements HoaDonService {
                 throw new RuntimeException("Số lượng không thể nhỏ hơn 1");
             }
 
+            // Lấy thông tin sản phẩm chi tiết
+            SanPhamChiTiet sanPhamChiTiet = hdct.getSanPhamChiTiet();
+
             // Giảm số lượng đi 1
             hdct.setSoLuong(hdct.getSoLuong() - 1);
 
             // Cập nhật lại thành tiền
             BigDecimal gia = hdct.getGia();
             hdct.setThanhTien(gia.multiply(BigDecimal.valueOf(hdct.getSoLuong())));
+
+            // Tăng số lượng sản phẩm trong kho
+            if (hoaDon.getTrangThai() != getTrangThaiHoaDon().getChoXacNhan()) {
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + 1);
+                sanPhamChiTietRepo.save(sanPhamChiTiet);
+            }
 
             // Lưu lại bản ghi HoaDonChiTiet đã cập nhật
             hoaDonChiTietRepo.save(hdct);

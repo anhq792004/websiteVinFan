@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đặt Hàng Thành Công</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-</head>
+<head th:insert="~{/admin/fragments/head :: head}"></head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đặt Hàng Thành Công</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <body class="bg-light">
 
 <!-- Header -->
@@ -30,6 +29,16 @@
 </div>
 
 <div class="container">
+    <!-- Payment Status Alert -->
+    <div th:if="${paymentStatus}" class="row justify-content-center mb-3">
+        <div class="col-lg-8">
+            <div th:class="${paymentStatus == 'success' ? 'alert alert-success' : 'alert alert-danger'}" role="alert">
+                <i th:class="${paymentStatus == 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'}" class="me-2"></i>
+                <span th:text="${paymentMessage}">Payment status message</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Success Message -->
     <div class="row justify-content-center mb-5">
         <div class="col-lg-8">
@@ -121,12 +130,12 @@
                     <div class="border-top pt-3">
                         <strong class="text-muted">Địa chỉ giao hàng:</strong>
                         <div class="mt-2">
-                            <div th:if="${hoaDon?.diaChi}">
-                                <span th:text="${hoaDon.diaChi.soNhaNgoDuong}">123 Đường ABC</span>,
-                                <span th:text="${hoaDon.diaChi.xa}">Phường XYZ</span>,
-                                <span th:text="${hoaDon.diaChi.huyen}">Quận 1</span>,
-                                <span th:text="${hoaDon.diaChi.tinh}">TP. Hồ Chí Minh</span>
-                            </div>
+                            <!--                            <div th:if="${hoaDon?.diaChi}">-->
+                            <!--                                <span th:text="${hoaDon.diaChi.soNhaNgoDuong}">123 Đường ABC</span>,-->
+                            <!--                                <span th:text="${hoaDon.diaChi.xa}">Phường XYZ</span>,-->
+                            <!--                                <span th:text="${hoaDon.diaChi.huyen}">Quận 1</span>,-->
+                            <!--                                <span th:text="${hoaDon.diaChi.tinh}">TP. Hồ Chí Minh</span>-->
+                            <!--                            </div>-->
                         </div>
                     </div>
 

@@ -29,6 +29,9 @@ public interface HoaDonService {
 
     List<HoaDon> getHoaDonByIdKH(Long idKH);
 
+    void truSoLuongSanPham(Long idHD);
+
+    void hoanSoLuongSanPham(Long idHD);
     //hoaDonChiTiet
 
     List<HoaDonChiTiet> listHoaDonChiTiets(Long id);
@@ -37,9 +40,11 @@ public interface HoaDonService {
 
     List<SanPhamChiTiet> findSPCTByIdSanPham();
 
-    void deleteSPInHD(Long idSPCT);
+    void deleteSPInHD(Long idSPCT, Long idHD);
 
     void xacNhan(Long id, String ghiChu);
+
+    void returnTrangThai(Long id);
 
     void giaoHang(Long id);
 

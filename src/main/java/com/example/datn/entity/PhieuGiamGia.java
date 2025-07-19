@@ -39,20 +39,32 @@ public class PhieuGiamGia {
     @Column(name = "so_luong")
     Integer soLuong;
 
+    @Column(name = "so_luong_da_su_dung")
+    Integer soLuongDaSuDung = 0;
+
     @Column(name = "loai_giam_gia")
-    boolean loaiGiamGia;
+    Boolean loaiGiamGia; // true: phần trăm, false: tiền mặt
 
     @Column(name = "gia_tri_giam")
     BigDecimal giaTriGiam;
+
+    @Column(name = "gia_tri_giam_toi_da")
+    BigDecimal giaTriGiamToiDa;
+
+    @Column(name = "gia_tri_don_hang_toi_thieu")
+    BigDecimal giaTriDonHangToiThieu;
+
+    @Column(name = "loai_phieu")
+    Boolean loaiPhieu; // true: công khai, false: riêng tư
 
     @Column(name = "ngay_tao")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     Date ngayTao;
 
+    @Column(name = "nguoi_tao")
+    String nguoiTao;
+
     @Column(name = "trang_thai")
     boolean trangThai;
 
-    public boolean isLoaiGiamGia() {
-        return loaiGiamGia;
-    }
 }

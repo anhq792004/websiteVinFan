@@ -81,17 +81,25 @@ public class HoaDonController {
                                                 @RequestParam("ghiChu") String ghiChu) {
         try {
             hoaDonService.xacNhan(id, ghiChu);
+            hoaDonService.truSoLuongSanPham(id);
             return ResponseEntity.ok("Đơn hàng đã được xác nhận !");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Số lượng sản phẩm không đủ");
         }
     }
 
+    @PostMapping("/return-trangThai")
+    @ResponseBody
+    public ResponseEntity<String> returnTrangThai(@RequestParam("id") Long id) {
+        hoaDonService.returnTrangThai(id);
+        return ResponseEntity.ok("Đơn hàng đã được chuyển về trạng thái chờ !");
+    }
+
     @PostMapping("/giao-hang")
     @ResponseBody
     public ResponseEntity<String> giaoHang(@RequestParam("id") Long id) {
         hoaDonService.giaoHang(id);
-        return ResponseEntity.ok("Đơn hàng đã được giao thành công !");
+        return ResponseEntity.ok("Đơn hàng đã được bàn giao thành công !");
     }
 
     @PostMapping("/hoan-thanh")
@@ -104,6 +112,15 @@ public class HoaDonController {
     @PostMapping("/huy")
     @ResponseBody
     public ResponseEntity<String> huy(@RequestParam("id") Long id,
+                                      @RequestParam("ghiChu") String ghiChu) {
+        hoaDonService.huy(id, ghiChu);
+//        hoaDonService.hoanSoLuongSanPham(id);
+        return ResponseEntity.ok("Hóa đơn đã được hủy !");
+    }
+
+    @PostMapping("/huy-hd-onl")
+    @ResponseBody
+    public ResponseEntity<String> huyHDOnl(@RequestParam("id") Long id,
                                       @RequestParam("ghiChu") String ghiChu) {
         hoaDonService.huy(id, ghiChu);
         return ResponseEntity.ok("Hóa đơn đã được hủy !");
@@ -125,7 +142,7 @@ public class HoaDonController {
     public ResponseEntity<String> deleteChiTiet(@RequestParam("idSP") Long idSP,
                                                 @RequestParam("idHD") Long idHD) {
         try {
-            hoaDonService.deleteSPInHD(idSP);
+            hoaDonService.deleteSPInHD(idSP, idHD);
             banHangService.updateTongTienHoaDon(idHD);
             return ResponseEntity.ok("Xóa thành công");
         } catch (Exception e) {

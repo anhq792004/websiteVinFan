@@ -12,7 +12,6 @@
 
     <!-- Main -->
     <div id="main">
-        <p>Nhân viên</p>
         <header th:replace="/admin/fragments/header :: header"></header>
         <div class="page-content">
             <section class="row">
@@ -70,12 +69,12 @@
                                 <thead>
                                 <tr>
                                     <th style="width: 5%;">STT</th>
+                                    <th style="width: 5%;">Ảnh</th>
                                     <th style="width: 5%;">Mã</th>
                                     <th style="width: 5%;">Họ và tên</th>
                                     <th style="width: 5%;">Email</th>
                                     <th style="width: 5%;">Ngày sinh</th>
                                     <th style="width: 5%;">Giới tính</th>
-                                    <th style="width: 5%;">Chức vụ</th>
                                     <th style="width: 5%;">Trạng thái</th>
                                     <th style="width: 5%;">Hành động</th>
                                 </tr>
@@ -83,18 +82,20 @@
                                 <tbody>
                                 <tr th:each="nhanVien, iterStat : ${listNV}">
                                     <td th:text="${iterStat.count}"></td>
+                                    <td th:text="${nhanVien.anh}"></td>
                                     <td th:text="${nhanVien.ma}"></td>
                                     <td th:text="${nhanVien.ten}"></td>
                                     <td th:text="${nhanVien.taiKhoan.email}"></td>
                                     <td th:text="${nhanVien.ngaySinh}"></td>
                                     <td th:text="${nhanVien.gioiTinh ? 'Nam' : 'Nữ'}"></td>
-                                    <td th:text="${nhanVien.chucVu.viTri}"></td>
                                     <td th:text="${nhanVien.trangThai ? 'Đang làm việc' : 'Đã nghỉ việc'}"></td>
                                     <td>
                                         <a th:href="@{/admin/nhan-vien/detail(id=${nhanVien.id})}"
                                            class="btn btn-sm btn-primary">Chi tiết</a>
-<!--                                        <a th:href="@{|admin/nhan-vien/delete?id=${nhanVien.id}|}"-->
-<!--                                           class="btn btn-sm btn-info">Delete</a>-->
+                                        <button class="btn btn-outline-primary changeStatusNhanVien"
+                                                th:attr="data-id=${nhanVien.id}">
+                                            <i class="bi bi-arrow-left-right"></i>
+                                        </button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -129,14 +130,8 @@
 <div>
     <script th:replace="/admin/fragments/script :: script"></script>
 </div>
-<!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
-<!--<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>-->
-<!--<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>-->
-<!--<script th:src="@{/admin/assets/compiled/js/components.js}"></script>-->
-<!--<script th:src="@{/admin/assets/compiled/js/NhanVien/nhanVien.js}"></script>-->
-<!--<script th:src="@{/admin/fragments/script.html :: script}"></script>-->
-<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.min.js"></script>-->
+<script th:src="@{/admin/assets/compiled/js/nhanVien.js}"></script>
+
 <!-- hienthitendangnhap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
