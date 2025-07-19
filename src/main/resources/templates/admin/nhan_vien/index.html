@@ -47,7 +47,7 @@
                                             </button>
                                         </div>
                                         <div>
-                                            <a class="btn btn-outline-warning" href="/nhan-vien/index"
+                                            <a class="btn btn-outline-warning" href="/admin/nhan-vien/index"
                                                style="width: 70px">
                                                 <i class="bi bi-arrow-counterclockwise"></i>
                                             </a>
@@ -70,10 +70,9 @@
                                 <thead>
                                 <tr>
                                     <th style="width: 5%;">STT</th>
-                                    <th style="width: 5%;">Id</th>
                                     <th style="width: 5%;">Mã</th>
                                     <th style="width: 5%;">Họ và tên</th>
-<!--                                    <th style="width: 5%;">Email</th>-->
+                                    <th style="width: 5%;">Email</th>
                                     <th style="width: 5%;">Ngày sinh</th>
                                     <th style="width: 5%;">Giới tính</th>
                                     <th style="width: 5%;">Chức vụ</th>
@@ -84,16 +83,9 @@
                                 <tbody>
                                 <tr th:each="nhanVien, iterStat : ${listNV}">
                                     <td th:text="${iterStat.count}"></td>
-<!--                                    <td>-->
-<!--                                        <img th:src="@{'/path/to/images/' + ${nhanVien.anh}}" alt="Ảnh nhân viên"-->
-<!--                                             width="50" height="50"-->
-<!--                                             th:unless="${nhanVien.anh == null}"/>-->
-<!--                                        <span th:if="${nhanVien.anh == null}">Không có ảnh</span>-->
-<!--                                    </td>-->
-                                    <td th:text="${nhanVien.id}"></td>
                                     <td th:text="${nhanVien.ma}"></td>
                                     <td th:text="${nhanVien.ten}"></td>
-                                    <!-- <td th:text="${nhanVien.taiKhoan.email}"></td>-->
+                                    <td th:text="${nhanVien.taiKhoan.email}"></td>
                                     <td th:text="${nhanVien.ngaySinh}"></td>
                                     <td th:text="${nhanVien.gioiTinh ? 'Nam' : 'Nữ'}"></td>
                                     <td th:text="${nhanVien.chucVu.viTri}"></td>
@@ -120,7 +112,8 @@
 <!--                                    </ul>-->
 <!--                                </nav>-->
 <!--                            </div>-->
-                        </div>
+<!--                        </div>-->
+
                     </div>
                     <div class="card-body"></div>
                 </div>

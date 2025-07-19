@@ -1,160 +1,207 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <title>Đăng ký - VinFan</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <style>
     body {
-        font-family: Arial, sans-serif;
-        height: 100vh;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #f5f5f5;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f5f5f5;
     }
 
     .login-container {
-        display: flex;
-        max-width: 900px;
-        width: 100%;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      max-width: 900px;
+      width: 100%;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .login-form {
-        flex: 1;
-        padding: 40px;
-        background: #ffffff;
+      flex: 1;
+      padding: 40px;
+      background: #ffffff;
     }
 
     .login-form h2 {
-        font-weight: bold;
-        margin-bottom: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
     }
 
     .login-form .form-control {
-        border-radius: 20px;
+      border-radius: 20px;
     }
 
     .login-form .btn {
-        border-radius: 20px;
-        background-color: black;
-        color: white;
+      border-radius: 20px;
+      background-color: black;
+      color: white;
     }
 
     .login-form .btn:hover {
-        background-color: #333;
+      background-color: #333;
     }
 
     .welcome-section {
-        flex: 1;
-        background-color: black;
-        color: white;
-        padding: 40px;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        border-top-right-radius: 120px; /* Bo góc trên bên trái */
-        border-bottom-right-radius: 120px; /* Bo góc dưới bên trái */
+      flex: 1;
+      background-color: black;
+      color: white;
+      padding: 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-top-right-radius: 120px; /* Bo góc trên bên trái */
+      border-bottom-right-radius: 120px; /* Bo góc dưới bên trái */
     }
-
 
     .welcome-section h2 {
-        font-weight: bold;
-        margin-bottom: 10px;
+      font-weight: bold;
+      margin-bottom: 10px;
     }
+  </style>
 
-</style>
-
-<body>
-<div class="login-container">
-    <div class="welcome-section">
+  <body>
+    <div class="login-container">
+      <div class="welcome-section">
         <h2>WELCOME BACK!!!</h2>
         <div class="d-flex justify-content-center">
-            <a th:href="@{/login}" class="btn btn-outline-light w-auto px-5">Đăng nhập</a>
+          <a th:href="@{/login}" class="btn btn-outline-light w-auto px-5"
+            >Đăng nhập</a
+          >
         </div>
-    </div>
-    <div class="login-form">
+      </div>
+      <div class="login-form">
         <h2 class="text-center">Đăng kí</h2>
-        <form id="registerForm" th:action="@{/register}" method="post" th:object="${dangKyDto}">
-            <div class="form-group">
-                <label for="email"><span class="text-danger">*</span> Email:</label>
-                <input type="email" class="form-control" th:field="*{email}" id="email">
-                <span class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
-                <span class="text-danger" th:if="${emailError}" th:text="${emailError}"></span>
-            </div>
+        <form
+          id="registerForm"
+          th:action="@{/register}"
+          method="post"
+          th:object="${dangKyDto}"
+        >
+          <div class="form-group">
+            <label for="email"><span class="text-danger">*</span> Email:</label>
+            <input
+              type="email"
+              class="form-control"
+              th:field="*{email}"
+              id="email"
+            />
+            <span
+              class="text-danger"
+              th:if="${#fields.hasErrors('email')}"
+              th:errors="*{email}"
+            ></span>
+            <span
+              class="text-danger"
+              th:if="${emailError}"
+              th:text="${emailError}"
+            ></span>
+          </div>
 
-            <div class="form-group">
-                <label for="matKhau"><span class="text-danger">*</span> Mật khẩu:</label>
-                <input type="password" class="form-control" th:field="*{matKhau}" id="matKhau">
-                <span class="text-danger" th:if="${#fields.hasErrors('matKhau')}" th:errors="*{matKhau}"></span>
-            </div>
+          <div class="form-group">
+            <label for="matKhau"
+              ><span class="text-danger">*</span> Mật khẩu:</label
+            >
+            <input
+              type="password"
+              class="form-control"
+              th:field="*{matKhau}"
+              id="matKhau"
+            />
+            <span
+              class="text-danger"
+              th:if="${#fields.hasErrors('matKhau')}"
+              th:errors="*{matKhau}"
+            ></span>
+          </div>
 
-            <div class="form-group">
-                <label for="xacNhanMatKhau"><span class="text-danger">*</span> Xác nhận mật khẩu:</label>
-                <input type="password" class="form-control" th:field="*{xacNhanMatKhau}" id="xacNhanMatKhau">
-                <span class="text-danger" th:if="${passwordError}" th:text="${passwordError}"></span>
-            </div>
+          <div class="form-group">
+            <label for="xacNhanMatKhau"
+              ><span class="text-danger">*</span> Xác nhận mật khẩu:</label
+            >
+            <input
+              type="password"
+              class="form-control"
+              th:field="*{xacNhanMatKhau}"
+              id="xacNhanMatKhau"
+            />
+            <span
+              class="text-danger"
+              th:if="${passwordError}"
+              th:text="${passwordError}"
+            ></span>
+          </div>
 
-            <button type="submit" class="btn btn-primary btn-block">Đăng ký</button>
-
+          <button type="submit" class="btn btn-primary btn-block">
+            Đăng ký
+          </button>
         </form>
+      </div>
     </div>
-</div>
 
-<!-- Thêm SweetAlert2 CDN -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- SweetAlert2 CDN -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Thêm SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-    const Toast = Swal.mixin({
+    <script>
+      const Toast = Swal.mixin({
         toast: true,
-        position: 'top-end',   // Góc phải phía trên
+        position: "top-end", // Góc phải phía trên
         showConfirmButton: false,
         timer: 3000,
-        timerProgressBar: true
-    });
+        timerProgressBar: true,
+      });
 
-    document.getElementById("registerForm").addEventListener("submit", function (e) {
-        const email = document.getElementById("email").value.trim();
-        const matKhau = document.getElementById("matKhau").value.trim();
-        const xacNhanMatKhau = document.getElementById("xacNhanMatKhau").value.trim();
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", function (e) {
+          const email = document.getElementById("email").value.trim();
+          const matKhau = document.getElementById("matKhau").value.trim();
+          const xacNhanMatKhau = document
+            .getElementById("xacNhanMatKhau")
+            .value.trim();
 
-        if (!email || !matKhau || !xacNhanMatKhau) {
+          if (!email || !matKhau || !xacNhanMatKhau) {
             e.preventDefault();
             Toast.fire({
-                icon: 'warning',
-                title: 'Vui lòng điền đầy đủ Email, Mật khẩu và Xác nhận mật khẩu!'
+              icon: "warning",
+              title:
+                "Vui lòng điền đầy đủ Email, Mật khẩu và Xác nhận mật khẩu!",
             });
             return;
-        }
+          }
 
-        // if (matKhau.length < 6) {
-        //     e.preventDefault();
-        //     Toast.fire({
-        //         icon: 'error',
-        //         title: 'Mật khẩu phải có ít nhất 6 ký tự.'
-        //     });
-        //     return;
-        // }
+          // if (matKhau.length < 6) {
+          //     e.preventDefault();
+          //     Toast.fire({
+          //         icon: 'error',
+          //         title: 'Mật khẩu phải có ít nhất 6 ký tự.'
+          //     });
+          //     return;
+          // }
 
-        if (matKhau !== xacNhanMatKhau) {
+          if (matKhau !== xacNhanMatKhau) {
             e.preventDefault();
             Toast.fire({
-                icon: 'error',
-                title: 'Xác nhận mật khẩu không khớp.'
+              icon: "error",
+              title: "Xác nhận mật khẩu không khớp.",
             });
-        }
-    });
-</script>
-
-</body>
+          }
+        });
+    </script>
+  </body>
 </html>
