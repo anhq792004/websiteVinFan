@@ -69,9 +69,6 @@ public class HoaDonController {
         Integer tongSoLuong = hoaDonService.tongSoLuong(id);
         model.addAttribute("tongSoLuong", tongSoLuong);
 
-        model.addAttribute("tongTien", hoaDon.getTongTien());
-        model.addAttribute("tongTienSauGiamGia", hoaDon.getTongTienSauGiamGia());
-
         return "admin/hoa_don/detail";
     }
 

@@ -160,8 +160,8 @@
                                     <div class="border rounded p-3 payment-method" data-method="cod">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="phuongThucThanhToan"
-                                                   value="COD" id="cod">
-                                            <label class="form-check-label w-100" for="cod">
+                                                   value="TIEN_MAT" id="TIEN_MAT">
+                                            <label class="form-check-label w-100" for="TIEN_MAT">
                                                 <div class="fw-bold">
                                                     <i class="fas fa-money-bill-wave me-2 text-success"></i>
                                                     Thanh toán khi nhận hàng
@@ -356,7 +356,7 @@
 
         // Format currency to VND (e.g., 10000 -> 10.000 đ)
         formatCurrency(amount) {
-            return amount.toLocaleString('vi-VN', { style: 'decimal', minimumFractionDigits: 0 }) + ' đ';
+            return amount.toLocaleString('vi-VN', {style: 'decimal', minimumFractionDigits: 0}) + ' đ';
         }
 
         // Thêm phương thức tìm voucher tốt nhất
