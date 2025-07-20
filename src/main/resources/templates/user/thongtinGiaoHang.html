@@ -160,8 +160,8 @@
                                     <div class="border rounded p-3 payment-method" data-method="cod">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="phuongThucThanhToan"
-                                                   value="COD" id="cod">
-                                            <label class="form-check-label w-100" for="cod">
+                                                   value="TIEN_MAT" id="TIEN_MAT">
+                                            <label class="form-check-label w-100" for="TIEN_MAT">
                                                 <div class="fw-bold">
                                                     <i class="fas fa-money-bill-wave me-2 text-success"></i>
                                                     Thanh toán khi nhận hàng
@@ -351,7 +351,7 @@
 
         // Format currency to VND (e.g., 10000 -> 10.000 đ)
         formatCurrency(amount) {
-            return amount.toLocaleString('vi-VN', { style: 'decimal', minimumFractionDigits: 0 }) + ' đ';
+            return amount.toLocaleString('vi-VN', {style: 'decimal', minimumFractionDigits: 0}) + ' đ';
         }
 
         async loadCartData() {
@@ -511,20 +511,20 @@
             const getVoucherTypeInfo = (voucher) => {
                 // Kiểm tra theo type trước
                 if (voucher.type === 'public') {
-                    return { text: 'Công khai', color: 'success', icon: 'globe' };
+                    return {text: 'Công khai', color: 'success', icon: 'globe'};
                 } else if (voucher.type === 'private') {
-                    return { text: 'Cá nhân', color: 'warning', icon: 'user' };
+                    return {text: 'Cá nhân', color: 'warning', icon: 'user'};
                 }
 
                 // Kiểm tra theo loaiPhieu
                 if (voucher.loaiPhieu === true || voucher.loaiPhieu === 1) {
-                    return { text: 'Công khai', color: 'success', icon: 'globe' };
+                    return {text: 'Công khai', color: 'success', icon: 'globe'};
                 } else if (voucher.loaiPhieu === false || voucher.loaiPhieu === 0) {
-                    return { text: 'Cá nhân', color: 'warning', icon: 'user' };
+                    return {text: 'Cá nhân', color: 'warning', icon: 'user'};
                 }
 
                 // Mặc định
-                return { text: 'Không xác định', color: 'secondary', icon: 'question' };
+                return {text: 'Không xác định', color: 'secondary', icon: 'question'};
             };
 
             // ✅ SỬA: Tách voucher theo loại để hiển thị rõ ràng
@@ -580,11 +580,11 @@
         renderVoucherGroup(vouchers) {
             const getVoucherTypeInfo = (voucher) => {
                 if (voucher.type === 'public' || voucher.loaiPhieu === true) {
-                    return { text: 'Công khai', color: 'success', icon: 'globe' };
+                    return {text: 'Công khai', color: 'success', icon: 'globe'};
                 } else if (voucher.type === 'private' || voucher.loaiPhieu === false) {
-                    return { text: 'Cá nhân', color: 'warning', icon: 'user' };
+                    return {text: 'Cá nhân', color: 'warning', icon: 'user'};
                 }
-                return { text: 'Không xác định', color: 'secondary', icon: 'question' };
+                return {text: 'Không xác định', color: 'secondary', icon: 'question'};
             };
 
             return vouchers.map(voucher => {
@@ -800,7 +800,7 @@
                     // Lưu thông tin đơn hàng để kiểm tra sau
                     sessionStorage.setItem('pending_momo_order', result.orderId);
                     sessionStorage.setItem('return_url', window.location.href);
-                    
+
                     // Chuyển hướng đến trang thanh toán MoMo
                     window.location.href = result.payUrl;
                 } else {
@@ -862,7 +862,7 @@
 
     // Initialize
     const checkoutPage = new CheckoutPage();
-    
+
     // Kiểm tra trạng thái thanh toán MoMo khi trang load
     checkoutPage.checkMomoPaymentStatus();
 </script>
