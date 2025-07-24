@@ -172,8 +172,8 @@ $(document).ready(function() {
         if (productCodeField && !productCodeField.readOnly) {
             const productCode = productCodeField.value;
             if (productCode && !productCode.match(/^[A-Za-z0-9]+$/)) {
-                showToast("error", "Mã sản phẩm chỉ được chứa chữ cái và số");
-                return false;
+            showToast("error", "Mã sản phẩm chỉ được chứa chữ cái và số");
+            return false;
             }
         }
         

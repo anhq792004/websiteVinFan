@@ -296,7 +296,7 @@ $(document).ready(function() {
 
         // Bỏ mã sản phẩm để backend tự động tạo
         delete formData.ma;
-        
+
         // Add current date
         formData.ngayTao = new Date().toISOString();
 

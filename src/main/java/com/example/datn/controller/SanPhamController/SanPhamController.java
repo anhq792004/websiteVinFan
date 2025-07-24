@@ -87,7 +87,7 @@ public class SanPhamController {
         
         // Chỉ lưu sản phẩm, không tạo biến thể
         // Hình ảnh sẽ được thêm khi tạo biến thể sản phẩm chi tiết
-        sanPhamService.saveSanPham(sanPham);
+            sanPhamService.saveSanPham(sanPham);
         
         return "redirect:/admin/san-pham/list";
     }

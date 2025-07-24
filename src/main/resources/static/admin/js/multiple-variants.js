@@ -517,14 +517,14 @@ class VariantsManager {
                         duplicates.push(`${mauSac?.ten || ''} - ${congSuat?.ten || ''}`);
                         console.log(`Duplicate found: ${mauSac?.ten} - ${congSuat?.ten}`);
                     } else {
-                        this.variantsList.push({
-                            index: index++,
-                            mauSacId: parseInt(mauSacId),
-                            mauSacTen: mauSac?.ten || '',
-                            congSuatId: parseInt(congSuatId),
-                            congSuatTen: congSuat?.ten || '',
-                            ...commonData
-                        });
+                    this.variantsList.push({
+                        index: index++,
+                        mauSacId: parseInt(mauSacId),
+                        mauSacTen: mauSac?.ten || '',
+                        congSuatId: parseInt(congSuatId),
+                        congSuatTen: congSuat?.ten || '',
+                        ...commonData
+                    });
                     }
                 }
             }

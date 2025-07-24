@@ -98,7 +98,7 @@ public class SanPhamChiTietController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
+
     /**
      * Thay đổi trạng thái sản phẩm chi tiết (tắt/bật) thay vì xóa
      */
