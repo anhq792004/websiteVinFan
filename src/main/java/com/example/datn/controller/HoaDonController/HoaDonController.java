@@ -1,6 +1,7 @@
 package com.example.datn.controller.HoaDonController;
 
 import com.example.datn.dto.request.AddSPToHDCTRequest;
+import com.example.datn.dto.request.UpdateInforRequest;
 import com.example.datn.dto.request.UpdateSoLuongRequest;
 import com.example.datn.dto.response.LichSuThanhToanResponse;
 import com.example.datn.entity.HoaDon.HoaDon;
@@ -178,5 +179,12 @@ public class HoaDonController {
     public ResponseEntity<?> updateSoLuong(UpdateSoLuongRequest request) {
         hoaDonService.updateSoluong(request);
         return ResponseEntity.ok("Cập nhật thành công");
+    }
+
+    @PostMapping("/updateInfor")
+    @ResponseBody
+    public ResponseEntity<?> updateInfor( @RequestBody UpdateInforRequest request) {
+        hoaDonService.updateInfor(request);
+        return ResponseEntity.ok("Cập nhật thông tin thành công");
     }
 }
