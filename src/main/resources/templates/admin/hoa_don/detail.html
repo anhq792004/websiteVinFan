@@ -337,7 +337,7 @@
                                           th:data-gia="${item.gia}"
                                           id="updateSoLuong"
                                           method="post"
-                                          action="/sale/updateSoLuong"
+                                          action="/hoa-don/updateSoLuong"
                                           class="update-so-luong-form">
                                         <div class="quantity-container">
                                             <button class="quantity-btn-1" type="button"
@@ -345,7 +345,7 @@
                                                 −
                                             </button>
                                             <input type="text" class="quantity-input"
-                                                   th:disabled="${hoaDon.trangThai != 0 || hoaDon.trangThai != 1 ||hoaDon.trangThai != 2}"
+                                                   th:disabled="${hoaDon.trangThai == 3 || hoaDon.trangThai == 4 ||hoaDon.trangThai == 5}"
                                                    th:value="${item.soLuong}" id="soLuong" name="soLuong">
                                             <button class="quantity-btn" type="button"
                                                     th:if="${hoaDon.trangThai == 0 || hoaDon.trangThai == 1 ||hoaDon.trangThai == 2}">
