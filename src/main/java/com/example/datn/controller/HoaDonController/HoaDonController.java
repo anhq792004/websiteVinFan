@@ -176,8 +176,9 @@ public class HoaDonController {
 
     @PostMapping("/updateSoLuong")
     @ResponseBody
-    public ResponseEntity<?> updateSoLuong(UpdateSoLuongRequest request) {
+    public ResponseEntity<String> updateSoLuong(@RequestBody UpdateSoLuongRequest request) {
         hoaDonService.updateSoluong(request);
+        banHangService.updateTongTienHoaDon(request.getIdHD());
         return ResponseEntity.ok("Cập nhật thành công");
     }
 
